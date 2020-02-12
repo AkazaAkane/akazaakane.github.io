@@ -5,4 +5,14 @@
   quote: >
     Carnegie Mellon University challenges the curious and passionate to imagine and deliver work that matters.
   description: | # this will include new lines to allow paragraphs
-    NA
+    Coursework: Finance, Statistics & Data Science, Intermediate Micro & Macroeconomics, Probability theory
+
+- layout: left
+  name: IBM Data Science
+  dates: Jan 2020
+  qualification: Professional Certification
+  link: coursera.org/verify/professional-cert/EBP6TXYF7C5Z
+  quote: >
+
+  description: | # this will include new lines to allow paragraphs
+    In this Professional Certificate learners developed and honedhands-on skills in Data Science and Machine Learning. Learnersstarted with an orientation of Data Science and its Methodology,became familiar and used a variety of data science tools, learnedPython and SQL, performed Data Visualization and Analysis, andcreated Machine Learning models. In the process they completedseveral labs and assignments on the cloud including a CapstoneProject at the end to apply and demonstrate their knowledge andskills
