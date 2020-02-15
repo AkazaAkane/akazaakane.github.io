@@ -1,5 +1,5 @@
 - layout: left
-  name: Carnegie Mellon university
+  name: Carnegie Mellon University
   dates: 2018 - present
   qualification: BS Economics and Statistics
   quote: >
@@ -15,4 +15,4 @@
   quote: >
 
   description: | # this will include new lines to allow paragraphs
-    In this Professional Certificate learners developed and honedhands-on skills in Data Science and Machine Learning. Learnersstarted with an orientation of Data Science and its Methodology,became familiar and used a variety of data science tools, learnedPython and SQL, performed Data Visualization and Analysis, andcreated Machine Learning models. In the process they completedseveral labs and assignments on the cloud including a CapstoneProject at the end to apply and demonstrate their knowledge andskills
+    In this Professional Certificate learners developed and honedhands-on skills in Data Science and Machine Learning. Learners started with an orientation of Data Science and its Methodology, became familiar and used a variety of data science tools, learned Python and SQL, performed Data Visualization and Analysis, andcreated Machine Learning models. In the process they completed several labs and assignments on the cloud including a CapstoneProject at the end to apply and demonstrate their knowledge andskills
