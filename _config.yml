@@ -41,7 +41,8 @@ about_profile_image: images/profile.jpg
 # More Section
 # more_title: A Little More About Me
 more_content: | # this will include new lines to allow paragraphs
-  I am a Junior Student in CMU studying Economics and Statistics.  
+  I am a Junior Student in CMU studying Economics and Statistics.
+   
 
 # Footer
 footer_show_references: true
