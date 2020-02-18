@@ -1,17 +1,17 @@
 - layout: top-middle
-  name: Super awesome project
-  link: github.com/sproogen
-  github: sproogen/resume-theme
+  name: Couple Trouble
+  link: https://github.com/AkazaAkane/Couple-trouble
+  github: https://github.com/AkazaAkane
   quote: >
-    This is probably one of the greatest apps ever created, if you don't agree you're probably wrong.
+    CMU Tartan Hack 2020 Best Valentine's Hack Winner. Built by OpenCV and Pygame.
   description: | # this will include new lines to allow paragraphs
-    I started this project as a way if learning <mark>React</mark> and it has since grown into a fully fledged app. I have learned many skills through this and been I'm very proud of having this in my portfolio. If you don't have a project as awesome as this I would advise you make one.
+    The game requires two people putting on special colored rings and holding their hands to control the car.Couples need to hold their hands in order to start the game. Both of you will have to decide on one direction to move. So, communicate with your partner well, or don’t.
 
 - layout: top-middle
-  name: Super awesome project
-  link: github.com/sproogen
-  github: sproogen/resume-theme
+  name: Battle of Neighborhoods: Comparison between NYC and Toronto
+  link: https://github.com/AkazaAkane/Coursera_Capstone
+  github: https://github.com/AkazaAkane
   quote: >
-    This is probably one of the greatest apps ever created, if you don't agree you're probably wrong.
+    Final Project for IBM Data Science Professional Certification
   description: | # this will include new lines to allow paragraphs
-    I started this project as a way if learning <mark>React</mark> and it has since grown into a fully fledged app. I have learned many skills through this and been I'm very proud of having this in my portfolio. If you don't have a project as awesome as this I would advise you make one.
+    We gathered data from NYU spatial data repository, Foursquare API, wikipedia. Then, we make use of k-mean clustering to compare the venues in NYC and Toronto.
