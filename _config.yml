@@ -4,9 +4,9 @@ favicon: images/favicon.ico
 
 # Personal info
 name: Yuhao Chen
-title: Carnegie Mellon University Student
+title: Junior in Carnegie Mellon University
 major: Economics and Statistics
-email: yxckeis8@gmail.com
+email: yxckeis8@gmail.com / yuhaoc@andrew.cmu.edu
 website: https://github.com/AkazaAkane
 
 # Social links
@@ -24,10 +24,10 @@ linkedin_username: yuhao-chen-640943119
 # About Section
 # about_title: About Me
 about_profile_image: images/profile.jpg
-#about_content: | # this will include new lines to allow paragraphs
-  #Hi, my name's Brett and I'm a senior network system administrator. As well as administrating systems I also have experience making software and web apps. I have worked at a number of companies gaining teamwork and leadership skills.
-
-  #I am most skilled in: <mark>AWS</mark> and <mark>Eating Pizza</mark>
+about_content: | # this will include new lines to allow paragraphs
+  #Hi, my name's August (Yuhao Chen) and I'm a Junior Student in CMU. My major is Economics and Statistics. Currently, I am interested in applying data science/machine learning into education and sports(especially Esports).
+  #My research is about causal inference as well as causal machine learning.
+  #I am most skilled in: <mark>R</mark> and <mark>Python</mark>
 
 # Projects Section
 # projects_title: Projects
@@ -41,8 +41,9 @@ about_profile_image: images/profile.jpg
 # More Section
 # more_title: A Little More About Me
 more_content: | # this will include new lines to allow paragraphs
-  I am a Junior Student in CMU studying Economics and Statistics.
-   
+  I go to gym almost everyday. Besides, I love reading books and playing computer game(overwatch, LOL).
+  Also, I am a typical nerd weeb who likes making Japanese food.
+
 
 # Footer
 footer_show_references: true
