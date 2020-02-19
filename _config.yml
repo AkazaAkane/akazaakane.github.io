@@ -26,8 +26,8 @@ linkedin_username: yuhao-chen-640943119
 about_profile_image: images/profile.jpg
 about_content: | # this will include new lines to allow paragraphs
   Hi, my name's August (Yuhao Chen) and I'm a Junior Student in CMU. My major is Economics and Statistics. Currently, I am interested in applying data science/machine learning into education and sports(especially Esports).
-  |My research is about causal inference as well as causal machine learning.
-  |I am most skilled in: <mark>R</mark> and <mark>Python</mark>
+  My research is about causal inference as well as causal machine learning.
+  I am most skilled in: <mark>R</mark> and <mark>Python</mark>
 
 # Projects Section
 # projects_title: Projects

@@ -15,3 +15,12 @@
     Final Project for IBM Data Science Professional Certification
   description: | # this will include new lines to allow paragraphs
     We gathered data from NYU spatial data repository, Foursquare API, wikipedia. Then, we make use of k-mean clustering to compare the venues in NYC and Toronto.
+
+- layout: top-middle
+  name: King County House Price Prediction with XGboost,Random Forest and NeuralNet
+  link: https://github.com/AkazaAkane/Economics_and_Data_Science_Final_Project
+  github: https://github.com/AkazaAkane
+  quote: >
+    Economics and Data Science (73-265) Final Project
+  description: | # this will include new lines to allow paragraphs
+    We obtained our dataset from Kaggle. Our data consists of 21,613 observations and 21 variables, where each observation represents a home sold between May 2014 and May 2015. We apply both simple linear regression as well as machine learning models to predict house price.
