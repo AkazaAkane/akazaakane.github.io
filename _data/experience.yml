@@ -1,9 +1,28 @@
 - layout: left
-  company:
+  company: Ernst & Young LLP
   link:
-  job_title:
-  dates:
+  job_title: International tax service Summer internship
+  dates: May 2019 - July 2019
   quote: >
 
   description: | # this will include new lines to allow paragraphs
-    
+    |Processed data from BBD and D&B Hoover and conducted industry analysis and comparability analysis with Excel independently in measuring apparatus, education, jewelry, real estate and lighting industry, helping clients pass tax review
+    |Researched on US tax regulation policy about permanent establishment for e-commerce and China local land value increment tax for clients to achieve reasonable tax avoidance
+
+- layout: left
+  company: CMU Chinese Student Scholar Association
+  link:
+  job_title: Activity Department
+  dates: May 2019 - present
+  quote: >
+
+  description:
+
+- layout: left
+  company: Ernst & Young LLP
+  link:
+  job_title: International tax service Summer internship
+  dates: May 2019 - July 2019
+  quote: >
+
+  description:
