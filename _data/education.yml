@@ -16,3 +16,13 @@
 
   description: | # this will include new lines to allow paragraphs
     In this Professional Certificate learners developed and honedhands-on skills in Data Science and Machine Learning. Learners started with an orientation of Data Science and its Methodology, became familiar and used a variety of data science tools, learned Python and SQL, performed Data Visualization and Analysis, andcreated Machine Learning models. In the process they completed several labs and assignments on the cloud including a CapstoneProject at the end to apply and demonstrate their knowledge andskills
+
+- layout: left
+  name: IBM AI Engineering
+  dates: April 2020
+  qualification: Professional Certification
+  link: https://coursera.org/share/975abd533fb37b4b6e0e6c808f5e4c72
+  quote: >
+
+  description: | # this will include new lines to allow paragraphs
+    Learners who have completed this 6 course ProfessionalCertificate have a practical understanding of Machine Learning(ML) & Deep Learning (DL). They have technical skills to start acareer in AI Engineering, and can: • Implement ML algorithmsincluding Classification, Regression, Clustering, and DimensionalReduction using scipy & scikitlearn • Perform ML on Big Data anddeploy ML Algorithms and Pipelines on Apache Spark •Demonstrate understanding of Deep Learning models such asautoencoders, restricted Boltzmann machines, convolutionalnetworks, recursive neural networks, and recurrent networks •Build deep learning models and neural networks using Keras,PyTorch and Tensorflow libraries • Demonstrate ability to presentand communicate outcomes of deep learning projects
