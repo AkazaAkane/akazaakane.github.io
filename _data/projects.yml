@@ -24,3 +24,12 @@
     Economics and Data Science (73-265) Final Project
   description: | # this will include new lines to allow paragraphs
     We obtained our dataset from Kaggle. Our data consists of 21,613 observations and 21 variables, where each observation represents a home sold between May 2014 and May 2015. We apply both simple linear regression as well as machine learning models to predict house price.
+
+- layout: top-middle
+  name: A/B Testing for Coffee Chain data
+  link: https://github.com/AkazaAkane/other-projects
+  github: https://github.com/AkazaAkane
+  quote: >
+    Economics and Data Science (73-265) Final Project
+  description: | # this will include new lines to allow paragraphs
+    We performed a matched pair A/B testing with Alteryx for the coffee chain data. We cleaned the time series data and use AB trend menthod to calculated seasonalily and trend. We matched two controlled stores to one treatment store with trend, seansonality and monthly gross margin data. We perform AB analysis and find that the treatment enable the company to have 40% lift on weekly sales. 
