@@ -30,6 +30,15 @@
   link: https://github.com/AkazaAkane/other-projects
   github: https://github.com/AkazaAkane
   quote: >
-    Economics and Data Science (73-265) Final Project
+    Udacity Nanodegree Project
   description: | # this will include new lines to allow paragraphs
-    We performed a matched pair A/B testing with Alteryx for the coffee chain data. We cleaned the time series data and use AB trend menthod to calculated seasonalily and trend. We matched two controlled stores to one treatment store with trend, seansonality and monthly gross margin data. We perform AB analysis and find that the treatment enable the company to have 40% lift on weekly sales. 
+    We performed a matched pair A/B testing with Alteryx for the coffee chain data. We cleaned the time series data and use AB trend menthod to calculated seasonalily and trend. We matched two controlled stores to one treatment store with trend, seansonality and monthly gross margin data. We perform AB analysis and find that the treatment enable the company to have 40% lift on weekly sales.
+
+- layout: top-middle
+  name: Segmentation and Time Series Forecasting for Store Sales
+  link: https://github.com/AkazaAkane/other-projects
+  github: https://github.com/AkazaAkane
+  quote: >
+    Udacity Nanodegree Project
+  description: | # this will include new lines to allow paragraphs
+    In this project, we use clustering algothrithm to cluster exising store into three different clusters according to product sales data. Then, we perform time series analysis with ARIMA and ETS model for each cluster. After validation, we perform time series forecasting with a tunned ETS model to forecast sales in the new stores.
