@@ -136,7 +136,7 @@
         <!-- Main Content -->
         
 <div class="post-content no-indent">
-    <p>E-mail: <a href="mailto:&#x79;&#120;&#99;&#107;&#x65;&#105;&#x73;&#56;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#46;&#x63;&#x6f;&#109;">yxckeis8@gmail.com</a><br>Brief：ml design&#x2F;mlsys<br>常用网名：芙蓉王源&#x2F;akazaakane&#x2F;bigya</p>
+    <p>E-mail: <a href="mailto:&#x79;&#120;&#99;&#107;&#x65;&#105;&#115;&#56;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#x2e;&#99;&#111;&#109;">yxckeis8@gmail.com</a><br>Brief：ml design&#x2F;mlsys<br>常用网名：芙蓉王源&#x2F;akazaakane&#x2F;bigya</p>
 <hr>
 <h2 id="title-About-Medate-2023-11-15layout-page"><a href="#title-About-Medate-2023-11-15layout-page" class="headerlink" title="title: About Medate: 2023-11-15layout: page"></a>title: About Me<br>date: 2023-11-15<br>layout: page</h2><h1 id="Yuhao-Chen"><a href="#Yuhao-Chen" class="headerlink" title="Yuhao Chen"></a>Yuhao Chen</h1><h2 id="Machine-Learning-Engineer-Data-Scientist"><a href="#Machine-Learning-Engineer-Data-Scientist" class="headerlink" title="Machine Learning Engineer &amp; Data Scientist"></a>Machine Learning Engineer &amp; Data Scientist</h2><p><img src="/img/avatar.png" alt="Profile Photo"></p>
 <p>I am a Machine Learning Engineer and Data Scientist passionate about developing AI solutions that solve real-world problems. With experience in both research and industry applications, I focus on creating practical, scalable, and ethical AI systems.</p>
@@ -229,6 +229,39 @@
 
 
 
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Fix specifically for home page post links
+    const homePostLinks = document.querySelectorAll('.post-item-link, .home-article-title a');
+    
+    homePostLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      // Skip links that already have the date format
+      if (href && !href.match(/\/\d{4}\/\d{2}\/\d{2}\//)) {
+        const postContainer = link.closest('.post-item, article');
+        const dateText = postContainer?.querySelector('.post-item-date, .post-date')?.textContent.trim();
+        
+        if (dateText) {
+          const dateMatch = dateText.match(/(\d{4})[-\/\.\s](\d{1,2})[-\/\.\s](\d{1,2})/);
+          if (dateMatch) {
+            const year = dateMatch[1];
+            const month = dateMatch[2].padStart(2, '0');
+            const day = dateMatch[3].padStart(2, '0');
+            
+            // Extract the slug from the current href
+            const slug = href.split('/').filter(Boolean).pop();
+            if (slug) {
+              // Update the href to include the date
+              link.setAttribute('href', `/${year}/${month}/${day}/${slug}/`);
+              console.log(`Fixed link for "${link.textContent.trim()}" to: /${year}/${month}/${day}/${slug}/`);
+            }
+          }
+        }
+      }
+    });
+  });
+</script> 
 
 </body>
 

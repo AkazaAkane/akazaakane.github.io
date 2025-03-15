@@ -225,6 +225,39 @@
 
 
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Fix specifically for home page post links
+    const homePostLinks = document.querySelectorAll('.post-item-link, .home-article-title a');
+    
+    homePostLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      // Skip links that already have the date format
+      if (href && !href.match(/\/\d{4}\/\d{2}\/\d{2}\//)) {
+        const postContainer = link.closest('.post-item, article');
+        const dateText = postContainer?.querySelector('.post-item-date, .post-date')?.textContent.trim();
+        
+        if (dateText) {
+          const dateMatch = dateText.match(/(\d{4})[-\/\.\s](\d{1,2})[-\/\.\s](\d{1,2})/);
+          if (dateMatch) {
+            const year = dateMatch[1];
+            const month = dateMatch[2].padStart(2, '0');
+            const day = dateMatch[3].padStart(2, '0');
+            
+            // Extract the slug from the current href
+            const slug = href.split('/').filter(Boolean).pop();
+            if (slug) {
+              // Update the href to include the date
+              link.setAttribute('href', `/${year}/${month}/${day}/${slug}/`);
+              console.log(`Fixed link for "${link.textContent.trim()}" to: /${year}/${month}/${day}/${slug}/`);
+            }
+          }
+        }
+      }
+    });
+  });
+</script> 
+
 </body>
 
 <script>
