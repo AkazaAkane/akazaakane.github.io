@@ -12,7 +12,7 @@
 
     <title>
         
-        Yuhao Chen | MLE &amp; DS
+        为什么要写博客 - Yuhao Chen | MLE &amp; DS
         
     </title>
 
@@ -84,7 +84,7 @@
                     <span>TAGS</span>
                 </a>
             </li>
-            <li  class=active >
+            <li >
                 <a href="/archive">
                     <i class="iconfont icon-guidang2"></i>
                     <span>ARCHIVES</span>
@@ -113,6 +113,10 @@
         </ul>
     </div>
     
+        <div id="toc" class="toc-article">
+    
+</div>
+    
 </div>
 
 
@@ -140,50 +144,44 @@
         
 
 
-<!-- 归档列表 -->
+<div class="post-container">
+    <div class="post-title">
+        为什么要写博客
+    </div>
 
-<div class="archives-container">
-
-<div class="one-tag-list">
-                <span class="fa fa-calendar-times-o listing-seperator" id="2025">
-                    <span class="tag-text">2025</span>
-                </span>
-    <ul>
+    <div class="post-meta">
+        <span class="attr">Post：<span>2025-03-14 00:00:00</span></span>
         
-        <!-- <li class="listing-item">
-        <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-        <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-        </li> -->
-        <li >
-            <span>03-14</span>
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2025/03/14/为什么要写博客/">
-                        <span>
-                            为什么要写博客
-                        </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-        </li>
+        <span class="attr">Tags：/
         
-        <!-- <li class="listing-item">
-        <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
-        <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-        </li> -->
-        <li >
-            <span>03-14</span>
-            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-            <a href="/2025/03/14/关于运动的思考/">
-                        <span>
-                            关于运动的思考
-                        </span>
-            </a>
-            <!-- <p class="post-meta">{{ post.date | date:"%Y-%m-%d" }}</p> -->
-        </li>
+        <a class="tag" href="/tags/#思考" title="思考">思考</a>
+        <span>/</span>
         
+        <a class="tag" href="/tags/#杂谈" title="杂谈">杂谈</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#生活" title="生活">生活</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content no-indent">
+        <p>最早有这个想法是一段时间之前的失眠，当时读了一本书讲到写日记&#x2F;记录可以帮助睡眠。原理大概如下，如果每天睡觉前把今天的想法，和对未来的预期都写写下来，那大脑就会更放松。这样，也就不会在床上翻来覆去脑子里有很多想法。（“给思考减负：把日常的思考和琐事都记录下来。脑子需要操心的变少了，灵感变多了”， Sheng Xu 2025）我觉得确实，人的脑容量极其有限，但是和gpu集群相比虽然我们能耗很低，但是我们的学习能力应该是这一台基于backprop的模型不能比较的。那么我们确实没有必要和大模型去竞争记忆力，而是应该关注思考模型和学习模型。不重要的东西那就应该记下来，没必要占用大脑的缓存。</p>
+<p>而在llm来了以后，我意识到了我对于llm有一点过于依赖了，能用llm解决的绝对不自己想。当然，一方面效率确实提高了，我在很短的时间学习到了很多知识。不过这种知识真的有用吗？一个人再怎么学也没有大模型学的快学的多吧？可能更多还是需要学习思维模型。另外一方面，由于过于依赖，我一时到了我的思考能力和语言能力都有不同程度的下滑。比如说，以前我的文章写得也不好，但是现在倒是变成提笔之后脑子完全崩不住来几个字了。鉴于这种情况，并且最近偶然翻到四火老师早期的文章，我意识到了可能在一些时候我需要脱离ai来保证我个人的状态，而其中一个方式就是不借助ai写博客。中文和英文我感觉没有特别大的所谓哈哈，中英夹杂更好一点。</p>
+<p>除了保持自己的思考和语言能力，我也希望建立一个个人的知识库，来记录我不同时期的想法，并且可以在未来进行复盘。这个可以追溯到我早期的投资笔记，我忘了在哪里学习到把自己每次做决定的想法，交易决定的内容，和后面的回顾记录下来看。这样，能够更好的复盘反思，因为如果不记录的话人的回忆是不靠谱的。另外呢，之前在别人博客也看到可以直接用curosr + markdown当作一个rag系统。</p>
 
-    </ul>
-</div>
-
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+        <div id="lv-container"></div>
+        <div class="giscus"></div>
+    </div>
 </div>
 
     </div>
@@ -322,7 +320,7 @@
     // We expose some of the variables needed by the front end
     window.hexo_search_path = "search.json"
     window.hexo_root = "/"
-    window.isPost = false
+    window.isPost = true
 </script>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 
@@ -331,6 +329,23 @@
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
+
+
+    <script src="https://giscus.app/client.js"
+    data-repo="AkazaAkane/akazaakane.github.io"
+    data-repo-id="MDEwOlJlcG9zaXRvcnkyMzk2NTg3NTg="
+    data-category="General"
+    data-category-id="DIC_kwDODkjnBs4CoDY9"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="en"
+    crossorigin="anonymous"
+    async>
+</script>
 
 
 
