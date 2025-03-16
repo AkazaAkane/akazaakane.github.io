@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang=zh-CN>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:description" content="Yuhao Chen&#39;s Blog - AI/ML Engineering and Data Science">
+    <meta property="og:type" content="website">
+    <meta name="description" content="Yuhao Chen&#39;s Blog - AI/ML Engineering and Data Science">
+    <meta name="keyword"  content="hexo,Yuhao Chen,Machine Learning,Data Science,AI,ML,Deep Learning">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Seedream 2.0: A Native Chinese-English Bilingual Image Generation Foundation Model - Yuhao Chen
+        
+    </title>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/aircloud.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_28hi1hpxx24.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+    
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> 随便写写 - 想写就写吧 </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.png" />
+        </div>
+        <div class="name">
+            <i>yxckeis8</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/collect/">
+                    <i class="iconfont icon-shoucang1"></i>
+                    <span>收藏</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%BC%E8%A8%80"><span class="toc-text">导言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE"><span class="toc-text">数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8C%E8%AF%AD%E8%A8%80%E7%BC%96%E7%A0%81%E5%99%A8"><span class="toc-text">双语言编码器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8E%E8%AE%AD%E7%BB%83"><span class="toc-text">后训练</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Instruction-Based-Editing"><span class="toc-text">Instruction-Based Editing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E5%8A%A0%E9%80%9F"><span class="toc-text">模型加速</span></a></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-bg" id="search-bg"></div>
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> 随便写写 - 想写就写吧 </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Seedream 2.0: A Native Chinese-English Bilingual Image Generation Foundation Model
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2025-03-16 01:00:00</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#技术" title="技术">技术</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#豆包" title="豆包">豆包</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#论文" title="论文">论文</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content no-indent">
+        <p>原文链接 <a href="https://arxiv.org/pdf/2503.07703">https://arxiv.org/pdf/2503.07703</a></p>
+<h2 id="导言"><a href="#导言" class="headerlink" title="导言"></a>导言</h2><p>豆包团队针对现有flux、Midjourney、SD3.5等模型对于1.模型长文本和多语言（中文）能力不足；2.不能理解中国文化 的问题，提出了seedream 2.0中英双语大模型。模型的创新性在于数据处理平台，双语言编码器以及后训练。这是一份33页的技术报告，写的非常详细。数据环节的解释非常清晰，编码器的结构和后训练环节的创新也很有亮点。尤其是后训练部分，细节多到令人感动。这篇文章让我感受到字节&#x2F;豆包的底蕴，不愧是不惜血本挖人的宇宙厂，科研能力和产品能力都没得说。</p>
+<h3 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h3><p>数据的组成包括高质量数据，分布保持数据，知识注入，以及一些针对性补充数据。高质量数据和其他模型的数据集差不多（clarity,aesthetic)，分布保持是做down sampling，在保持原始数据分布情况下减少低质量数据。知识注入包括了很多高质量的中文图文数据，并且其中一部分是只有中国文化有的数据。</p>
+<p>数据清理分三步的漏斗系统。第一步，计算quality score, structure score(水印，logo)，然后用ocr去identify text。不符合的数据会被剔除；第二步，分层的进一步筛选。第三步，captioning 和 re-captioning。captioning的部分，豆包会对每一张图做 generic （长句子，短句子） 和 specialized （图片中的文字，美学，想象力）标注。</p>
+<p>豆包还设计了一个active learning engine，先标注少量数据训练分类器，再利用分类器从无标注图像中挑选有价值的样本继续标注，形成 “标注 — 训练 — 再筛选” 的循环，逐步完善数据集。</p>
+<h3 id="双语言编码器"><a href="#双语言编码器" class="headerlink" title="双语言编码器"></a>双语言编码器</h3><p><img src="/img/2025/03/5.png"> </p>
+<p>现有扩散模型一般用clip或者t5当作text encoder，因为他们的embeddings 分布比较符合扩散模型。LLM虽然能力很强，但是它的数据分布不对。为了解决这个情况，豆包收集了高质量中文数据微调了decoder only 大模型，并针对渲染文本的字形特征，同时使用 LLM（大语言模型，作为文本编码器）和 ByT5 模型进行编码。</p>
+<p>LLM 擅长捕捉文本的整体语义，尤其对中文复杂语境（如诗词、传统民俗描述）、文化内涵有深度理解。它能从海量数据中学习中文文化特征，确保生成图像准确表达文本语义，例如在生成包含中国传统元素的图像时，精准传递文化细节。作为双语编码器，LLM 支持中英双语语义对齐，使模型在处理双语提示时，保持跨语言生成的一致性。</p>
+<p>Glyph-Aligned ByT5专注于字符级特征处理，解决文本渲染中的布局混乱、字符重复等问题。例如，在长文本或复杂排版（如竖排中文、书法字体）中，通过字符级嵌入对齐，实现高精度的文本布局生成，确保文字排列符合视觉逻辑。对多语言字符的细节处理更精细，提升模型在不同语言文本渲染任务中的普适性，尤其在非英文文本（如中文、日文）的排版中表现更优。</p>
+<p>Diffusion的架构是dit，运用了针对分辨率的Scaling ROPE，使得同样图片在不同尺寸下能有相似的positional encoding。</p>
+<h3 id="后训练"><a href="#后训练" class="headerlink" title="后训练"></a>后训练</h3><p>后训练分为四个阶段：</p>
+<ol>
+<li>Continue Training (CT) and Supervised fine-tuning (SFT) stages remarkably enhance the aesthetic appeal of the model; </li>
+<li>Human Feedback Alignment (RLHF) stage significantly improves the model’s overall performance across all aspects via self-developed reward models and feedback learning algorithms; </li>
+<li>Prompt Engineering (PE) further improves the performance on aesthetics and diversity by leveraging a fine-tuned LLM; </li>
+<li>Finally, a refiner model is developed to scale up the resolution of an output image generated from our base model, and at the same time fix some minor structural errors.</li>
+</ol>
+<p>CT用了两种数据，机器从训练数据里筛选的高质量数据，以及人工选择的艺术&#x2F;摄影&#x2F;设计作品，按照一定的比例混合。训练的时候用了Value Mixing Control (VMix) Adapter，能更好的区分内容和美学的prompting，使得整体模型生成的图片更好看。SFT 整合了一些有标签的正样本，和一些模型生成的负样本来继续训练。</p>
+<p>RLHF用了一个支持双语的clip作为reward mode，同时也用了 a image-text alignment RM, an aesthetic RM, and a text-rendering RM。</p>
+<p>PE也分为两个阶段。第一个阶段是supervised llm fine-tuning，建立了一个pe模型 u -&gt; r，u是原始的prompt，r是模型改良的prompt。训练方法一是不断改进r，使得 u能通过r生成一个好的图片。二是找高质量文本对，不断地减少r的描述来还原u。第二个阶段是rlhf，通过第一阶段的pe生成很多prompt，然后人工选取positive negative pairs来做rl。</p>
+<p>Refiner仍然是两个阶段。第一阶段是1024分辨率scaling，第二阶段找了一些高质量texture数据做downgrade，然后用这些数据训练了一个texture模型用来guide refiner 模型。</p>
+<h3 id="Instruction-Based-Editing"><a href="#Instruction-Based-Editing" class="headerlink" title="Instruction-Based Editing"></a>Instruction-Based Editing</h3><p>运用了自研的SeedEdit，区别于其他solution，SeedEdit用diffusion作为encoder。为了改善人脸一致性的问题，用了内部的 ID&#x2F;IP 模型，以及收集了很多ID&#x2F;IP在不同条件下的图片。同时，模型结构引入了perception loss（face loss）来保持人脸一致性。</p>
+<h3 id="模型加速"><a href="#模型加速" class="headerlink" title="模型加速"></a>模型加速</h3><p>Trajectory Segmented Consistency Distillation (TSCD) methodology，把 [0,T] 的时间段分为k segment，在训练的过程中逐渐减少。Quantization上也做了微调，支持不同模型部分的量化。</p>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+        <div id="lv-container"></div>
+        <div class="giscus"></div>
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/AkazaAkane">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://www.linkedin.com/in/yuhaoc2022">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-linkedin"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+        <span><a href="https://www.raychase.net/">四火的唠嗑</a></span>
+        <span>/</span>
+        
+        <span><a href="http://hanzilu.com/wordpress/">韩师傅就是我</a></span>
+        <span>/</span>
+        
+        <span><a href="https://www.ruanyifeng.com/">阮一峰的网络日志</a></span>
+        <span>/</span>
+        
+        <span><a href="https://shengxu.blog/">Sheng Xu&#39;s Blog</a></span>
+        <span>/</span>
+        
+        <span><a href="https://pyemma.github.io/">Coding Monkey&#39;s Blog</a></span>
+        <span>/</span>
+        
+        <span><a href="https://yage.ai/">Computing Life</a></span>
+        <span>/</span>
+        
+        <span><a href="https://yynnyy.cn/">随缘随笔 | Insights Flow</a></span>
+        <span>/</span>
+        
+        <span><a href="https://www.wxyaonline.top/archive">Wxya</a></span>
+        <span>/</span>
+        
+        <span><a href="https://mickqian.github.io/">Mick&#39;s Blog</a></span>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+    <script src="https://giscus.app/client.js"
+    data-repo="AkazaAkane/akazaakane.github.io"
+    data-repo-id="MDEwOlJlcG9zaXRvcnkyMzk2NTg3NTg="
+    data-category="General"
+    data-category-id="DIC_kwDODkjnBs4CoDY9"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="en"
+    crossorigin="anonymous"
+    async>
+</script>
+
+
+
+
+</html>
