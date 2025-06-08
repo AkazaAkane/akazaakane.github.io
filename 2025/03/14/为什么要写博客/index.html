@@ -38,7 +38,119 @@
 
 
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 <body>
 
@@ -72,38 +184,38 @@
             <li >
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>홈</span>
+                    <span>HOME</span>
                 </a>
             </li>
             <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>태그</span>
+                    <span>TAGS</span>
                 </a>
             </li>
             <li >
                 <a href="/archive">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>아카이브</span>
+                    <span>ARCHIVES</span>
                 </a>
             </li>
             <li >
                 <a href="/collect/">
                     <i class="iconfont icon-shoucang1"></i>
-                    <span>모으다</span>
+                    <span>COLLECT</span>
                 </a>
             </li>
             <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>about</span>
+                    <span>ABOUT</span>
                 </a>
             </li>
             
             <li>
                 <a id="search">
                     <i class="iconfont icon-sousuo1"></i>
-                    <span>검색</span>
+                    <span>SEARCH</span>
                 </a>
             </li>
             
@@ -123,7 +235,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input"/>
-            <span id="begin-search">검색</span>
+            <span id="begin-search">search</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -147,9 +259,9 @@
     </div>
 
     <div class="post-meta">
-        <span class="attr">등록시간：<span>2025-03-14 01:00:00</span></span>
+        <span class="attr">Post：<span>2025-03-14 01:00:00</span></span>
         
-        <span class="attr">태그：/
+        <span class="attr">Tags：/
         
         <a class="tag" href="/tags/#思考" title="思考">思考</a>
         <span>/</span>
@@ -159,12 +271,12 @@
         
         
         </span>
-        <span class="attr">방문：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>
     </div>
     <div class="post-content no-indent">
-        <p>最早有这个想法是一段时间之前的失眠，当时读了一本书讲到写日记&#x2F;记录可以帮助睡眠。原理大概如下，如果每天睡觉前把今天的想法，和对未来的预期都写写下来，那大脑就会更放松。这样，也就不会在床上翻来覆去脑子里有很多想法。（“给思考减负：把日常的思考和琐事都记录下来。脑子需要操心的变少了，灵感变多了”， Sheng Xu 2025）我觉得确实，人的脑容量极其有限，但是和gpu集群相比虽然我们能耗很低，但是我们的学习能力应该是这一台基于backprop的模型不能比较的。那么我们确实没有必要和大模型去竞争记忆力，而是应该关注思考模型和学习模型。不重要的东西那就应该记下来，没必要占用大脑的缓存。</p>
+        <p>最早有这个想法是一段时间之前的失眠，当时读了一本书讲到写日记/记录可以帮助睡眠。原理大概如下，如果每天睡觉前把今天的想法，和对未来的预期都写写下来，那大脑就会更放松。这样，也就不会在床上翻来覆去脑子里有很多想法。（“给思考减负：把日常的思考和琐事都记录下来。脑子需要操心的变少了，灵感变多了”， Sheng Xu 2025）我觉得确实，人的脑容量极其有限，但是和gpu集群相比虽然我们能耗很低，但是我们的学习能力应该是这一台基于backprop的模型不能比较的。那么我们确实没有必要和大模型去竞争记忆力，而是应该关注思考模型和学习模型。不重要的东西那就应该记下来，没必要占用大脑的缓存。</p>
 <p>而在llm来了以后，我意识到了我对于llm有一点过于依赖了，能用llm解决的绝对不自己想。当然，一方面效率确实提高了，我在很短的时间学习到了很多知识。不过这种知识真的有用吗？一个人再怎么学也没有大模型学的快学的多吧？可能更多还是需要学习思维模型。另外一方面，由于过于依赖，我一时到了我的思考能力和语言能力都有不同程度的下滑。比如说，以前我的文章写得也不好，但是现在倒是变成提笔之后脑子完全崩不住来几个字了。鉴于这种情况，并且最近偶然翻到四火老师早期的文章，我意识到了可能在一些时候我需要脱离ai来保证我个人的状态，而其中一个方式就是不借助ai写博客。中文和英文我感觉没有特别大的所谓哈哈，中英夹杂更好一点。</p>
 <p>除了保持自己的思考和语言能力，我也希望建立一个个人的知识库，来记录我不同时期的想法，并且可以在未来进行复盘。这个可以追溯到我早期的投资笔记，我忘了在哪里学习到把自己每次做决定的想法，交易决定的内容，和后面的回顾记录下来看。这样，能够更好的复盘反思，因为如果不记录的话人的回忆是不靠谱的。另外呢，之前在别人博客也看到可以直接用curosr + markdown当作一个rag系统。</p>
 

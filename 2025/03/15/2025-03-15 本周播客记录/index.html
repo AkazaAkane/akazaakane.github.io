@@ -38,7 +38,119 @@
 
 
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 <body>
 
@@ -72,38 +184,38 @@
             <li >
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>홈</span>
+                    <span>HOME</span>
                 </a>
             </li>
             <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>태그</span>
+                    <span>TAGS</span>
                 </a>
             </li>
             <li >
                 <a href="/archive">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>아카이브</span>
+                    <span>ARCHIVES</span>
                 </a>
             </li>
             <li >
                 <a href="/collect/">
                     <i class="iconfont icon-shoucang1"></i>
-                    <span>모으다</span>
+                    <span>COLLECT</span>
                 </a>
             </li>
             <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>about</span>
+                    <span>ABOUT</span>
                 </a>
             </li>
             
             <li>
                 <a id="search">
                     <i class="iconfont icon-sousuo1"></i>
-                    <span>검색</span>
+                    <span>SEARCH</span>
                 </a>
             </li>
             
@@ -123,7 +235,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input"/>
-            <span id="begin-search">검색</span>
+            <span id="begin-search">search</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -147,9 +259,9 @@
     </div>
 
     <div class="post-meta">
-        <span class="attr">등록시간：<span>2025-03-15 01:00:00</span></span>
+        <span class="attr">Post：<span>2025-03-15 01:00:00</span></span>
         
-        <span class="attr">태그：/
+        <span class="attr">Tags：/
         
         <a class="tag" href="/tags/#技术" title="技术">技术</a>
         <span>/</span>
@@ -159,12 +271,12 @@
         
         
         </span>
-        <span class="attr">방문：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>
     </div>
     <div class="post-content no-indent">
-        <h3 id="硅谷101-E183：比特币巨鲸策略-microstrategy"><a href="#硅谷101-E183：比特币巨鲸策略-microstrategy" class="headerlink" title="硅谷101 E183：比特币巨鲸策略 microstrategy"></a>硅谷101 E183：比特币巨鲸策略 microstrategy</h3><p>这篇播客讲述了美股微策略公司的运行逻辑，这个公司会发债&#x2F;融资大量购买比特币，提供相对于btc etf更大的流动性。因为自带高杠杆加上high volatility，hf或者其他玩家很喜欢买他。并且他是美股，所以很多没办法买etf的资金（国外的养老基金，州基金）也可以买。而被制裁的国家现在也在推荐多弄一些btc储备。这个公司ceo非常会做营销，并且宣传的卖点就是高波动，最近在跟美国政府的交流中建议美国多搞点不止比特币的储备。</p>
+        <h3 id="硅谷101-E183：比特币巨鲸策略-microstrategy"><a href="#硅谷101-E183：比特币巨鲸策略-microstrategy" class="headerlink" title="硅谷101 E183：比特币巨鲸策略 microstrategy"></a>硅谷101 E183：比特币巨鲸策略 microstrategy</h3><p>这篇播客讲述了美股微策略公司的运行逻辑，这个公司会发债/融资大量购买比特币，提供相对于btc etf更大的流动性。因为自带高杠杆加上high volatility，hf或者其他玩家很喜欢买他。并且他是美股，所以很多没办法买etf的资金（国外的养老基金，州基金）也可以买。而被制裁的国家现在也在推荐多弄一些btc储备。这个公司ceo非常会做营销，并且宣传的卖点就是高波动，最近在跟美国政府的交流中建议美国多搞点不止比特币的储备。</p>
 <p>更深有感触的一点是，嘉宾最后提到了链上经济的意义，在这个国与国冲突加剧的时间，谁能主导链上经济那么谁将会主导全球的经济。比如cn控制资金外流，但是假如有了一个很大的链上经济那么流动性全都跑过去了。这个嘉宾也之前也讲了tether，usdt稳定币的公司，你越买稳定币相当于直接买美债了（tether已经是美国第18大债主，超越了很多国家）。所以，为了防止美元霸权，一些国家也在推行自己的链上交易货币。我觉得自己可能也需要搞个冷钱包屯点btc，大概 5% - 10%总资产比较合适。btc可能是偏离了传统价值投资，但是他作为新链上经济的鼻祖有着不可替代的价值。</p>
 <p>所以目前看，虽然科技上美国不一定能继续霸权，国内川皇马一龙乱搞通胀已经越来越高了，但是美元的霸权目前来看全世界毫无替代。</p>
 <h3 id="潜空间：季雨，谁困住了ai产业大型机化的计算机形态与变革的可能"><a href="#潜空间：季雨，谁困住了ai产业大型机化的计算机形态与变革的可能" class="headerlink" title="潜空间：季雨，谁困住了ai产业大型机化的计算机形态与变革的可能"></a>潜空间：季雨，谁困住了ai产业大型机化的计算机形态与变革的可能</h3><p>官方笔记：<a href="https://miracleplus.feishu.cn/docx/SngpdNt4XoNXHvxzFkFcJNd5nGh">https://miracleplus.feishu.cn/docx/SngpdNt4XoNXHvxzFkFcJNd5nGh</a></p>
@@ -175,7 +287,7 @@
 <p>第二个节目是一个ai 猎头公司，讲述国内公司对于ai人才的追求。13年的时候，美国的人才并不愿意回去，因为待遇差（钱少事多）。但是从2024以来，越来越多的人才开始回流。成体的趋势有一点马太效应，巨头愿意花大钱抢顶级人才，但是差一点的人才并不好找工作。嘉宾预言，次一级别的人才可能需要进入传统公司，比如国内某租房软件吸引了一大波人才，做了ai转型。然后强调了宇宙厂字节不惜一切代价，重金挖人，张一鸣亲自1对1接触很多ai人才。</p>
 <p>我的感想是，本人也是属于次级人才，所以很能体会嘉宾说的只有头部人才好找工作的问题。那么除了让自己不断学习成为头部人才，短期内也要考虑非科技行业。</p>
 <h3 id="晚点聊85：-国家从无到有"><a href="#晚点聊85：-国家从无到有" class="headerlink" title="晚点聊85： 国家从无到有"></a>晚点聊85： 国家从无到有</h3><p>从零开始建设国家比起点小说要困难的多，即使开了外挂也得好多年。</p>
-<h3 id="人民公园说ai：豆包只是产品的中间态"><a href="#人民公园说ai：豆包只是产品的中间态" class="headerlink" title="人民公园说ai：豆包只是产品的中间态"></a>人民公园说ai：豆包只是产品的中间态</h3><p>讲了字节系的豆包&#x2F;扣子开发者大会。感受是字节系确实nb，愿意烧钱也烧的起钱，不论是产品，科研，人才全部都拿下了，目前感觉是国内唯一t0。阿里也不错，其他几家拉跨了一点。</p>
+<h3 id="人民公园说ai：豆包只是产品的中间态"><a href="#人民公园说ai：豆包只是产品的中间态" class="headerlink" title="人民公园说ai：豆包只是产品的中间态"></a>人民公园说ai：豆包只是产品的中间态</h3><p>讲了字节系的豆包/扣子开发者大会。感受是字节系确实nb，愿意烧钱也烧的起钱，不论是产品，科研，人才全部都拿下了，目前感觉是国内唯一t0。阿里也不错，其他几家拉跨了一点。</p>
 <h3 id="硬地骇客88：-开发翻译产品"><a href="#硬地骇客88：-开发翻译产品" class="headerlink" title="硬地骇客88： 开发翻译产品"></a>硬地骇客88： 开发翻译产品</h3><p>嘉宾是字节系的前pm，自己通过用chatgpt开发了一个漫画翻译app，实现了盈利。</p>
 <h3 id="六岔路口：宠物需要的情绪价值很难替代"><a href="#六岔路口：宠物需要的情绪价值很难替代" class="headerlink" title="六岔路口：宠物需要的情绪价值很难替代"></a>六岔路口：宠物需要的情绪价值很难替代</h3><p>阿里高管出来创业，做狗粮品牌。强调了创业更难，但是自己会有心理上的轻松，团队也相对松散。嘉宾强调了现在人和宠物的链接，并且人的belief会影响他对于宠物产品的消费：比如说，假如一个人很重视饮食的健康，那么他在选购狗粮时也会买强调这个饮食健康的品牌。</p>
 <h3 id="科技早知道：从deepseek到manus"><a href="#科技早知道：从deepseek到manus" class="headerlink" title="科技早知道：从deepseek到manus"></a>科技早知道：从deepseek到manus</h3><p>女嘉宾号称是前open ai研究员，但是听上去感觉对ai了解极其有限。比如，她对于开源项目的商业化缺乏了解，不清楚开源到底靠什么赚钱的。并且也有一些明显错误的技术认识，比如”开源模型的api一定比自己部署贵”。尽管徐老师和男嘉宾尽力了，但是由于女嘉宾占的篇幅比较多带不动。听了差不多等于没听。</p>

@@ -38,7 +38,119 @@
 
 
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 <body>
 
@@ -72,38 +184,38 @@
             <li >
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>홈</span>
+                    <span>HOME</span>
                 </a>
             </li>
             <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>태그</span>
+                    <span>TAGS</span>
                 </a>
             </li>
             <li >
                 <a href="/archive">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>아카이브</span>
+                    <span>ARCHIVES</span>
                 </a>
             </li>
             <li >
                 <a href="/collect/">
                     <i class="iconfont icon-shoucang1"></i>
-                    <span>모으다</span>
+                    <span>COLLECT</span>
                 </a>
             </li>
             <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>about</span>
+                    <span>ABOUT</span>
                 </a>
             </li>
             
             <li>
                 <a id="search">
                     <i class="iconfont icon-sousuo1"></i>
-                    <span>검색</span>
+                    <span>SEARCH</span>
                 </a>
             </li>
             
@@ -123,7 +235,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input"/>
-            <span id="begin-search">검색</span>
+            <span id="begin-search">search</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -147,9 +259,9 @@
     </div>
 
     <div class="post-meta">
-        <span class="attr">등록시간：<span>2025-03-20 01:00:00</span></span>
+        <span class="attr">Post：<span>2025-03-20 01:00:00</span></span>
         
-        <span class="attr">태그：/
+        <span class="attr">Tags：/
         
         <a class="tag" href="/tags/#杂谈" title="杂谈">杂谈</a>
         <span>/</span>
@@ -162,7 +274,7 @@
         
         
         </span>
-        <span class="attr">방문：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>
     </div>
@@ -176,7 +288,7 @@
 <li>故事中不应出现不存在的毒药、以及太复杂需要长篇解说的犯案工具。</li>
 <li>故事中不可有中国人角色。（实际上是说静止角色拥有超能力）</li>
 </ul>
-<p>虽然这些信条不乏有些错误的认知，但在古典推理小说的黄金期时曾被奉为圭臬。逻辑也很简单，因为引入这些元素无法让读者信服。比如说，在解答受害人怎么死的时候，假如作者说“犯人有超能力，直接远程杀死受害人不留下痕迹”，那正常的读者都很难满意。因为一般来讲，推理小说默认了现实世界中的物理定律，所以如果谜底是之前从未提及的超能力的话，那答案其实有无数种，推理这个过程其实可有可无（外星人杀的人，受害者是活死人本来就死了…）。当然，如果事先告诉读者犯人有超能力，且只有一个犯人这种定律，那通过引入这种悬疑的设定反而会让小说变得更有意思。这些元素还不够达成一个好的设定系推理作品。对于推理小说而言，作者会制造一个谜题（比如说杀人案），然后提供一个合乎逻辑的谜底（解答&#x2F;推理）。假设我们以上讨论的超自然元素和谜面谜底没关系的话，那其实也不能算是设定系小说。比如柯南里有变小药，阿笠博士的地精科技系列：滑板，足力健，ikun背带裤，但这些要素与解开谜团无直接关系，在揭露诡计或找出真凶时基本不会考虑它们的存在，因此通常不被视为特殊设定谜团。假如柯南运用了高科技或者变小药去犯案，那柯南就可以是设定系推理作品。</p>
+<p>虽然这些信条不乏有些错误的认知，但在古典推理小说的黄金期时曾被奉为圭臬。逻辑也很简单，因为引入这些元素无法让读者信服。比如说，在解答受害人怎么死的时候，假如作者说“犯人有超能力，直接远程杀死受害人不留下痕迹”，那正常的读者都很难满意。因为一般来讲，推理小说默认了现实世界中的物理定律，所以如果谜底是之前从未提及的超能力的话，那答案其实有无数种，推理这个过程其实可有可无（外星人杀的人，受害者是活死人本来就死了…）。当然，如果事先告诉读者犯人有超能力，且只有一个犯人这种定律，那通过引入这种悬疑的设定反而会让小说变得更有意思。这些元素还不够达成一个好的设定系推理作品。对于推理小说而言，作者会制造一个谜题（比如说杀人案），然后提供一个合乎逻辑的谜底（解答/推理）。假设我们以上讨论的超自然元素和谜面谜底没关系的话，那其实也不能算是设定系小说。比如柯南里有变小药，阿笠博士的地精科技系列：滑板，足力健，ikun背带裤，但这些要素与解开谜团无直接关系，在揭露诡计或找出真凶时基本不会考虑它们的存在，因此通常不被视为特殊设定谜团。假如柯南运用了高科技或者变小药去犯案，那柯南就可以是设定系推理作品。</p>
 <p>至此，我们就引入了设定系推理的完整定义：</p>
 <ol>
 <li>包含现实相异的物理法则、现象、超能力、高科技等设定，但是需预先建立清晰世界观规则并遵循由此产生的规则（如《死亡笔记》使用手册，或者若存在超能力者，需限定”每区域仅1人”等约束条件</li>

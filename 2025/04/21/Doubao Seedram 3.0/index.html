@@ -38,7 +38,119 @@
 
 
 
-<meta name="generator" content="Hexo 7.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 <body>
 
@@ -72,38 +184,38 @@
             <li >
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>홈</span>
+                    <span>HOME</span>
                 </a>
             </li>
             <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>태그</span>
+                    <span>TAGS</span>
                 </a>
             </li>
             <li >
                 <a href="/archive">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>아카이브</span>
+                    <span>ARCHIVES</span>
                 </a>
             </li>
             <li >
                 <a href="/collect/">
                     <i class="iconfont icon-shoucang1"></i>
-                    <span>모으다</span>
+                    <span>COLLECT</span>
                 </a>
             </li>
             <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>about</span>
+                    <span>ABOUT</span>
                 </a>
             </li>
             
             <li>
                 <a id="search">
                     <i class="iconfont icon-sousuo1"></i>
-                    <span>검색</span>
+                    <span>SEARCH</span>
                 </a>
             </li>
             
@@ -123,7 +235,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input"/>
-            <span id="begin-search">검색</span>
+            <span id="begin-search">search</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -147,9 +259,9 @@
     </div>
 
     <div class="post-meta">
-        <span class="attr">등록시간：<span>2025-04-21 01:00:00</span></span>
+        <span class="attr">Post：<span>2025-04-21 01:00:00</span></span>
         
-        <span class="attr">태그：/
+        <span class="attr">Tags：/
         
         <a class="tag" href="/tags/#豆包" title="豆包">豆包</a>
         <span>/</span>
@@ -162,7 +274,7 @@
         
         
         </span>
-        <span class="attr">방문：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>
     </div>
@@ -170,7 +282,7 @@
         <p>原文链接 <a href="https://arxiv.org/pdf/2504.11346">https://arxiv.org/pdf/2504.11346</a></p>
 <h2 id="导言"><a href="#导言" class="headerlink" title="导言"></a>导言</h2><p>Seedream 2.0 虽然已经很好了，但是还有一些问题：模型在复杂prompt上的对齐有待提高，尤其是在数字精度和多物体空间关系的情况下；2.0对于图片内文字的生成能力有待提升；图片美学上的问题；以及生成图片的清晰度问题。对于以上问题，豆包做了一下提升：在数据层面，引入了双倍的高质量数据；增加了训练步骤和技巧，比如混合resolution training，多模态rope，新的representation alignment loss，以及resolution aware sampling。最后，也对后训练和生成加速做了提升。总而言之，3.0是一次对于2.0的incremental change，但是仅仅才过了一个月。从这能看出来字节豆包组的含金量，以及好的ai infra对于持续research和产品迭代的重要性。</p>
 <h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p>文章提到，2.0阶段运用了严格的数据筛选机制，所以这限制了训练数据的数量。在3.0中，豆包运用了新的筛选机制，把defect小于20%的数据保留下来，并且在训练的时候运用了spatial attention mask使得这些区域会被排除出训练，在保证模型稳定性的情况下成功扩展了差不多20%的训练数据。</p>
-<h2 id="预训练"><a href="#预训练" class="headerlink" title="预训练"></a>预训练</h2><p>模型结构沿用了2.0，只是增加了训练参数和以下的技巧：<br>1.混合清晰度（resolution）训练。具体的讲，因为transformer天然支持不同长度的sequence，豆包组先用 256^2 的数据做pre-train，然后再更高清晰度（512^82 to 2048^2）的数据上做微调。并且，额外添加了size embedding作为额外的condition（应该是做了crocs attention？），使得模型能在没见过的清晰度情况下依然表现出色。<br>2.Cross-modality Rope。在2.0中，运用的是scaling rope。在3.0中，对于这个技巧做了提升。以往我们会对text做1d rope，对图片做2d。但是在cm rope里，会把text也当作一维的2d，做2d rope并投射到2d空间和图片关联起来。<br>3.运用了flow matching的损失函数，并且增加了alignment loss （用来对齐自己的mmdit和dinov2）可以让加速模型收敛。<br>4.Resolution-aware Timestep Sampling是一项diffusion模型训练的技巧，原理是在不同的resolution下对于我们sample的distribution做改变：high resolution图片会让sampling dist更偏向于lower snrs&#x2F;higher noise levels。在训练阶段是用数据集的平均的resolution，inference的时候用期望的resolution来决定shift factor。具体做法是先从log-normal sample，然后根据我们算出来的shift factor做shifting。</p>
+<h2 id="预训练"><a href="#预训练" class="headerlink" title="预训练"></a>预训练</h2><p>模型结构沿用了2.0，只是增加了训练参数和以下的技巧：<br>1.混合清晰度（resolution）训练。具体的讲，因为transformer天然支持不同长度的sequence，豆包组先用 256^2 的数据做pre-train，然后再更高清晰度（512^82 to 2048^2）的数据上做微调。并且，额外添加了size embedding作为额外的condition（应该是做了crocs attention？），使得模型能在没见过的清晰度情况下依然表现出色。<br>2.Cross-modality Rope。在2.0中，运用的是scaling rope。在3.0中，对于这个技巧做了提升。以往我们会对text做1d rope，对图片做2d。但是在cm rope里，会把text也当作一维的2d，做2d rope并投射到2d空间和图片关联起来。<br>3.运用了flow matching的损失函数，并且增加了alignment loss （用来对齐自己的mmdit和dinov2）可以让加速模型收敛。<br>4.Resolution-aware Timestep Sampling是一项diffusion模型训练的技巧，原理是在不同的resolution下对于我们sample的distribution做改变：high resolution图片会让sampling dist更偏向于lower snrs/higher noise levels。在训练阶段是用数据集的平均的resolution，inference的时候用期望的resolution来决定shift factor。具体做法是先从log-normal sample，然后根据我们算出来的shift factor做shifting。</p>
 <h2 id="后训练"><a href="#后训练" class="headerlink" title="后训练"></a>后训练</h2><p>相比于2.0，3.0取消的refiner阶段因为模型本身已经能够生成不同resolution的图片。除此之外，还做了以下提升：为了ct和sft的阶段训练了更多的captioning model，能更好的让模型理解prompt中的美学，style和layout；平衡了数据里不同resolution数据的数量。</p>
 <p>还有一点是用了vlm而不是clip作为奖励函数，具体做法如下：<br>1.Instruction as Query: The model receives a prompt, such as “A cat sitting on a couch.”​<br>2.Formulating the Question: This prompt is transformed into a question like, “Does this image depict a cat sitting on a couch? Please answer Yes or No.“<br>3.Evaluating with VLM: The VLM processes the generated image and the question, outputting probabilities for “Yes” and “No.”​<br>4.Deriving the Reward: The probability assigned to “Yes” is normalized and used as the reward signal. A higher probability indicates better alignment between the image and the prompt.</p>
 <h3 id="模型加速"><a href="#模型加速" class="headerlink" title="模型加速"></a>模型加速</h3><p>seedream3.0的模型加速基于Hyper-SD和RayFlow，相比于传统的扩散模型在降噪过程中所有的样本都是通过一样的高斯分布路径，seedream对不同样本实现了个性化的单一通路，提升了模型的稳定性和生成的多元化。并且使用了一个预训练的模型来对噪声进行预估，这个方法使得模型在加噪和去噪的过程中能以最大可能性进行收敛，使得模型现在可以用较少的步数得到非常好的结果。在训练加速上，训练了一个结合Stochastic Stein Discrepancy (SSD)的neural net来预测哪个timestamp会产生最大的training loss，所以在训练采样的时候区别于传统的uniform sampling可以更高效的采样most important timesteamps。结合以上的工作，豆包的模型得以更高的效率达到普通扩散模型采样50步才能到达的效果。</p>
