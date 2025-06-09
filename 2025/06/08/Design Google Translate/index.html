@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:description" content="Yuhao Chen&#39;s Blog - AI/ML Engineering and Data Science">
+    <meta property="og:type" content="website">
+    <meta name="description" content="Yuhao Chen&#39;s Blog - AI/ML Engineering and Data Science">
+    <meta name="keyword"  content="hexo,Yuhao Chen,Machine Learning,Data Science,AI,ML,Deep Learning">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        Design Google Translate - Yuhao Chen
+        
+    </title>
+
+    <!-- Custom CSS -->
+    
+<link rel="stylesheet" href="/css/aircloud.css">
+
+    
+<link rel="stylesheet" href="/css/gitment.css">
+
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_28hi1hpxx24.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+
+    
+
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> 随便写写 - 想写就写吧 </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.png" />
+        </div>
+        <div class="name">
+            <i>yxckeis8</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li >
+                <a href="/collect/">
+                    <i class="iconfont icon-shoucang1"></i>
+                    <span>COLLECT</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>SEARCH</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Google-Translate-System-Design"><span class="toc-text">Google Translate System Design</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0301-webp"><span class="toc-text">![[0301.webp]]</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Clarifying-Requirements"><span class="toc-text">Clarifying Requirements</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Frame-the-Problem-as-an-ML-Task"><span class="toc-text">Frame the Problem as an ML Task</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Specifying-the-System%E2%80%99s-Input-and-Output"><span class="toc-text">Specifying the System’s Input and Output</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Choosing-a-Suitable-ML-Approach"><span class="toc-text">Choosing a Suitable ML Approach</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Data-Preparation"><span class="toc-text">Data Preparation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Primary-Data-Parallel-Corpora"><span class="toc-text">1. Primary Data: Parallel Corpora</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Data-Expansion-and-Augmentation"><span class="toc-text">2. Data Expansion and Augmentation</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%C2%B7-Text-Pre-processing"><span class="toc-text">1 · Text Pre-processing</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Preprocessing-Steps-%E2%80%94-Modern-Translation-Pretraining"><span class="toc-text">Preprocessing Steps — Modern Translation Pretraining</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-1%EF%B8%8F%E2%83%A3-Data-Cleaning-Deduplication"><span class="toc-text">🔎 1️⃣ Data Cleaning &amp; Deduplication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-2%EF%B8%8F%E2%83%A3-Language-Identification-Tagging"><span class="toc-text">🔎 2️⃣ Language Identification &amp; Tagging</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-3%EF%B8%8F%E2%83%A3-Tokenization"><span class="toc-text">🔎 3️⃣ Tokenization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-4%EF%B8%8F%E2%83%A3-Alignment-Verification-Parallel-Data"><span class="toc-text">🔎 4️⃣ Alignment Verification (Parallel Data)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-5%EF%B8%8F%E2%83%A3-Corruption-Masking-for-Monolingual"><span class="toc-text">🔎 5️⃣ Corruption &#x2F; Masking (for Monolingual)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-6%EF%B8%8F%E2%83%A3-Sampling-Balancing"><span class="toc-text">🔎 6️⃣ Sampling &amp; Balancing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-7%EF%B8%8F%E2%83%A3-Back-Translation-for-Monolingual-%E2%86%92-Synthetic-Parallel"><span class="toc-text">🔎 7️⃣ Back-Translation (for Monolingual → Synthetic Parallel)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%C2%B7-Text-Tokenization"><span class="toc-text">2 · Text Tokenization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Byte-Pair-Encoding-BPE"><span class="toc-text">1. Byte-Pair Encoding (BPE)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Byte-Level-BPE-BBPE"><span class="toc-text">2. Byte-Level BPE (BBPE)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Unigram-Language-Model"><span class="toc-text">3. Unigram Language Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-WordPiece"><span class="toc-text">4. WordPiece</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Summary-Table"><span class="toc-text">Summary Table:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Model-Development"><span class="toc-text">Model Development</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Architecture-Overview"><span class="toc-text">Architecture Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Training-Strategy-by-Alex"><span class="toc-text">Training Strategy by Alex</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ML-Objective-Loss-Function-%E2%80%94-Revised-%E2%9C%8D%EF%B8%8F"><span class="toc-text">ML Objective &amp; Loss Function — Revised ✍️</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Pre-training-Learning-Multilingual-Representations"><span class="toc-text">1  |  Pre-training: Learning Multilingual Representations</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Supervised-Fine-tuning-Turning-a-General-LM-into-a-Translator"><span class="toc-text">2  |  Supervised Fine-tuning: Turning a General LM into a Translator</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sampling-Strategies-in-Generative-Models"><span class="toc-text">Sampling Strategies in Generative Models</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-Beam-Search"><span class="toc-text">Why Beam Search?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Comparison-Deterministic-vs-Stochastic-Sampling"><span class="toc-text">Comparison: Deterministic vs. Stochastic Sampling</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Evaluation"><span class="toc-text">Evaluation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Offline-Metrics"><span class="toc-text">Offline Metrics</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Key-Metrics"><span class="toc-text">Key Metrics:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Human-Evaluation"><span class="toc-text">Human Evaluation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#LLM-as-a-Judge"><span class="toc-text">LLM as a Judge</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Online-Metrics"><span class="toc-text">Online Metrics</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Overall-ML-System-Design"><span class="toc-text">Overall ML System Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%C2%B7-Language-Detector"><span class="toc-text">1 · Language Detector</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%C2%B7-Translation-Service"><span class="toc-text">2 · Translation Service</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Other-Talking-Points"><span class="toc-text">Other Talking Points</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Real-Time-Translation"><span class="toc-text">Real-Time Translation:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Replace-Full-Sequence-Encoder-Decoder-with-Streaming-Models"><span class="toc-text">Replace Full-Sequence Encoder-Decoder with Streaming Models:</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Architectural-Options"><span class="toc-text">Architectural Options:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%9B%A0-Techniques-to-Apply"><span class="toc-text">🛠 Techniques to Apply:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#On-Device-Translation"><span class="toc-text">On-Device Translation:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Replace-Heavy-Transformer-with-Lightweight-Quantized-and-Distilled-Models"><span class="toc-text">Replace Heavy Transformer with Lightweight, Quantized, and Distilled Models:</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Architectural-Options-1"><span class="toc-text">Architectural Options:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%9B%A0-Key-Optimization-Techniques"><span class="toc-text">🛠 Key Optimization Techniques:</span></a></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-bg" id="search-bg"></div>
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> 随便写写 - 想写就写吧 </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        Design Google Translate
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2025-06-08 01:00:00</span></span>
+        
+        <span class="attr">Tags：/
+        
+        <a class="tag" href="/tags/#技术" title="技术">技术</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#Sytem Design" title="Sytem Design">Sytem Design</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content no-indent">
+        <h1 id="Google-Translate-System-Design"><a href="#Google-Translate-System-Design" class="headerlink" title="Google Translate System Design"></a>Google Translate System Design</h1><hr>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>Google Translate is a widely used language-translation service offered by Google. Powered by machine-learning (ML) models, it translates text between more than <strong>130 languages</strong> and serves <strong>over a billion users</strong> as of 2024.</p>
+<h2 id="0301-webp"><a href="#0301-webp" class="headerlink" title="![[0301.webp]]"></a>![[0301.webp]]</h2><h2 id="Clarifying-Requirements"><a href="#Clarifying-Requirements" class="headerlink" title="Clarifying Requirements"></a>Clarifying Requirements</h2><ol>
+<li>Real-Time translation vs Batch Translation (Model Architecture)</li>
+<li>Text vs Audio vs Visual (Multi-modal)</li>
+<li>Cloud vs On-Device (Model size, Inference Optimization)</li>
+<li>Bilingual vs Multilingual</li>
+</ol>
+<p>To simplify the problem, we will limit the scope to Batch, Multilingual, Text and Cloud translation system.</p>
+<hr>
+<h2 id="Frame-the-Problem-as-an-ML-Task"><a href="#Frame-the-Problem-as-an-ML-Task" class="headerlink" title="Frame the Problem as an ML Task"></a>Frame the Problem as an ML Task</h2><h3 id="Specifying-the-System’s-Input-and-Output"><a href="#Specifying-the-System’s-Input-and-Output" class="headerlink" title="Specifying the System’s Input and Output"></a>Specifying the System’s Input and Output</h3><ul>
+<li><strong>Input:</strong> A sequence of words in the <strong>source language</strong> and the <strong>desired target language</strong>.  </li>
+<li><strong>Output:</strong> A sequence of words in the <strong>target language</strong>.</li>
+</ul>
+<h3 id="Choosing-a-Suitable-ML-Approach"><a href="#Choosing-a-Suitable-ML-Approach" class="headerlink" title="Choosing a Suitable ML Approach"></a>Choosing a Suitable ML Approach</h3><p>Language translation is a classic <strong>sequence-to-sequence (seq2seq)</strong> task. Modern systems favor <strong>Transformer-based encoder-decoder models</strong>:</p>
+<ol>
+<li><strong>Encoder</strong> – Converts the source sentence into contextual vectors.  </li>
+<li><strong>Decoder</strong> – Generates the target sentence token-by-token, attending to the encoder’s output.</li>
+</ol>
+<p>Why Transformers?</p>
+<ul>
+<li>Handle <strong>long-range dependencies</strong> better than LSTMs/GRUs.  </li>
+<li>The <strong>attention mechanism</strong> (originally proposed for translation [2]) lets the decoder focus on relevant source tokens.  </li>
+<li>Encoder–decoder separation aligns naturally with translation.</li>
+</ul>
+<p>Other models Choices</p>
+<ul>
+<li>Non-Autoregressive Transformers (NAT): Decodes all tokens in parallel → much faster, but typically lower quality. Often used for speed-sensitive applications Can be combined with knowledge distillation to improve performance.</li>
+<li>Prompt-based Translation using Decoder-only LLMs. Zero/few-shot with no retraining but Larger and slower than specialized MT models.</li>
+</ul>
+<hr>
+<h2 id="Data-Preparation"><a href="#Data-Preparation" class="headerlink" title="Data Preparation"></a>Data Preparation</h2><p>Two data types feed the model:</p>
+<ol>
+<li><strong>General data</strong> – Large-scale multilingual text from the internet.  </li>
+<li><strong>Translation data</strong> – ≈ 300 million sentence pairs (source + target).</li>
+</ol>
+<p>Preparation focuses on translation data.</p>
+<h4 id="1-Primary-Data-Parallel-Corpora"><a href="#1-Primary-Data-Parallel-Corpora" class="headerlink" title="1. Primary Data: Parallel Corpora"></a>1. Primary Data: Parallel Corpora</h4><p>This is the most crucial data, consisting of texts that are direct, sentence-by-sentence translations of each other. It forms the core training material for the model.</p>
+<ul>
+<li>Public Datasets: High-quality, formal corpora from official sources like the United Nations (UN) and the European Parliament (Europarl). These provide a strong, clean baseline.</li>
+<li>Web Crawling: Automatically crawling multilingual websites (like news sites or corporate pages) to find and extract translated pages. This provides a massive, diverse, but often “noisy” source of data that requires significant cleaning.</li>
+</ul>
+<h4 id="2-Data-Expansion-and-Augmentation"><a href="#2-Data-Expansion-and-Augmentation" class="headerlink" title="2. Data Expansion and Augmentation"></a>2. Data Expansion and Augmentation</h4><p>Because high-quality parallel data is limited, several techniques are used to create more training examples:</p>
+<ul>
+<li>User Feedback: Leveraging the “Suggest an edit” feature and contributions from the Translate Community. This creates a continuous improvement loop by using real-world corrections to fix model weaknesses.</li>
+<li>Back-Translation: A powerful technique for low-resource languages. It involves taking monolingual text in the target language (e.g., German), using an existing model to translate it back to the source language (English), and then using this new synthetic {source, target} pair for training. This dramatically improves the translation’s fluency.</li>
+<li>Mining Comparable Corpora: This method is used when texts are about the same topic but are not direct translations (e.g., English and German news articles about the same event).</li>
+</ul>
+<h3 id="1-·-Text-Pre-processing"><a href="#1-·-Text-Pre-processing" class="headerlink" title="1 · Text Pre-processing"></a>1 · Text Pre-processing</h3><ul>
+<li>Remove <strong>missing</strong> or <strong>noisy</strong> pairs (HTML, wrong language).  </li>
+<li><strong>Deduplicate</strong> sentence pairs.  </li>
+<li><strong>Handle named entities</strong> with placeholders (e.g., <code>ENTITY_1</code>).  </li>
+<li>Skip older steps (lower-casing, stop-word removal, stemming, punctuation stripping) because modern Transformers learn these patterns directly.</li>
+</ul>
+<hr>
+<h2 id="Preprocessing-Steps-—-Modern-Translation-Pretraining"><a href="#Preprocessing-Steps-—-Modern-Translation-Pretraining" class="headerlink" title="Preprocessing Steps — Modern Translation Pretraining"></a><strong>Preprocessing Steps — Modern Translation Pretraining</strong></h2><h3 id="🔎-1️⃣-Data-Cleaning-Deduplication"><a href="#🔎-1️⃣-Data-Cleaning-Deduplication" class="headerlink" title="🔎 1️⃣ Data Cleaning & Deduplication"></a>🔎 <strong>1️⃣ Data Cleaning &amp; Deduplication</strong></h3><table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Remove noisy sentences</strong></td>
+<td>Drop sentence pairs with very long or very short sequences, or mismatched alignments.</td>
+</tr>
+<tr>
+<td><strong>Filter profanity / sensitive content</strong></td>
+<td>Ensure safe outputs.</td>
+</tr>
+<tr>
+<td><strong>Deduplicate</strong></td>
+<td>Remove duplicate sentence pairs and repeated monolingual data (web crawl has lots of duplication).</td>
+</tr>
+<tr>
+<td><strong>Script normalization</strong></td>
+<td>Normalize Unicode (NFC/NFD), convert different scripts consistently (e.g., Simplified ↔ Traditional Chinese).</td>
+</tr>
+</tbody></table>
+<p>✅ <strong>Why:</strong> Reduces noise → improves model generalization.</p>
+<hr>
+<h3 id="🔎-2️⃣-Language-Identification-Tagging"><a href="#🔎-2️⃣-Language-Identification-Tagging" class="headerlink" title="🔎 2️⃣ Language Identification & Tagging"></a>🔎 <strong>2️⃣ Language Identification &amp; Tagging</strong></h3><table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Language detection</strong></td>
+<td>Auto-identify language of monolingual data (and confirm for parallel pairs).</td>
+</tr>
+<tr>
+<td><strong>Assign language tags</strong></td>
+<td>E.g., add &gt;&gt;fr&lt;&lt; or &gt;&gt;zh&lt;&lt; to source text so the model knows which language to translate into.</td>
+</tr>
+</tbody></table>
+<p>✅ <strong>Why:</strong> Enables multilingual pretraining and zero-shot/few-shot transfer.</p>
+<hr>
+<h3 id="🔎-3️⃣-Tokenization"><a href="#🔎-3️⃣-Tokenization" class="headerlink" title="🔎 3️⃣ Tokenization"></a>🔎 <strong>3️⃣ Tokenization</strong></h3><table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Subword tokenization (SentencePiece, BPE, WordPiece)</strong></td>
+<td>Split words into common subword units to handle rare/unseen words.</td>
+</tr>
+<tr>
+<td><strong>Multilingual vocabulary</strong></td>
+<td>Train a shared tokenizer across all languages.</td>
+</tr>
+</tbody></table>
+<p>✅ <strong>Why:</strong> Handles vocabulary for hundreds of languages in a scalable way.</p>
+<hr>
+<h3 id="🔎-4️⃣-Alignment-Verification-Parallel-Data"><a href="#🔎-4️⃣-Alignment-Verification-Parallel-Data" class="headerlink" title="🔎 4️⃣ Alignment Verification (Parallel Data)"></a>🔎 <strong>4️⃣ Alignment Verification (Parallel Data)</strong></h3><table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Length ratio checks</strong></td>
+<td>Filter out sentence pairs with extreme length mismatches.</td>
+</tr>
+<tr>
+<td><strong>Translation quality scoring (optional)</strong></td>
+<td>Use tools like LASER or BLEU filtering to keep only high-quality sentence pairs.</td>
+</tr>
+</tbody></table>
+<p>✅ <strong>Why:</strong> Ensures that paired data teaches the model correct alignments.</p>
+<hr>
+<h3 id="🔎-5️⃣-Corruption-Masking-for-Monolingual"><a href="#🔎-5️⃣-Corruption-Masking-for-Monolingual" class="headerlink" title="🔎 5️⃣ Corruption / Masking (for Monolingual)"></a>🔎 <strong>5️⃣ Corruption / Masking (for Monolingual)</strong></h3><table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Noise injection (shuffling, masking, deletion)</strong></td>
+<td>Prepare monolingual data for Denoising Auto-Encoding (DAE) or MLM tasks.</td>
+</tr>
+</tbody></table>
+<p>✅ <strong>Why:</strong> Teaches encoder-decoder models to recover from corrupted inputs → boosts robustness and learning.</p>
+<hr>
+<h3 id="🔎-6️⃣-Sampling-Balancing"><a href="#🔎-6️⃣-Sampling-Balancing" class="headerlink" title="🔎 6️⃣ Sampling & Balancing"></a>🔎 <strong>6️⃣ Sampling &amp; Balancing</strong></h3><table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Upsampling low-resource languages</strong></td>
+<td>Increase frequency of rare languages in the training stream.</td>
+</tr>
+<tr>
+<td><strong>Downsampling high-resource languages</strong></td>
+<td>Prevent overfitting to dominant languages like English or Spanish.</td>
+</tr>
+</tbody></table>
+<p>✅ <strong>Why:</strong> Balances the multilingual training data.</p>
+<hr>
+<h3 id="🔎-7️⃣-Back-Translation-for-Monolingual-→-Synthetic-Parallel"><a href="#🔎-7️⃣-Back-Translation-for-Monolingual-→-Synthetic-Parallel" class="headerlink" title="🔎 7️⃣ Back-Translation (for Monolingual → Synthetic Parallel)"></a>🔎 <strong>7️⃣ Back-Translation (for Monolingual → Synthetic Parallel)</strong></h3><table>
+<thead>
+<tr>
+<th>Task</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Translate monolingual target sentences back into source languages</strong></td>
+<td>Create synthetic parallel data when human-translated data is missing.</td>
+</tr>
+</tbody></table>
+<p>✅ <strong>Why:</strong> Expands training data for low-resource pairs.</p>
+<hr>
+<h3 id="2-·-Text-Tokenization"><a href="#2-·-Text-Tokenization" class="headerlink" title="2 · Text Tokenization"></a>2 · Text Tokenization</h3><p>Word-level vocabularies explode in size across 130+ languages, so we use <strong>sub-word tokenization</strong>—specifically <strong>Byte-Pair Encoding (BPE)</strong> .</p>
+<p>Example token-to-ID mapping:</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>ID</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&lt;BOS&gt;</code></td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>&lt;EOS&gt;</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td>walking</td>
+<td>2</td>
+</tr>
+<tr>
+<td>bonjour</td>
+<td>3</td>
+</tr>
+<tr>
+<td>hello</td>
+<td>4</td>
+</tr>
+<tr>
+<td>fantastique</td>
+<td>5</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="1-Byte-Pair-Encoding-BPE"><a href="#1-Byte-Pair-Encoding-BPE" class="headerlink" title="1. Byte-Pair Encoding (BPE)"></a>1. <strong>Byte-Pair Encoding (BPE)</strong></h3><p><strong>Used in</strong>: GPT-2, RoBERTa</p>
+<ul>
+<li><strong>Idea</strong>: Start from characters, iteratively merge the most frequent pairs of tokens.</li>
+<li><strong>Goal</strong>: Build a vocabulary of subwords to reduce OOV (out-of-vocabulary) issues.</li>
+<li><strong>Deterministic</strong>: Given a trained vocabulary, tokenization is consistent.</li>
+</ul>
+<p><strong>Example</strong>:<br>Training corpus: <code>"low lower newest widest"</code></p>
+<ol>
+<li>Start with chars: <code>l o w</code>, <code>l o w e r</code>, etc.</li>
+<li>Find most common pair (e.g., <code>'e'</code> + <code>'r'</code> → <code>'er'</code>), merge into <code>'er'</code></li>
+<li>Repeat until vocab size is met.</li>
+</ol>
+<p>Tokenize <code>"lower"</code> → <code>['low', 'er']</code> if <code>'low'</code> and <code>'er'</code> exist in vocab.</p>
+<hr>
+<h3 id="2-Byte-Level-BPE-BBPE"><a href="#2-Byte-Level-BPE-BBPE" class="headerlink" title="2. Byte-Level BPE (BBPE)"></a>2. <strong>Byte-Level BPE (BBPE)</strong></h3><p><strong>Used in</strong>: GPT-3, GPT-4</p>
+<ul>
+<li><strong>Extension of BPE</strong>, but operates on <strong>bytes</strong>, not Unicode characters.</li>
+<li>Handles all inputs (e.g., emojis, unseen scripts) without needing pre-normalization.</li>
+<li>More robust to misspellings and multilingual input.</li>
+<li>deals with unseen or non-standard characters best， since all text (even unknown Unicode symbols) can be represented as bytes</li>
+</ul>
+<p><strong>Example</strong>:<br>Input: <code>"apple 🍎"</code></p>
+<ol>
+<li>Break into raw bytes: <code>['a', 'p', 'p', 'l', 'e', ' ', '🍎']</code></li>
+<li>Apply merges on bytes to form subwords: <code>['app', 'le', ' ', '🍎']</code> (assuming <code>'app'</code> and <code>'le'</code> exist)</li>
+</ol>
+<hr>
+<h3 id="3-Unigram-Language-Model"><a href="#3-Unigram-Language-Model" class="headerlink" title="3. Unigram Language Model"></a>3. <strong>Unigram Language Model</strong></h3><p><strong>Used in</strong>: SentencePiece (T5, ALBERT)</p>
+<ul>
+<li>Trains a <strong>probabilistic model</strong> of subword units.</li>
+<li>Starts with many subwords, gradually removes the least likely ones.</li>
+<li>At inference, selects the most likely token sequence via Viterbi.</li>
+</ul>
+<p><strong>Example</strong>: <code>"international"</code><br>May be tokenized as <code>['inter', 'national']</code> or <code>['intern', 'ation', 'al']</code> depending on highest probability.</p>
+<hr>
+<h3 id="4-WordPiece"><a href="#4-WordPiece" class="headerlink" title="4. WordPiece"></a>4. <strong>WordPiece</strong></h3><p><strong>Used in</strong>: BERT</p>
+<ul>
+<li>Similar to BPE, but selects merges to <strong>maximize likelihood</strong> of training data under a language model.</li>
+<li>Always starts with a <strong>whole word</strong>, splits into subwords with <code>##</code> prefix for non-initial parts.</li>
+</ul>
+<p><strong>Example</strong>: <code>"unhappiness"</code><br>→ <code>['un', '##happiness']</code> or <code>['un', '##hap', '##pi', '##ness']</code> depending on vocab.</p>
+<hr>
+<h3 id="Summary-Table"><a href="#Summary-Table" class="headerlink" title="Summary Table:"></a>Summary Table:</h3><table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Used In</th>
+<th>Key Feature</th>
+<th>Handles OOV?</th>
+<th>Probabilistic?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BPE</td>
+<td>GPT-2, RoBERTa</td>
+<td>Merges frequent char pairs</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Byte-level BPE</td>
+<td>GPT-3, GPT-4</td>
+<td>Merges on byte sequences</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>WordPiece</td>
+<td>BERT</td>
+<td>Greedy merging with LM scoring</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Unigram LM</td>
+<td>T5, ALBERT</td>
+<td>Picks best subwords probabilistically</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+</tbody></table>
+<p>Let me know if you’d like to visualize token merges step by step.</p>
+<hr>
+<h2 id="Model-Development"><a href="#Model-Development" class="headerlink" title="Model Development"></a>Model Development</h2><h3 id="Architecture-Overview"><a href="#Architecture-Overview" class="headerlink" title="Architecture Overview"></a>Architecture Overview</h3><p>Encoder-decoder Transformer components:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Encoder</th>
+<th>Decoder</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Token Embedding</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Positional Encoding</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Self-Attention</strong></td>
+<td>Full (bi-directional)</td>
+<td>Masked (causal)</td>
+</tr>
+<tr>
+<td><strong>Cross-Attention</strong></td>
+<td>—</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Prediction Head</td>
+<td>—</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<p>Key differences:</p>
+<ol>
+<li><strong>Cross-Attention Layer</strong> – Decoder attends to encoder outputs.  </li>
+<li><strong>Masked Self-Attention</strong> – Decoder can’t see future tokens.  </li>
+<li><strong>Prediction Head</strong> – Linear + soft-max layer produces token probabilities.</li>
+</ol>
+<p>Other key information:</p>
+<ul>
+<li>Positional Embeddings: Rope, Sinusoidal</li>
+<li>Residual Connection</li>
+<li>MOE architecture</li>
+<li>Self-Attention, Cross-Attention</li>
+</ul>
+<h3 id="Training-Strategy-by-Alex"><a href="#Training-Strategy-by-Alex" class="headerlink" title="Training Strategy by Alex"></a>Training Strategy by Alex</h3><table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Data</th>
+<th>Objective</th>
+<th>Loss</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Unsupervised Pre-training</strong></td>
+<td>Multilingual general text</td>
+<td><strong>Masked Language Modeling (MLM)</strong></td>
+<td>Cross-entropy</td>
+</tr>
+<tr>
+<td><strong>Supervised Finetuning</strong></td>
+<td>Parallel sentence pairs (bilingual)</td>
+<td><strong>Next-token prediction</strong></td>
+<td>Cross-entropy</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Bilingual vs. Multilingual:* This design opts for <strong>bilingual models</strong> (higher accuracy per pair, at higher ops cost).</li>
+</ul>
+<h3 id="ML-Objective-Loss-Function-—-Revised-✍️"><a href="#ML-Objective-Loss-Function-—-Revised-✍️" class="headerlink" title="ML Objective & Loss Function — Revised ✍️"></a>ML Objective &amp; Loss Function — Revised ✍️</h3><p>Below is a tighter, more technically precise version of the “ML objective and loss function” section, organised to show <em>why</em> each design choice matters when training a Neural Machine Translation (NMT) system.</p>
+<hr>
+<h4 id="1-Pre-training-Learning-Multilingual-Representations"><a href="#1-Pre-training-Learning-Multilingual-Representations" class="headerlink" title="1  |  Pre-training: Learning Multilingual Representations"></a>1  |  Pre-training: Learning Multilingual Representations</h4><p><strong>Data</strong><br>We keep the multilingual portions of large-scale corpora (C4, Wikipedia, Stack Exchange, Common-Crawl, etc.) and drop only the languages we never intend to translate. This maximises coverage while avoiding label noise from irrelevant scripts.</p>
+<p><strong>Objective</strong> — <em>Masked Language Modeling</em> (MLM) with span corruption</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input  :  The quick brown &lt;mask&gt; jumps over the &lt;mask&gt; dog .</span><br><span class="line">Target :                    fox                      lazy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Why not next-token prediction? In unsupervised pre-training the decoder could simply echo the current token, so the encoder would learn little. MLM forces the encoder to build a genuine contextual representation that the decoder must rely on.</li>
+<li>Span masking (T5-style) hides contiguous chunks, encouraging longer-range reasoning and reducing the number of prediction steps.</li>
+<li>15 % of tokens are selected; 80 % are replaced by <code>&lt;mask&gt;</code>, 10 % by random tokens, 10 % left unchanged to give the model noise robustness.</li>
+</ul>
+<p><strong>Loss</strong> — Cross-entropy over <em>only</em> the masked positions</p>
+<p>$$<br>\mathcal{L}<em>{\text{MLM}}<br>=-\sum</em>{i\in\mathcal{M}} \log p_\theta(w_i)<br>$$</p>
+<p>with optional label smoothing (ε ≈ 0.1) for better generalisation.</p>
+<hr>
+<h4 id="2-Supervised-Fine-tuning-Turning-a-General-LM-into-a-Translator"><a href="#2-Supervised-Fine-tuning-Turning-a-General-LM-into-a-Translator" class="headerlink" title="2  |  Supervised Fine-tuning: Turning a General LM into a Translator"></a>2  |  Supervised Fine-tuning: Turning a General LM into a Translator</h4><p>With sentence-aligned pairs <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="5.513ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 2436.7 1000"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mo"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g><g data-mml-node="TeXAtom" data-mjx-texclass="ORD" transform="translate(389,0)"><g data-mml-node="mi"><path data-c="1D431" d="M227 0Q212 3 121 3Q40 3 28 0H21V62H117L245 213L109 382H26V444H34Q49 441 143 441Q247 441 265 444H274V382H246L281 339Q315 297 316 297Q320 297 354 341L389 382H352V444H360Q375 441 466 441Q547 441 559 444H566V382H471L355 246L504 63L545 62H586V0H578Q563 3 469 3Q365 3 347 0H338V62H366Q366 63 326 112T285 163L198 63L217 62H235V0H227Z"></path></g></g><g data-mml-node="mo" transform="translate(996,0)"><path data-c="2C" d="M78 35T78 60T94 103T137 121Q165 121 187 96T210 8Q210 -27 201 -60T180 -117T154 -158T130 -185T117 -194Q113 -194 104 -185T95 -172Q95 -168 106 -156T131 -126T157 -76T173 -3V9L172 8Q170 7 167 6T161 3T152 1T140 0Q113 0 96 17Z"></path></g><g data-mml-node="TeXAtom" data-mjx-texclass="ORD" transform="translate(1440.7,0)"><g data-mml-node="mi"><path data-c="1D432" d="M84 -102Q84 -110 87 -119T102 -138T133 -149Q148 -148 162 -143T186 -131T206 -114T222 -95T234 -76T243 -59T249 -45T252 -37L269 0L96 382H26V444H34Q49 441 146 441Q252 441 270 444H279V382H255Q232 382 232 380L337 151L442 382H394V444H401Q413 441 495 441Q568 441 574 444H580V382H510L406 152Q298 -84 297 -87Q269 -139 225 -169T131 -200Q85 -200 54 -172T23 -100Q23 -64 44 -50T87 -35Q111 -35 130 -50T152 -92V-100H84V-102Z"></path></g></g><g data-mml-node="mo" transform="translate(2047.7,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g></g></g></svg></mjx-container>:</p>
+<ol>
+<li><p><strong>Encoder</strong> ingests the full source sentence <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: 0;" xmlns="http://www.w3.org/2000/svg" width="1.373ex" height="1.005ex" role="img" focusable="false" viewBox="0 -444 607 444"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="TeXAtom" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D431" d="M227 0Q212 3 121 3Q40 3 28 0H21V62H117L245 213L109 382H26V444H34Q49 441 143 441Q247 441 265 444H274V382H246L281 339Q315 297 316 297Q320 297 354 341L389 382H352V444H360Q375 441 466 441Q547 441 559 444H566V382H471L355 246L504 63L545 62H586V0H578Q563 3 469 3Q365 3 347 0H338V62H366Q366 63 326 112T285 163L198 63L217 62H235V0H227Z"></path></g></g></g></g></svg></mjx-container>.</p>
+</li>
+<li><p><strong>Decoder</strong> is trained with <em>teacher forcing</em>: it receives the gold target prefix <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.452ex;" xmlns="http://www.w3.org/2000/svg" width="3.383ex" height="1.457ex" role="img" focusable="false" viewBox="0 -444 1495.4 644"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msub"><g data-mml-node="TeXAtom" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D432" d="M84 -102Q84 -110 87 -119T102 -138T133 -149Q148 -148 162 -143T186 -131T206 -114T222 -95T234 -76T243 -59T249 -45T252 -37L269 0L96 382H26V444H34Q49 441 146 441Q252 441 270 444H279V382H255Q232 382 232 380L337 151L442 382H394V444H401Q413 441 495 441Q568 441 574 444H580V382H510L406 152Q298 -84 297 -87Q269 -139 225 -169T131 -200Q85 -200 54 -172T23 -100Q23 -64 44 -50T87 -35Q111 -35 130 -50T152 -92V-100H84V-102Z"></path></g></g><g data-mml-node="TeXAtom" transform="translate(640,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mo"><path data-c="3C" d="M694 -11T694 -19T688 -33T678 -40Q671 -40 524 29T234 166L90 235Q83 240 83 250Q83 261 91 266Q664 540 678 540Q681 540 687 534T694 519T687 505Q686 504 417 376L151 250L417 124Q686 -4 687 -5Q694 -11 694 -19Z"></path></g><g data-mml-node="mi" transform="translate(778,0)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g></g></g></g></g></svg></mjx-container> and predicts the next token <mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.452ex;" xmlns="http://www.w3.org/2000/svg" width="2.139ex" height="1.457ex" role="img" focusable="false" viewBox="0 -444 945.3 644"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msub"><g data-mml-node="TeXAtom" data-mjx-texclass="ORD"><g data-mml-node="mi"><path data-c="1D432" d="M84 -102Q84 -110 87 -119T102 -138T133 -149Q148 -148 162 -143T186 -131T206 -114T222 -95T234 -76T243 -59T249 -45T252 -37L269 0L96 382H26V444H34Q49 441 146 441Q252 441 270 444H279V382H255Q232 382 232 380L337 151L442 382H394V444H401Q413 441 495 441Q568 441 574 444H580V382H510L406 152Q298 -84 297 -87Q269 -139 225 -169T131 -200Q85 -200 54 -172T23 -100Q23 -64 44 -50T87 -35Q111 -35 130 -50T152 -92V-100H84V-102Z"></path></g></g><g data-mml-node="mi" transform="translate(640,-150) scale(0.707)"><path data-c="1D461" d="M26 385Q19 392 19 395Q19 399 22 411T27 425Q29 430 36 430T87 431H140L159 511Q162 522 166 540T173 566T179 586T187 603T197 615T211 624T229 626Q247 625 254 615T261 596Q261 589 252 549T232 470L222 433Q222 431 272 431H323Q330 424 330 420Q330 398 317 385H210L174 240Q135 80 135 68Q135 26 162 26Q197 26 230 60T283 144Q285 150 288 151T303 153H307Q322 153 322 145Q322 142 319 133Q314 117 301 95T267 48T216 6T155 -11Q125 -11 98 4T59 56Q57 64 57 83V101L92 241Q127 382 128 383Q128 385 77 385H26Z"></path></g></g></g></g></svg></mjx-container>.</p>
+</li>
+<li><p><strong>Loss</strong> — Token-level cross-entropy on <em>all</em> target positions</p>
+<p>$$<br>\mathcal{L}<em>{\text{CE}}<br>=-\sum</em>{t=1}^{|\mathbf{y}|}\log p_\theta!\bigl(y_t\mid \mathbf{y}_{&lt;t},\mathbf{x}\bigr)<br>$$</p>
+<p>plus the same label-smoothing trick.</p>
+</li>
+</ol>
+<hr>
+<h3 id="Sampling-Strategies-in-Generative-Models"><a href="#Sampling-Strategies-in-Generative-Models" class="headerlink" title="Sampling Strategies in Generative Models"></a>Sampling Strategies in Generative Models</h3><ol>
+<li><strong>Deterministic methods</strong> (e.g., <em>greedy search</em>, <em>beam search</em>)</li>
+<li><strong>Stochastic methods</strong> (e.g., <em>multinomial sampling</em>, <em>top-k</em>, <em>top-p</em>)</li>
+</ol>
+<p>In this chapter, we choose <strong>beam search</strong> for two key reasons:</p>
+<h3 id="Why-Beam-Search"><a href="#Why-Beam-Search" class="headerlink" title="Why Beam Search?"></a>Why Beam Search?</h3><ul>
+<li><p><strong>Translation Accuracy</strong>:<br>Beam search evaluates multiple candidate sequences and selects the most probable one, often resulting in more accurate and fluent translations.</p>
+</li>
+<li><p><strong>Consistency</strong>:<br>As a deterministic method, beam search always produces the same output given the same input. This is crucial for translation systems, where consistency and reliability outweigh diversity. Unlike creative applications, translation rarely benefits from random or surprising outputs.</p>
+</li>
+</ul>
+<p>In contrast, <strong>stochastic sampling methods</strong> are better suited for tasks where <strong>diversity and creativity</strong> are desired, such as storytelling or dialogue generation. </p>
+<hr>
+<h2 id="Comparison-Deterministic-vs-Stochastic-Sampling"><a href="#Comparison-Deterministic-vs-Stochastic-Sampling" class="headerlink" title="Comparison: Deterministic vs. Stochastic Sampling"></a>Comparison: Deterministic vs. Stochastic Sampling</h2><table>
+<thead>
+<tr>
+<th><strong>Characteristic</strong></th>
+<th><strong>Deterministic Methods</strong></th>
+<th><strong>Stochastic Methods</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Approach</strong></td>
+<td>Follows a predictable decision process</td>
+<td>Samples from a probability distribution</td>
+</tr>
+<tr>
+<td><strong>Efficiency</strong></td>
+<td>Less efficient (tracks multiple paths)</td>
+<td>More efficient due to randomness</td>
+</tr>
+<tr>
+<td><strong>Output Quality</strong></td>
+<td>Coherent and predictable</td>
+<td>Diverse and imaginative</td>
+</tr>
+<tr>
+<td><strong>Risk</strong></td>
+<td>May produce repetitive sequences</td>
+<td>May generate inappropriate or off-topic text</td>
+</tr>
+<tr>
+<td><strong>Best For</strong></td>
+<td>Tasks requiring consistency (e.g. translation)</td>
+<td>Tasks requiring creativity (e.g. story generation)</td>
+</tr>
+<tr>
+<td><strong>Common Methods</strong></td>
+<td>Greedy search, beam search</td>
+<td>Multinomial sampling, top-k, top-p sampling</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h2><h3 id="Offline-Metrics"><a href="#Offline-Metrics" class="headerlink" title="Offline Metrics"></a>Offline Metrics</h3><ul>
+<li><strong>BLEU</strong> [16] – Precision-oriented ( \text{BLEU}=BP\cdot\exp!\bigl(\sum_{n=1}^N w_n\log p_n\bigr) )  </li>
+<li><strong>ROUGE</strong> [17] – Recall-oriented.  </li>
+<li><strong>METEOR</strong> [18] – Combines precision + recall; uses synonyms (WordNet [19]).</li>
+</ul>
+<h4 id="Key-Metrics"><a href="#Key-Metrics" class="headerlink" title="Key Metrics:"></a>Key Metrics:</h4><ul>
+<li>BLEU (Bilingual Evaluation Understudy): One of the oldest and most widely used metrics, BLEU measures the n-gram precision between the machine-translated text and the reference translations. It focuses on the similarity of the output to high-quality human translations. While fast and easy to calculate, it can sometimes penalize translations that are semantically correct but lexically different from the references.</li>
+<li>METEOR (Metric for Evaluation of Translation with Explicit ORdering): METEOR is an improvement upon BLEU that considers synonymy and stemming, leading to a better correlation with human judgment. It aligns words between the machine and reference translations and calculates a score based on precision, recall, and a fragmentation penalty.</li>
+<li>COMET (Cross-lingual Optimized Metric for Evaluation of Translation): A more recent and powerful metric, COMET leverages large-scale pre-trained language models to assess the semantic similarity between the source text, the machine translation, and the reference translation. It has shown a very high correlation with human ratings.</li>
+<li>BERTScore: This metric utilizes contextual embeddings from BERT to compare the similarity of tokens in the candidate and reference translations. This allows it to capture semantic nuances that n-gram-based metrics might miss.</li>
+</ul>
+<h4 id="Human-Evaluation"><a href="#Human-Evaluation" class="headerlink" title="Human Evaluation"></a>Human Evaluation</h4><ul>
+<li>Adequacy and Fluency: This is a classic approach where human judges rate translations on two scales:</li>
+<li>Adequacy: How well the meaning of the source text is preserved in the translation.</li>
+<li>Fluency: How natural and grammatically correct the translated text sounds in the target language.</li>
+<li>Direct Assessment (DA): In this method, human annotators assign a single, continuous score to a translation, often on a scale of 0 to 100, reflecting its overall quality. This approach has become increasingly popular in major translation conferences like WMT (Workshop on Machine Translation).</li>
+<li>Ranking: Evaluators are presented with translations from multiple NMT systems for the same source sentence and are asked to rank them from best to worst. This is a relative measure that is useful for comparing the performance of different models.</li>
+</ul>
+<h4 id="LLM-as-a-Judge"><a href="#LLM-as-a-Judge" class="headerlink" title="LLM as a Judge"></a>LLM as a Judge</h4><p>The typical setup involves prompting an LLM with the source sentence, the candidate translation(s), and optionally a reference translation. The LLM is then instructed (via a carefully designed prompt) to perform tasks such as:</p>
+<ul>
+<li>Scoring translations on dimensions like adequacy, fluency, and faithfulness.</li>
+<li>Choosing the better translation between multiple candidates (preference ranking).</li>
+<li>Providing natural language feedback on errors or strengths in the output.</li>
+</ul>
+<p>LLMs can handle multilingual input and adapt to complex linguistic nuances, making them especially valuable for evaluating low-resource or morphologically rich languages where human evaluation is expensive or infeasible.</p>
+<p>Companies often use few-shot or zero-shot prompting, and sometimes fine-tune LLMs with supervised data (e.g., human-labeled translation comparisons) to improve consistency and alignment with human judgments. These LLM-based evaluations correlate more closely with human ratings than BLEU scores and offer significant efficiency and scalability benefits.</p>
+<p>For example:</p>
+<ul>
+<li>Google uses LLMs internally to benchmark translation quality across hundreds of languages.</li>
+<li>OpenAI and others use LLMs to evaluate summarization, QA, and translation outputs in human preference studies.</li>
+<li>Meta’s SEED framework and Anthropic’s Constitutional AI both involve LLM-based feedback loops to refine and assess generation quality.</li>
+</ul>
+<h3 id="Online-Metrics"><a href="#Online-Metrics" class="headerlink" title="Online Metrics"></a>Online Metrics</h3><ul>
+<li><strong>User feedback</strong> – Rating prompt after translation (<em>Figure 3.25</em>).  </li>
+<li><strong>User engagement</strong> – Usage frequency, session length, retention.</li>
+</ul>
+<hr>
+<h2 id="Overall-ML-System-Design"><a href="#Overall-ML-System-Design" class="headerlink" title="Overall ML System Design"></a>Overall ML System Design</h2><h3 id="1-·-Language-Detector"><a href="#1-·-Language-Detector" class="headerlink" title="1 · Language Detector"></a>1 · Language Detector</h3><p>An <strong>encoder-only Transformer</strong> classifies the input language via:</p>
+<ul>
+<li><strong>Average pooling</strong> → prediction head, or  </li>
+<li><strong>Last-token representation</strong> → prediction head.</li>
+</ul>
+<p>![[f4e0ac0aa42ac2c8e1f8bac85dcc60dc20926b7c047fe6c379ee7e72dae921ea.webp]]</p>
+<h3 id="2-·-Translation-Service"><a href="#2-·-Translation-Service" class="headerlink" title="2 · Translation Service"></a>2 · Translation Service</h3><ol>
+<li>Detect language.  </li>
+<li>Route to correct bilingual model.  </li>
+<li>Perform beam search decoding.  </li>
+<li>Detokenize and return text.</li>
+</ol>
+<hr>
+<h2 id="Other-Talking-Points"><a href="#Other-Talking-Points" class="headerlink" title="Other Talking Points"></a>Other Talking Points</h2><p>If time remains, discuss:</p>
+<ul>
+<li>Model compression (quantization, distillation).  </li>
+<li>On-device translation (Apple, offline mode).  </li>
+<li>Handling new languages with limited corpora (few-shot, adapter layers).  </li>
+<li>Real-time constraints for mobile typing suggestions.</li>
+</ul>
+<hr>
+<h2 id="Real-Time-Translation"><a href="#Real-Time-Translation" class="headerlink" title="Real-Time Translation:"></a><strong>Real-Time Translation</strong>:</h2><h3 id="Replace-Full-Sequence-Encoder-Decoder-with-Streaming-Models"><a href="#Replace-Full-Sequence-Encoder-Decoder-with-Streaming-Models" class="headerlink" title="Replace Full-Sequence Encoder-Decoder with Streaming Models:"></a>Replace Full-Sequence Encoder-Decoder with <strong>Streaming Models</strong>:</h3><ul>
+<li>Traditional Transformer waits for the <strong>entire source sentence</strong> before producing output → <strong>too slow</strong> for real-time.</li>
+<li>Use a <strong>streaming architecture</strong> to process input incrementally:</li>
+</ul>
+<h4 id="Architectural-Options"><a href="#Architectural-Options" class="headerlink" title="Architectural Options:"></a>Architectural Options:</h4><table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Chunk-based Transformer</strong></td>
+<td>Break input into fixed-size overlapping windows</td>
+<td>SimulTrans, STACL</td>
+</tr>
+<tr>
+<td><strong>Monotonic Attention</strong></td>
+<td>Enforces left-to-right or wait-k policy</td>
+<td>MoChA, Wait-k Transformer</td>
+</tr>
+<tr>
+<td><strong>Transducer models</strong></td>
+<td>Encoder-decoder-decoder (non-attention based)</td>
+<td>RNN-T, Recurrent Neural Aligner</td>
+</tr>
+<tr>
+<td><strong>Streaming Conformer</strong> (for speech)</td>
+<td>Use <strong>causal attention</strong> and limited context for audio</td>
+<td>Google’s real-time ST model</td>
+</tr>
+</tbody></table>
+<h3 id="🛠-Techniques-to-Apply"><a href="#🛠-Techniques-to-Apply" class="headerlink" title="🛠 Techniques to Apply:"></a>🛠 Techniques to Apply:</h3><ul>
+<li>Use <strong>causal self-attention</strong> (no future tokens).</li>
+<li>Use <strong>incremental decoding</strong> (no full-sequence softmax).</li>
+<li>Add <strong>latency-controlled decoding policies</strong> (e.g., wait-k beam search).</li>
+</ul>
+<hr>
+<h2 id="On-Device-Translation"><a href="#On-Device-Translation" class="headerlink" title="On-Device Translation:"></a><strong>On-Device Translation</strong>:</h2><h3 id="Replace-Heavy-Transformer-with-Lightweight-Quantized-and-Distilled-Models"><a href="#Replace-Heavy-Transformer-with-Lightweight-Quantized-and-Distilled-Models" class="headerlink" title="Replace Heavy Transformer with Lightweight, Quantized, and Distilled Models:"></a>Replace Heavy Transformer with <strong>Lightweight, Quantized, and Distilled Models</strong>:</h3><h4 id="Architectural-Options-1"><a href="#Architectural-Options-1" class="headerlink" title="Architectural Options:"></a>Architectural Options:</h4><table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Type</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>MobileBERT</strong>, <strong>TinyBERT</strong></td>
+<td>Lightweight Transformers</td>
+<td>Good encoder for on-device NMT</td>
+</tr>
+<tr>
+<td><strong>DistilBART</strong>, <strong>DistilmBART</strong></td>
+<td>Distilled encoder-decoder</td>
+<td>Smaller decoder with similar quality</td>
+</tr>
+<tr>
+<td><strong>mBART + pruning/quantization</strong></td>
+<td>Multilingual</td>
+<td>Use only specific heads/layers</td>
+</tr>
+<tr>
+<td><strong>FNet</strong></td>
+<td>Replaces self-attn with Fourier Transform</td>
+<td>Super fast &amp; small</td>
+</tr>
+<tr>
+<td><strong>Linear Attention Models</strong> (Performer, Linformer)</td>
+<td>Approximate attention for low-memory devices</td>
+<td>Good for constrained decoding</td>
+</tr>
+</tbody></table>
+<h3 id="🛠-Key-Optimization-Techniques"><a href="#🛠-Key-Optimization-Techniques" class="headerlink" title="🛠 Key Optimization Techniques:"></a>🛠 Key Optimization Techniques:</h3><ul>
+<li><strong>INT8/INT4 quantization</strong> (QAT or PTQ)</li>
+<li><strong>Weight pruning</strong> + <strong>layer dropout</strong></li>
+<li><strong>LoRA/Adapters</strong> to allow per-language tuning without retraining the full model</li>
+<li>Deploy with <strong>ONNX</strong>, <strong>TensorRT</strong>, <strong>TensorFlow Lite</strong>, or <strong>CoreML</strong></li>
+</ul>
+<hr>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+        <div id="lv-container"></div>
+        <div class="giscus"></div>
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://github.com/AkazaAkane">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-github"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+        
+        <li>
+            <a target="_blank"  href="https://www.linkedin.com/in/yuhaoc2022">
+                            <span class="fa-stack fa-lg">
+                                <i class="iconfont icon-linkedin"></i>
+                            </span>
+            </a>
+        </li>
+        
+
+    </ul>
+    
+    <p>
+        <span>/</span>
+        
+        <span><a href="https://www.raychase.net/">四火的唠嗑</a></span>
+        <span>/</span>
+        
+        <span><a href="http://hanzilu.com/wordpress/">韩师傅就是我</a></span>
+        <span>/</span>
+        
+        <span><a href="https://www.ruanyifeng.com/">阮一峰的网络日志</a></span>
+        <span>/</span>
+        
+        <span><a href="https://shengxu.blog/">Sheng Xu&#39;s Blog</a></span>
+        <span>/</span>
+        
+        <span><a href="https://pyemma.github.io/">Coding Monkey&#39;s Blog</a></span>
+        <span>/</span>
+        
+        <span><a href="https://yage.ai/">Computing Life</a></span>
+        <span>/</span>
+        
+        <span><a href="https://yynnyy.cn/">随缘随笔 | Insights Flow</a></span>
+        <span>/</span>
+        
+        <span><a href="https://www.wxyaonline.top/archive">Wxya</a></span>
+        <span>/</span>
+        
+        <span><a href="https://mickqian.github.io/">Mick&#39;s Blog</a></span>
+        <span>/</span>
+        
+    </p>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="/js/index.js"></script>
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+    <script src="https://giscus.app/client.js"
+    data-repo="AkazaAkane/akazaakane.github.io"
+    data-repo-id="MDEwOlJlcG9zaXRvcnkyMzk2NTg3NTg="
+    data-category="General"
+    data-category-id="DIC_kwDODkjnBs4CoDY9"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="en"
+    crossorigin="anonymous"
+    async>
+</script>
+
+
+
+
+</html>
