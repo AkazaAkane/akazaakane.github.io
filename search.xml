@@ -72,18 +72,6 @@
       </tags>
   </entry>
   <entry>
-    <title>为什么要写博客</title>
-    <url>/2025/03/14/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%86%99%E5%8D%9A%E5%AE%A2/</url>
-    <content><![CDATA[<p>最早有这个想法是一段时间之前的失眠，当时读了一本书讲到写日记/记录可以帮助睡眠。原理大概如下，如果每天睡觉前把今天的想法，和对未来的预期都写写下来，那大脑就会更放松。这样，也就不会在床上翻来覆去脑子里有很多想法。（“给思考减负：把日常的思考和琐事都记录下来。脑子需要操心的变少了，灵感变多了”， Sheng Xu 2025）我觉得确实，人的脑容量极其有限，但是和gpu集群相比虽然我们能耗很低，但是我们的学习能力应该是这一台基于backprop的模型不能比较的。那么我们确实没有必要和大模型去竞争记忆力，而是应该关注思考模型和学习模型。不重要的东西那就应该记下来，没必要占用大脑的缓存。</p>
-<p>而在llm来了以后，我意识到了我对于llm有一点过于依赖了，能用llm解决的绝对不自己想。当然，一方面效率确实提高了，我在很短的时间学习到了很多知识。不过这种知识真的有用吗？一个人再怎么学也没有大模型学的快学的多吧？可能更多还是需要学习思维模型。另外一方面，由于过于依赖，我一时到了我的思考能力和语言能力都有不同程度的下滑。比如说，以前我的文章写得也不好，但是现在倒是变成提笔之后脑子完全崩不住来几个字了。鉴于这种情况，并且最近偶然翻到四火老师早期的文章，我意识到了可能在一些时候我需要脱离ai来保证我个人的状态，而其中一个方式就是不借助ai写博客。中文和英文我感觉没有特别大的所谓哈哈，中英夹杂更好一点。</p>
-<p>除了保持自己的思考和语言能力，我也希望建立一个个人的知识库，来记录我不同时期的想法，并且可以在未来进行复盘。这个可以追溯到我早期的投资笔记，我忘了在哪里学习到把自己每次做决定的想法，交易决定的内容，和后面的回顾记录下来看。这样，能够更好的复盘反思，因为如果不记录的话人的回忆是不靠谱的。另外呢，之前在别人博客也看到可以直接用curosr + markdown当作一个rag系统。</p>
-]]></content>
-      <tags>
-        <tag>思考</tag>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>关于运动的思考</title>
     <url>/2025/03/14/%E5%85%B3%E4%BA%8E%E8%BF%90%E5%8A%A8%E7%9A%84%E6%80%9D%E8%80%83/</url>
     <content><![CDATA[<h2 id="关于运动的思考"><a href="#关于运动的思考" class="headerlink" title="关于运动的思考"></a>关于运动的思考</h2><p>这篇文章记录了我对运动和康复领域的一些思考。</p>
@@ -187,23 +175,6 @@
         <tag>杂谈</tag>
         <tag>生活</tag>
         <tag>运动</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Seedream 3.0 Technical Report</title>
-    <url>/2025/04/21/Doubao%20Seedram%203.0/</url>
-    <content><![CDATA[<p>原文链接 <a href="https://arxiv.org/pdf/2504.11346">https://arxiv.org/pdf/2504.11346</a></p>
-<h2 id="导言"><a href="#导言" class="headerlink" title="导言"></a>导言</h2><p>Seedream 2.0 虽然已经很好了，但是还有一些问题：模型在复杂prompt上的对齐有待提高，尤其是在数字精度和多物体空间关系的情况下；2.0对于图片内文字的生成能力有待提升；图片美学上的问题；以及生成图片的清晰度问题。对于以上问题，豆包做了一下提升：在数据层面，引入了双倍的高质量数据；增加了训练步骤和技巧，比如混合resolution training，多模态rope，新的representation alignment loss，以及resolution aware sampling。最后，也对后训练和生成加速做了提升。总而言之，3.0是一次对于2.0的incremental change，但是仅仅才过了一个月。从这能看出来字节豆包组的含金量，以及好的ai infra对于持续research和产品迭代的重要性。</p>
-<h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p>文章提到，2.0阶段运用了严格的数据筛选机制，所以这限制了训练数据的数量。在3.0中，豆包运用了新的筛选机制，把defect小于20%的数据保留下来，并且在训练的时候运用了spatial attention mask使得这些区域会被排除出训练，在保证模型稳定性的情况下成功扩展了差不多20%的训练数据。</p>
-<h2 id="预训练"><a href="#预训练" class="headerlink" title="预训练"></a>预训练</h2><p>模型结构沿用了2.0，只是增加了训练参数和以下的技巧：<br>1.混合清晰度（resolution）训练。具体的讲，因为transformer天然支持不同长度的sequence，豆包组先用 256^2 的数据做pre-train，然后再更高清晰度（512^82 to 2048^2）的数据上做微调。并且，额外添加了size embedding作为额外的condition（应该是做了crocs attention？），使得模型能在没见过的清晰度情况下依然表现出色。<br>2.Cross-modality Rope。在2.0中，运用的是scaling rope。在3.0中，对于这个技巧做了提升。以往我们会对text做1d rope，对图片做2d。但是在cm rope里，会把text也当作一维的2d，做2d rope并投射到2d空间和图片关联起来。<br>3.运用了flow matching的损失函数，并且增加了alignment loss （用来对齐自己的mmdit和dinov2）可以让加速模型收敛。<br>4.Resolution-aware Timestep Sampling是一项diffusion模型训练的技巧，原理是在不同的resolution下对于我们sample的distribution做改变：high resolution图片会让sampling dist更偏向于lower snrs/higher noise levels。在训练阶段是用数据集的平均的resolution，inference的时候用期望的resolution来决定shift factor。具体做法是先从log-normal sample，然后根据我们算出来的shift factor做shifting。</p>
-<h2 id="后训练"><a href="#后训练" class="headerlink" title="后训练"></a>后训练</h2><p>相比于2.0，3.0取消的refiner阶段因为模型本身已经能够生成不同resolution的图片。除此之外，还做了以下提升：为了ct和sft的阶段训练了更多的captioning model，能更好的让模型理解prompt中的美学，style和layout；平衡了数据里不同resolution数据的数量。</p>
-<p>还有一点是用了vlm而不是clip作为奖励函数，具体做法如下：<br>1.Instruction as Query: The model receives a prompt, such as “A cat sitting on a couch.”​<br>2.Formulating the Question: This prompt is transformed into a question like, “Does this image depict a cat sitting on a couch? Please answer Yes or No.“<br>3.Evaluating with VLM: The VLM processes the generated image and the question, outputting probabilities for “Yes” and “No.”​<br>4.Deriving the Reward: The probability assigned to “Yes” is normalized and used as the reward signal. A higher probability indicates better alignment between the image and the prompt.</p>
-<h3 id="模型加速"><a href="#模型加速" class="headerlink" title="模型加速"></a>模型加速</h3><p>seedream3.0的模型加速基于Hyper-SD和RayFlow，相比于传统的扩散模型在降噪过程中所有的样本都是通过一样的高斯分布路径，seedream对不同样本实现了个性化的单一通路，提升了模型的稳定性和生成的多元化。并且使用了一个预训练的模型来对噪声进行预估，这个方法使得模型在加噪和去噪的过程中能以最大可能性进行收敛，使得模型现在可以用较少的步数得到非常好的结果。在训练加速上，训练了一个结合Stochastic Stein Discrepancy (SSD)的neural net来预测哪个timestamp会产生最大的training loss，所以在训练采样的时候区别于传统的uniform sampling可以更高效的采样most important timesteamps。结合以上的工作，豆包的模型得以更高的效率达到普通扩散模型采样50步才能到达的效果。</p>
-]]></content>
-      <tags>
-        <tag>技术</tag>
-        <tag>豆包</tag>
-        <tag>论文</tag>
       </tags>
   </entry>
   <entry>
@@ -322,6 +293,35 @@
         <tag>技术</tag>
         <tag>论文</tag>
         <tag>Minimax</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Seedream 3.0 Technical Report</title>
+    <url>/2025/04/21/Doubao%20Seedram%203.0/</url>
+    <content><![CDATA[<p>原文链接 <a href="https://arxiv.org/pdf/2504.11346">https://arxiv.org/pdf/2504.11346</a></p>
+<h2 id="导言"><a href="#导言" class="headerlink" title="导言"></a>导言</h2><p>Seedream 2.0 虽然已经很好了，但是还有一些问题：模型在复杂prompt上的对齐有待提高，尤其是在数字精度和多物体空间关系的情况下；2.0对于图片内文字的生成能力有待提升；图片美学上的问题；以及生成图片的清晰度问题。对于以上问题，豆包做了一下提升：在数据层面，引入了双倍的高质量数据；增加了训练步骤和技巧，比如混合resolution training，多模态rope，新的representation alignment loss，以及resolution aware sampling。最后，也对后训练和生成加速做了提升。总而言之，3.0是一次对于2.0的incremental change，但是仅仅才过了一个月。从这能看出来字节豆包组的含金量，以及好的ai infra对于持续research和产品迭代的重要性。</p>
+<h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p>文章提到，2.0阶段运用了严格的数据筛选机制，所以这限制了训练数据的数量。在3.0中，豆包运用了新的筛选机制，把defect小于20%的数据保留下来，并且在训练的时候运用了spatial attention mask使得这些区域会被排除出训练，在保证模型稳定性的情况下成功扩展了差不多20%的训练数据。</p>
+<h2 id="预训练"><a href="#预训练" class="headerlink" title="预训练"></a>预训练</h2><p>模型结构沿用了2.0，只是增加了训练参数和以下的技巧：<br>1.混合清晰度（resolution）训练。具体的讲，因为transformer天然支持不同长度的sequence，豆包组先用 256^2 的数据做pre-train，然后再更高清晰度（512^82 to 2048^2）的数据上做微调。并且，额外添加了size embedding作为额外的condition（应该是做了crocs attention？），使得模型能在没见过的清晰度情况下依然表现出色。<br>2.Cross-modality Rope。在2.0中，运用的是scaling rope。在3.0中，对于这个技巧做了提升。以往我们会对text做1d rope，对图片做2d。但是在cm rope里，会把text也当作一维的2d，做2d rope并投射到2d空间和图片关联起来。<br>3.运用了flow matching的损失函数，并且增加了alignment loss （用来对齐自己的mmdit和dinov2）可以让加速模型收敛。<br>4.Resolution-aware Timestep Sampling是一项diffusion模型训练的技巧，原理是在不同的resolution下对于我们sample的distribution做改变：high resolution图片会让sampling dist更偏向于lower snrs/higher noise levels。在训练阶段是用数据集的平均的resolution，inference的时候用期望的resolution来决定shift factor。具体做法是先从log-normal sample，然后根据我们算出来的shift factor做shifting。</p>
+<h2 id="后训练"><a href="#后训练" class="headerlink" title="后训练"></a>后训练</h2><p>相比于2.0，3.0取消的refiner阶段因为模型本身已经能够生成不同resolution的图片。除此之外，还做了以下提升：为了ct和sft的阶段训练了更多的captioning model，能更好的让模型理解prompt中的美学，style和layout；平衡了数据里不同resolution数据的数量。</p>
+<p>还有一点是用了vlm而不是clip作为奖励函数，具体做法如下：<br>1.Instruction as Query: The model receives a prompt, such as “A cat sitting on a couch.”​<br>2.Formulating the Question: This prompt is transformed into a question like, “Does this image depict a cat sitting on a couch? Please answer Yes or No.“<br>3.Evaluating with VLM: The VLM processes the generated image and the question, outputting probabilities for “Yes” and “No.”​<br>4.Deriving the Reward: The probability assigned to “Yes” is normalized and used as the reward signal. A higher probability indicates better alignment between the image and the prompt.</p>
+<h3 id="模型加速"><a href="#模型加速" class="headerlink" title="模型加速"></a>模型加速</h3><p>seedream3.0的模型加速基于Hyper-SD和RayFlow，相比于传统的扩散模型在降噪过程中所有的样本都是通过一样的高斯分布路径，seedream对不同样本实现了个性化的单一通路，提升了模型的稳定性和生成的多元化。并且使用了一个预训练的模型来对噪声进行预估，这个方法使得模型在加噪和去噪的过程中能以最大可能性进行收敛，使得模型现在可以用较少的步数得到非常好的结果。在训练加速上，训练了一个结合Stochastic Stein Discrepancy (SSD)的neural net来预测哪个timestamp会产生最大的training loss，所以在训练采样的时候区别于传统的uniform sampling可以更高效的采样most important timesteamps。结合以上的工作，豆包的模型得以更高的效率达到普通扩散模型采样50步才能到达的效果。</p>
+]]></content>
+      <tags>
+        <tag>技术</tag>
+        <tag>豆包</tag>
+        <tag>论文</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>为什么要写博客</title>
+    <url>/2025/03/14/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%86%99%E5%8D%9A%E5%AE%A2/</url>
+    <content><![CDATA[<p>最早有这个想法是一段时间之前的失眠，当时读了一本书讲到写日记/记录可以帮助睡眠。原理大概如下，如果每天睡觉前把今天的想法，和对未来的预期都写写下来，那大脑就会更放松。这样，也就不会在床上翻来覆去脑子里有很多想法。（“给思考减负：把日常的思考和琐事都记录下来。脑子需要操心的变少了，灵感变多了”， Sheng Xu 2025）我觉得确实，人的脑容量极其有限，但是和gpu集群相比虽然我们能耗很低，但是我们的学习能力应该是这一台基于backprop的模型不能比较的。那么我们确实没有必要和大模型去竞争记忆力，而是应该关注思考模型和学习模型。不重要的东西那就应该记下来，没必要占用大脑的缓存。</p>
+<p>而在llm来了以后，我意识到了我对于llm有一点过于依赖了，能用llm解决的绝对不自己想。当然，一方面效率确实提高了，我在很短的时间学习到了很多知识。不过这种知识真的有用吗？一个人再怎么学也没有大模型学的快学的多吧？可能更多还是需要学习思维模型。另外一方面，由于过于依赖，我一时到了我的思考能力和语言能力都有不同程度的下滑。比如说，以前我的文章写得也不好，但是现在倒是变成提笔之后脑子完全崩不住来几个字了。鉴于这种情况，并且最近偶然翻到四火老师早期的文章，我意识到了可能在一些时候我需要脱离ai来保证我个人的状态，而其中一个方式就是不借助ai写博客。中文和英文我感觉没有特别大的所谓哈哈，中英夹杂更好一点。</p>
+<p>除了保持自己的思考和语言能力，我也希望建立一个个人的知识库，来记录我不同时期的想法，并且可以在未来进行复盘。这个可以追溯到我早期的投资笔记，我忘了在哪里学习到把自己每次做决定的想法，交易决定的内容，和后面的回顾记录下来看。这样，能够更好的复盘反思，因为如果不记录的话人的回忆是不靠谱的。另外呢，之前在别人博客也看到可以直接用curosr + markdown当作一个rag系统。</p>
+]]></content>
+      <tags>
+        <tag>思考</tag>
+        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
@@ -734,6 +734,72 @@
 
 <p>plus the same label-smoothing trick.</p>
 <hr>
+<p>Here’s a structured summary of <strong>training strategies</strong> and <strong>training data collection</strong> for large <strong>Neural Machine Translation (NMT)</strong> models used by leading systems like Google Translate, Meta’s NLLB, and similar efforts:</p>
+<hr>
+<h3 id="Training-Strategy"><a href="#Training-Strategy" class="headerlink" title="Training Strategy"></a>Training Strategy</h3><h4 id="A-Pretraining-Stage"><a href="#A-Pretraining-Stage" class="headerlink" title="A. Pretraining Stage"></a><strong>A. Pretraining Stage</strong></h4><ul>
+<li><p><strong>Objective:</strong> Build a multilingual encoder-decoder model with general language understanding.</p>
+</li>
+<li><p><strong>Techniques:</strong></p>
+<ul>
+<li><strong>Denoising Autoencoding / Masked Language Modeling (MLM):</strong> Helps the encoder learn contextual representations.</li>
+<li><strong>Cross-lingual MLM (XLM):</strong> Same text in different languages is masked and predicted to align representations.</li>
+<li><strong>Monolingual Pretraining:</strong> Often used for encoder-only tasks or to initialize encoder weights before translation-specific fine-tuning.</li>
+</ul>
+</li>
+</ul>
+<h4 id="B-Supervised-Fine-Tuning"><a href="#B-Supervised-Fine-Tuning" class="headerlink" title="B. Supervised Fine-Tuning"></a><strong>B. Supervised Fine-Tuning</strong></h4><ul>
+<li><p><strong>Objective:</strong> Learn to translate between language pairs using parallel corpora.</p>
+</li>
+<li><p><strong>Task:</strong> Sequence-to-sequence translation with cross-entropy loss on token-level predictions.</p>
+</li>
+<li><p><strong>Training Details:</strong></p>
+<ul>
+<li><strong>Teacher Forcing:</strong> Decoder is trained to predict the next token using gold target prefixes.</li>
+<li><strong>Curriculum Learning:</strong> Start with high-resource, clean pairs; gradually introduce noisy or low-resource pairs.</li>
+<li><strong>Language Tokens:</strong> Special tokens like <code>&lt;2zh&gt;</code> help signal the target language in multilingual models.</li>
+</ul>
+</li>
+</ul>
+<h4 id="C-Specialized-Techniques"><a href="#C-Specialized-Techniques" class="headerlink" title="C. Specialized Techniques"></a><strong>C. Specialized Techniques</strong></h4><ul>
+<li><strong>Back-Translation:</strong> Generate synthetic parallel data by translating monolingual target text back to the source language.</li>
+<li><strong>Dual Learning:</strong> Use feedback from both forward and backward translation models to improve quality.</li>
+<li><strong>Knowledge Distillation:</strong> Use a strong ensemble or multilingual model to generate translations for training smaller or distilled models.</li>
+<li><strong>Language Routing:</strong> Use a lightweight classifier or embedding to dynamically route the translation through the correct decoder path or adapter.</li>
+</ul>
+<hr>
+<h3 id="2-Training-Data-Collection"><a href="#2-Training-Data-Collection" class="headerlink" title="2. Training Data Collection"></a><strong>2. Training Data Collection</strong></h3><h4 id="A-Parallel-Corpora-Supervised"><a href="#A-Parallel-Corpora-Supervised" class="headerlink" title="A. Parallel Corpora (Supervised)"></a><strong>A. Parallel Corpora (Supervised)</strong></h4><ul>
+<li><p><strong>Sources:</strong></p>
+<ul>
+<li><strong>Public Datasets:</strong> WMT, OPUS, Europarl, UN Corpus.</li>
+<li><strong>Web Crawls:</strong> Filtered bilingual websites (e.g., Common Crawl, ParaCrawl).</li>
+<li><strong>Official Documents:</strong> Government/legal text in multiple languages.</li>
+</ul>
+</li>
+</ul>
+<h4 id="B-Monolingual-Corpora-Unsupervised-Pretraining"><a href="#B-Monolingual-Corpora-Unsupervised-Pretraining" class="headerlink" title="B. Monolingual Corpora (Unsupervised/Pretraining)"></a><strong>B. Monolingual Corpora (Unsupervised/Pretraining)</strong></h4><ul>
+<li><p><strong>Sources:</strong></p>
+<ul>
+<li><strong>C4, Wikipedia, CCNet, OSCAR, Gigaword, BookCorpus.</strong></li>
+<li>Cleaned and language-labeled for the relevant set of translation languages.</li>
+</ul>
+</li>
+</ul>
+<h4 id="C-Quality-Filtering-Techniques"><a href="#C-Quality-Filtering-Techniques" class="headerlink" title="C. Quality Filtering Techniques"></a><strong>C. Quality Filtering Techniques</strong></h4><ul>
+<li><strong>Length Ratio Filtering:</strong> Removes sentence pairs with large length mismatch.</li>
+<li><strong>Language Identification:</strong> Ensures text is in the expected language.</li>
+<li><strong>Dual-Model Agreement / BLEU Filtering:</strong> Keep only pairs with agreement between two translation models or high BLEU.</li>
+<li><strong>Noise Detection:</strong> Drop automatically translated or low-confidence samples.</li>
+</ul>
+<h4 id="D-Data-Balancing"><a href="#D-Data-Balancing" class="headerlink" title="D. Data Balancing"></a><strong>D. Data Balancing</strong></h4><ul>
+<li><p>Address <strong>low-resource language</strong> imbalance by:</p>
+<ul>
+<li><strong>Oversampling rare languages.</strong></li>
+<li><strong>Sampling temperature strategies</strong> (e.g., square-root or inverse frequency).</li>
+<li><strong>Synthetic data augmentation</strong> via back-translation or pivoting.</li>
+</ul>
+</li>
+</ul>
+<hr>
 <h3 id="Sampling-Strategies-in-Generative-Models"><a href="#Sampling-Strategies-in-Generative-Models" class="headerlink" title="Sampling Strategies in Generative Models"></a>Sampling Strategies in Generative Models</h3><ol>
 <li><strong>Deterministic methods</strong> (e.g., <em>greedy search</em>, <em>beam search</em>)</li>
 <li><strong>Stochastic methods</strong> (e.g., <em>multinomial sampling</em>, <em>top-k</em>, <em>top-p</em>)</li>
@@ -824,7 +890,7 @@
 <li><strong>Average pooling</strong> → prediction head, or  </li>
 <li><strong>Last-token representation</strong> → prediction head.</li>
 </ul>
-<p><img src="/f4e0ac0aa42ac2c8e1f8bac85dcc60dc20926b7c047fe6c379ee7e72dae921ea.webp" alt="Language Detector"></p>
+<p><img src="/img/2025/06/f4e0ac0aa42ac2c8e1f8bac85dcc60dc20926b7c047fe6c379ee7e72dae921ea.webp" alt="Language Detector"></p>
 <h3 id="2-·-Translation-Service"><a href="#2-·-Translation-Service" class="headerlink" title="2 · Translation Service"></a>2 · Translation Service</h3><ol>
 <li>Detect language.  </li>
 <li>Route to correct bilingual model.  </li>
