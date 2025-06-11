@@ -1,44 +1,87 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:description" content="Yuhao Chen&#39;s Blog - AI/ML Engineering and Data Science">
-    <meta property="og:type" content="website">
-    <meta name="description" content="Yuhao Chen&#39;s Blog - AI/ML Engineering and Data Science">
-    <meta name="keyword"  content="hexo,Yuhao Chen,Machine Learning,Data Science,AI,ML,Deep Learning">
-    <link rel="shortcut icon" href="/img/favicon.ico">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-    <title>
-        
-        Design Google Translate - Yuhao Chen
-        
-    </title>
-
-    <!-- Custom CSS -->
-    
-<link rel="stylesheet" href="/css/aircloud.css">
-
-    
-<link rel="stylesheet" href="/css/gitment.css">
-
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_28hi1hpxx24.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-
-    
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"akazaakane.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"giscus","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Google Translate System Design IntroductionGoogle Translate is a widely used language-translation service offered by Google. Powered by machine-learning (ML) models, it translates text between more th">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Design Google Translate">
+<meta property="og:url" content="https://akazaakane.github.io/2025/06/08/Design%20Google%20Translate/index.html">
+<meta property="og:site_name" content="随便写写">
+<meta property="og:description" content="Google Translate System Design IntroductionGoogle Translate is a widely used language-translation service offered by Google. Powered by machine-learning (ML) models, it translates text between more th">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://akazaakane.github.io/img/2025/06/0301.webp">
+<meta property="og:image" content="https://akazaakane.github.io/f4e0ac0aa42ac2c8e1f8bac85dcc60dc20926b7c047fe6c379ee7e72dae921ea.webp">
+<meta property="article:published_time" content="2025-06-08T05:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-09T03:20:39.950Z">
+<meta property="article:author" content="yxckeis8">
+<meta property="article:tag" content="技术">
+<meta property="article:tag" content="Sytem Design">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://akazaakane.github.io/img/2025/06/0301.webp">
+
+<link rel="canonical" href="https://akazaakane.github.io/2025/06/08/Design%20Google%20Translate/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Design Google Translate | 随便写写</title>
+  
 
 
 
 
 
 
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
-<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<style>mjx-container[jax="SVG"] {
   direction: ltr;
 }
 
@@ -152,130 +195,151 @@ mjx-container[display="true"] + br {
 }
 </style></head>
 
-<body>
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
 
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i> 随便写写 - 想写就写吧 </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
-        
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/avatar.png" />
-        </div>
-        <div class="name">
-            <i>yxckeis8</i>
-        </div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li >
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-            <li >
-                <a href="/archive">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li >
-                <a href="/collect/">
-                    <i class="iconfont icon-shoucang1"></i>
-                    <span>COLLECT</span>
-                </a>
-            </li>
-            <li >
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">随便写写</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">随便写写 - 想写就写吧</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
             
-            <li>
-                <a id="search">
-                    <i class="iconfont icon-sousuo1"></i>
-                    <span>SEARCH</span>
-                </a>
-            </li>
-            
-        </ul>
-    </div>
+
     
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Google-Translate-System-Design"><span class="toc-text">Google Translate System Design</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Introduction"><span class="toc-text">Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Clarifying-Requirements"><span class="toc-text">Clarifying Requirements</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Frame-the-Problem-as-an-ML-Task"><span class="toc-text">Frame the Problem as an ML Task</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Specifying-the-System%E2%80%99s-Input-and-Output"><span class="toc-text">Specifying the System’s Input and Output</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Choosing-a-Suitable-ML-Approach"><span class="toc-text">Choosing a Suitable ML Approach</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Data-Preparation"><span class="toc-text">Data Preparation</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Primary-Data-Parallel-Corpora"><span class="toc-text">1. Primary Data: Parallel Corpora</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Data-Expansion-and-Augmentation"><span class="toc-text">2. Data Expansion and Augmentation</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%C2%B7-Text-Pre-processing"><span class="toc-text">1 · Text Pre-processing</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Preprocessing-Steps-%E2%80%94-Modern-Translation-Pretraining"><span class="toc-text">Preprocessing Steps — Modern Translation Pretraining</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-1%EF%B8%8F%E2%83%A3-Data-Cleaning-Deduplication"><span class="toc-text">🔎 1️⃣ Data Cleaning &amp; Deduplication</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-2%EF%B8%8F%E2%83%A3-Language-Identification-Tagging"><span class="toc-text">🔎 2️⃣ Language Identification &amp; Tagging</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-3%EF%B8%8F%E2%83%A3-Tokenization"><span class="toc-text">🔎 3️⃣ Tokenization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-4%EF%B8%8F%E2%83%A3-Alignment-Verification-Parallel-Data"><span class="toc-text">🔎 4️⃣ Alignment Verification (Parallel Data)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-5%EF%B8%8F%E2%83%A3-Corruption-Masking-for-Monolingual"><span class="toc-text">🔎 5️⃣ Corruption &#x2F; Masking (for Monolingual)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-6%EF%B8%8F%E2%83%A3-Sampling-Balancing"><span class="toc-text">🔎 6️⃣ Sampling &amp; Balancing</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%94%8E-7%EF%B8%8F%E2%83%A3-Back-Translation-for-Monolingual-%E2%86%92-Synthetic-Parallel"><span class="toc-text">🔎 7️⃣ Back-Translation (for Monolingual → Synthetic Parallel)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%C2%B7-Text-Tokenization"><span class="toc-text">2 · Text Tokenization</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Byte-Pair-Encoding-BPE"><span class="toc-text">1. Byte-Pair Encoding (BPE)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Byte-Level-BPE-BBPE"><span class="toc-text">2. Byte-Level BPE (BBPE)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Unigram-Language-Model"><span class="toc-text">3. Unigram Language Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-WordPiece"><span class="toc-text">4. WordPiece</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Summary-Table"><span class="toc-text">Summary Table:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Model-Development"><span class="toc-text">Model Development</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Architecture-Overview"><span class="toc-text">Architecture Overview</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Training-Strategy-by-Alex"><span class="toc-text">Training Strategy by Alex</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ML-Objective-Loss-Function-%E2%80%94-Revised-%E2%9C%8D%EF%B8%8F"><span class="toc-text">ML Objective &amp; Loss Function — Revised ✍️</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Pre-training-Learning-Multilingual-Representations"><span class="toc-text">1  |  Pre-training: Learning Multilingual Representations</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-Supervised-Fine-tuning-Turning-a-General-LM-into-a-Translator"><span class="toc-text">2  |  Supervised Fine-tuning: Turning a General LM into a Translator</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sampling-Strategies-in-Generative-Models"><span class="toc-text">Sampling Strategies in Generative Models</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Why-Beam-Search"><span class="toc-text">Why Beam Search?</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Comparison-Deterministic-vs-Stochastic-Sampling"><span class="toc-text">Comparison: Deterministic vs. Stochastic Sampling</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Evaluation"><span class="toc-text">Evaluation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Offline-Metrics"><span class="toc-text">Offline Metrics</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Key-Metrics"><span class="toc-text">Key Metrics:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Human-Evaluation"><span class="toc-text">Human Evaluation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#LLM-as-a-Judge"><span class="toc-text">LLM as a Judge</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Online-Metrics"><span class="toc-text">Online Metrics</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Overall-ML-System-Design"><span class="toc-text">Overall ML System Design</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%C2%B7-Language-Detector"><span class="toc-text">1 · Language Detector</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%C2%B7-Translation-Service"><span class="toc-text">2 · Translation Service</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Other-Talking-Points"><span class="toc-text">Other Talking Points</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Real-Time-Translation"><span class="toc-text">Real-Time Translation:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Replace-Full-Sequence-Encoder-Decoder-with-Streaming-Models"><span class="toc-text">Replace Full-Sequence Encoder-Decoder with Streaming Models:</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Architectural-Options"><span class="toc-text">Architectural Options:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%9B%A0-Techniques-to-Apply"><span class="toc-text">🛠 Techniques to Apply:</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#On-Device-Translation"><span class="toc-text">On-Device Translation:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Replace-Heavy-Transformer-with-Lightweight-Quantized-and-Distilled-Models"><span class="toc-text">Replace Heavy Transformer with Lightweight, Quantized, and Distilled Models:</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Architectural-Options-1"><span class="toc-text">Architectural Options:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%F0%9F%9B%A0-Key-Optimization-Techniques"><span class="toc-text">🛠 Key Optimization Techniques:</span></a></li></ol></li></ol></li></ol>
-</div>
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://akazaakane.github.io/2025/06/08/Design%20Google%20Translate/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.png">
+      <meta itemprop="name" content="yxckeis8">
+      <meta itemprop="description" content="芙蓉王源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随便写写">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Design Google Translate
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2025-06-08 00:00:00 / Modified: 22:20:39" itemprop="dateCreated datePublished" datetime="2025-06-08T00:00:00-05:00">2025-06-08</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
     
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-bg" id="search-bg"></div>
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input"/>
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i> 随便写写 - 想写就写吧 </i>
-        </div>
-    </div>
     
-    <div class="index-middle">
-        <!-- Main Content -->
-        
+    
+    <div class="post-body" itemprop="articleBody">
 
-
-<div class="post-container">
-    <div class="post-title">
-        Design Google Translate
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2025-06-08 01:00:00</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#技术" title="技术">技术</a>
-        <span>/</span>
-        
-        <a class="tag" href="/tags/#Sytem Design" title="Sytem Design">Sytem Design</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-</span>
-    </div>
-    <div class="post-content no-indent">
+      
         <h1 id="Google-Translate-System-Design"><a href="#Google-Translate-System-Design" class="headerlink" title="Google Translate System Design"></a>Google Translate System Design</h1><hr>
 <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>Google Translate is a widely used language-translation service offered by Google. Powered by machine-learning (ML) models, it translates text between more than <strong>130 languages</strong> and serves <strong>over a billion users</strong> as of 2024.</p>
 <p><img src="/img/2025/06/0301.webp" alt="Google Translate Overview"></p>
@@ -870,130 +934,243 @@ mjx-container[display="true"] + br {
 </ul>
 <hr>
 
-        
-        <br />
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-        <div id="lv-container"></div>
-        <div class="giscus"></div>
     </div>
-</div>
 
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+              <a href="/tags/sytem-design/" rel="tag"># Sytem Design</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/06/04/Minimax%20Speech%202.0/" rel="prev" title="Minimax Speech 2.0">
+      <i class="fa fa-chevron-left"></i> Minimax Speech 2.0
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-        <li>
-            <a target="_blank"  href="https://github.com/AkazaAkane">
-                            <span class="fa-stack fa-lg">
-                                <i class="iconfont icon-github"></i>
-                            </span>
-            </a>
-        </li>
-        
-
-        
-        <li>
-            <a target="_blank"  href="https://www.linkedin.com/in/yuhaoc2022">
-                            <span class="fa-stack fa-lg">
-                                <i class="iconfont icon-linkedin"></i>
-                            </span>
-            </a>
-        </li>
-        
-
-    </ul>
+      </footer>
     
-    <p>
-        <span>/</span>
-        
-        <span><a href="https://www.raychase.net/">四火的唠嗑</a></span>
-        <span>/</span>
-        
-        <span><a href="http://hanzilu.com/wordpress/">韩师傅就是我</a></span>
-        <span>/</span>
-        
-        <span><a href="https://www.ruanyifeng.com/">阮一峰的网络日志</a></span>
-        <span>/</span>
-        
-        <span><a href="https://shengxu.blog/">Sheng Xu&#39;s Blog</a></span>
-        <span>/</span>
-        
-        <span><a href="https://pyemma.github.io/">Coding Monkey&#39;s Blog</a></span>
-        <span>/</span>
-        
-        <span><a href="https://yage.ai/">Computing Life</a></span>
-        <span>/</span>
-        
-        <span><a href="https://yynnyy.cn/">随缘随笔 | Insights Flow</a></span>
-        <span>/</span>
-        
-        <span><a href="https://www.wxyaonline.top/archive">Wxya</a></span>
-        <span>/</span>
-        
-        <span><a href="https://mickqian.github.io/">Mick&#39;s Blog</a></span>
-        <span>/</span>
-        
-    </p>
-    
-    <p>
-        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
-</footer>
+  </article>
+  
+  
+  
 
 
 
-
-</body>
+          </div>
+          
 
 <script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = "search.json"
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-
-<script src="/js/index.js"></script>
-
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-    <script src="https://giscus.app/client.js"
-    data-repo="AkazaAkane/akazaakane.github.io"
-    data-repo-id="MDEwOlJlcG9zaXRvcnkyMzk2NTg3NTg="
-    data-category="General"
-    data-category-id="DIC_kwDODkjnBs4CoDY9"
-    data-mapping="pathname"
-    data-strict="0"
-    data-reactions-enabled="1"
-    data-emit-metadata="0"
-    data-input-position="bottom"
-    data-theme="preferred_color_scheme"
-    data-lang="en"
-    crossorigin="anonymous"
-    async>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
 </script>
 
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Google-Translate-System-Design"><span class="nav-number">1.</span> <span class="nav-text">Google Translate System Design</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Introduction"><span class="nav-number">1.1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Clarifying-Requirements"><span class="nav-number">1.2.</span> <span class="nav-text">Clarifying Requirements</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Frame-the-Problem-as-an-ML-Task"><span class="nav-number">1.3.</span> <span class="nav-text">Frame the Problem as an ML Task</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Specifying-the-System%E2%80%99s-Input-and-Output"><span class="nav-number">1.3.1.</span> <span class="nav-text">Specifying the System’s Input and Output</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Choosing-a-Suitable-ML-Approach"><span class="nav-number">1.3.2.</span> <span class="nav-text">Choosing a Suitable ML Approach</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Data-Preparation"><span class="nav-number">1.4.</span> <span class="nav-text">Data Preparation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Primary-Data-Parallel-Corpora"><span class="nav-number">1.4.0.1.</span> <span class="nav-text">1. Primary Data: Parallel Corpora</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Data-Expansion-and-Augmentation"><span class="nav-number">1.4.0.2.</span> <span class="nav-text">2. Data Expansion and Augmentation</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%C2%B7-Text-Pre-processing"><span class="nav-number">1.4.1.</span> <span class="nav-text">1 · Text Pre-processing</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Preprocessing-Steps-%E2%80%94-Modern-Translation-Pretraining"><span class="nav-number">1.5.</span> <span class="nav-text">Preprocessing Steps — Modern Translation Pretraining</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%8E-1%EF%B8%8F%E2%83%A3-Data-Cleaning-Deduplication"><span class="nav-number">1.5.1.</span> <span class="nav-text">🔎 1️⃣ Data Cleaning &amp; Deduplication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%8E-2%EF%B8%8F%E2%83%A3-Language-Identification-Tagging"><span class="nav-number">1.5.2.</span> <span class="nav-text">🔎 2️⃣ Language Identification &amp; Tagging</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%8E-3%EF%B8%8F%E2%83%A3-Tokenization"><span class="nav-number">1.5.3.</span> <span class="nav-text">🔎 3️⃣ Tokenization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%8E-4%EF%B8%8F%E2%83%A3-Alignment-Verification-Parallel-Data"><span class="nav-number">1.5.4.</span> <span class="nav-text">🔎 4️⃣ Alignment Verification (Parallel Data)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%8E-5%EF%B8%8F%E2%83%A3-Corruption-Masking-for-Monolingual"><span class="nav-number">1.5.5.</span> <span class="nav-text">🔎 5️⃣ Corruption &#x2F; Masking (for Monolingual)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%8E-6%EF%B8%8F%E2%83%A3-Sampling-Balancing"><span class="nav-number">1.5.6.</span> <span class="nav-text">🔎 6️⃣ Sampling &amp; Balancing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%8E-7%EF%B8%8F%E2%83%A3-Back-Translation-for-Monolingual-%E2%86%92-Synthetic-Parallel"><span class="nav-number">1.5.7.</span> <span class="nav-text">🔎 7️⃣ Back-Translation (for Monolingual → Synthetic Parallel)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%C2%B7-Text-Tokenization"><span class="nav-number">1.5.8.</span> <span class="nav-text">2 · Text Tokenization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Byte-Pair-Encoding-BPE"><span class="nav-number">1.5.9.</span> <span class="nav-text">1. Byte-Pair Encoding (BPE)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Byte-Level-BPE-BBPE"><span class="nav-number">1.5.10.</span> <span class="nav-text">2. Byte-Level BPE (BBPE)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Unigram-Language-Model"><span class="nav-number">1.5.11.</span> <span class="nav-text">3. Unigram Language Model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-WordPiece"><span class="nav-number">1.5.12.</span> <span class="nav-text">4. WordPiece</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Summary-Table"><span class="nav-number">1.5.13.</span> <span class="nav-text">Summary Table:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Model-Development"><span class="nav-number">1.6.</span> <span class="nav-text">Model Development</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Architecture-Overview"><span class="nav-number">1.6.1.</span> <span class="nav-text">Architecture Overview</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Training-Strategy-by-Alex"><span class="nav-number">1.6.2.</span> <span class="nav-text">Training Strategy by Alex</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ML-Objective-Loss-Function-%E2%80%94-Revised-%E2%9C%8D%EF%B8%8F"><span class="nav-number">1.6.3.</span> <span class="nav-text">ML Objective &amp; Loss Function — Revised ✍️</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Pre-training-Learning-Multilingual-Representations"><span class="nav-number">1.6.3.1.</span> <span class="nav-text">1  |  Pre-training: Learning Multilingual Representations</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Supervised-Fine-tuning-Turning-a-General-LM-into-a-Translator"><span class="nav-number">1.6.3.2.</span> <span class="nav-text">2  |  Supervised Fine-tuning: Turning a General LM into a Translator</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sampling-Strategies-in-Generative-Models"><span class="nav-number">1.6.4.</span> <span class="nav-text">Sampling Strategies in Generative Models</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-Beam-Search"><span class="nav-number">1.6.5.</span> <span class="nav-text">Why Beam Search?</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Comparison-Deterministic-vs-Stochastic-Sampling"><span class="nav-number">1.7.</span> <span class="nav-text">Comparison: Deterministic vs. Stochastic Sampling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Evaluation"><span class="nav-number">1.8.</span> <span class="nav-text">Evaluation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Offline-Metrics"><span class="nav-number">1.8.1.</span> <span class="nav-text">Offline Metrics</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Key-Metrics"><span class="nav-number">1.8.1.1.</span> <span class="nav-text">Key Metrics:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Human-Evaluation"><span class="nav-number">1.8.1.2.</span> <span class="nav-text">Human Evaluation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LLM-as-a-Judge"><span class="nav-number">1.8.1.3.</span> <span class="nav-text">LLM as a Judge</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Online-Metrics"><span class="nav-number">1.8.2.</span> <span class="nav-text">Online Metrics</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Overall-ML-System-Design"><span class="nav-number">1.9.</span> <span class="nav-text">Overall ML System Design</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%C2%B7-Language-Detector"><span class="nav-number">1.9.1.</span> <span class="nav-text">1 · Language Detector</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%C2%B7-Translation-Service"><span class="nav-number">1.9.2.</span> <span class="nav-text">2 · Translation Service</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Other-Talking-Points"><span class="nav-number">1.10.</span> <span class="nav-text">Other Talking Points</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Real-Time-Translation"><span class="nav-number">1.11.</span> <span class="nav-text">Real-Time Translation:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Replace-Full-Sequence-Encoder-Decoder-with-Streaming-Models"><span class="nav-number">1.11.1.</span> <span class="nav-text">Replace Full-Sequence Encoder-Decoder with Streaming Models:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Architectural-Options"><span class="nav-number">1.11.1.1.</span> <span class="nav-text">Architectural Options:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%9B%A0-Techniques-to-Apply"><span class="nav-number">1.11.2.</span> <span class="nav-text">🛠 Techniques to Apply:</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#On-Device-Translation"><span class="nav-number">1.12.</span> <span class="nav-text">On-Device Translation:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Replace-Heavy-Transformer-with-Lightweight-Quantized-and-Distilled-Models"><span class="nav-number">1.12.1.</span> <span class="nav-text">Replace Heavy Transformer with Lightweight, Quantized, and Distilled Models:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Architectural-Options-1"><span class="nav-number">1.12.1.1.</span> <span class="nav-text">Architectural Options:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%9B%A0-Key-Optimization-Techniques"><span class="nav-number">1.12.2.</span> <span class="nav-text">🛠 Key Optimization Techniques:</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yxckeis8"
+      src="/img/avatar.png">
+  <p class="site-author-name" itemprop="name">yxckeis8</p>
+  <div class="site-description" itemprop="description">芙蓉王源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/AkazaAkane" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;AkazaAkane" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://linkedin.com/in/yuhaoc2022" title="LinkedIn → https:&#x2F;&#x2F;linkedin.com&#x2F;in&#x2F;yuhaoc2022" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.raychase.net/" title="https:&#x2F;&#x2F;www.raychase.net&#x2F;" rel="noopener" target="_blank">四火的唠嗑</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://hanzilu.com/wordpress/" title="http:&#x2F;&#x2F;hanzilu.com&#x2F;wordpress&#x2F;" rel="noopener" target="_blank">韩师傅就是我</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.ruanyifeng.com/" title="https:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰的网络日志</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://shengxu.blog/" title="https:&#x2F;&#x2F;shengxu.blog&#x2F;" rel="noopener" target="_blank">Sheng Xu's Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pyemma.github.io/" title="https:&#x2F;&#x2F;pyemma.github.io&#x2F;" rel="noopener" target="_blank">Coding Monkey's Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yage.ai/" title="https:&#x2F;&#x2F;yage.ai&#x2F;" rel="noopener" target="_blank">Computing Life</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yynnyy.cn/" title="https:&#x2F;&#x2F;yynnyy.cn&#x2F;" rel="noopener" target="_blank">随缘随笔 | Insights Flow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.wxyaonline.top/archive" title="https:&#x2F;&#x2F;www.wxyaonline.top&#x2F;archive" rel="noopener" target="_blank">Wxya</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://mickqian.github.io/" title="https:&#x2F;&#x2F;mickqian.github.io&#x2F;" rel="noopener" target="_blank">Mick's Blog</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yxckeis8</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
 
 
 
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
 </html>

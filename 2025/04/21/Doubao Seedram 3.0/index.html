@@ -1,44 +1,85 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:description" content="Yuhao Chen&#39;s Blog - AI/ML Engineering and Data Science">
-    <meta property="og:type" content="website">
-    <meta name="description" content="Yuhao Chen&#39;s Blog - AI/ML Engineering and Data Science">
-    <meta name="keyword"  content="hexo,Yuhao Chen,Machine Learning,Data Science,AI,ML,Deep Learning">
-    <link rel="shortcut icon" href="/img/favicon.ico">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-    <title>
-        
-        Seedream 3.0 Technical Report - Yuhao Chen
-        
-    </title>
-
-    <!-- Custom CSS -->
-    
-<link rel="stylesheet" href="/css/aircloud.css">
-
-    
-<link rel="stylesheet" href="/css/gitment.css">
-
-    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
-    <link href="//at.alicdn.com/t/font_620856_28hi1hpxx24.css" rel="stylesheet" type="text/css">
-    <!-- ga & ba script hoook -->
-    <script></script>
-
-    
+<link rel="stylesheet" href="/css/main.css">
 
 
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"akazaakane.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"giscus","storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="原文链接 https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2504.11346 导言Seedream 2.0 虽然已经很好了，但是还有一些问题：模型在复杂prompt上的对齐有待提高，尤其是在数字精度和多物体空间关系的情况下；2.0对于图片内文字的生成能力有待提升；图片美学上的问题；以及生成图片的清晰度问题。对于以上问题，豆包做了一下提升：在数据层面，引入了双倍的高质量数据；增加了训练步骤和技巧，比如">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Seedream 3.0 Technical Report">
+<meta property="og:url" content="https://akazaakane.github.io/2025/04/21/Doubao%20Seedram%203.0/index.html">
+<meta property="og:site_name" content="随便写写">
+<meta property="og:description" content="原文链接 https:&#x2F;&#x2F;arxiv.org&#x2F;pdf&#x2F;2504.11346 导言Seedream 2.0 虽然已经很好了，但是还有一些问题：模型在复杂prompt上的对齐有待提高，尤其是在数字精度和多物体空间关系的情况下；2.0对于图片内文字的生成能力有待提升；图片美学上的问题；以及生成图片的清晰度问题。对于以上问题，豆包做了一下提升：在数据层面，引入了双倍的高质量数据；增加了训练步骤和技巧，比如">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-04-21T05:00:00.000Z">
+<meta property="article:modified_time" content="2025-04-22T02:17:54.000Z">
+<meta property="article:author" content="yxckeis8">
+<meta property="article:tag" content="技术">
+<meta property="article:tag" content="豆包">
+<meta property="article:tag" content="论文">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://akazaakane.github.io/2025/04/21/Doubao%20Seedram%203.0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Seedream 3.0 Technical Report | 随便写写</title>
+  
 
 
 
 
 
 
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
 
-<meta name="generator" content="Hexo 7.3.0"><style>mjx-container[jax="SVG"] {
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<style>mjx-container[jax="SVG"] {
   direction: ltr;
 }
 
@@ -152,133 +193,151 @@ mjx-container[display="true"] + br {
 }
 </style></head>
 
-<body>
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
 
-<div class="site-nav-toggle" id="site-nav-toggle">
-    <button>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-        <span class="btn-bar"></span>
-    </button>
-</div>
-
-<div class="index-about">
-    <i> 随便写写 - 想写就写吧 </i>
-</div>
-
-<div class="index-container">
-    
-    <div class="index-left">
-        
-<div class="nav" id="nav">
-    <div class="avatar-name">
-        <div class="avatar ">
-            <img src="/img/avatar.png" />
-        </div>
-        <div class="name">
-            <i>yxckeis8</i>
-        </div>
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
     </div>
-    <div class="contents" id="nav-content">
-        <ul>
-            <li >
-                <a href="/">
-                    <i class="iconfont icon-shouye1"></i>
-                    <span>HOME</span>
-                </a>
-            </li>
-            <li >
-                <a href="/tags">
-                    <i class="iconfont icon-biaoqian1"></i>
-                    <span>TAGS</span>
-                </a>
-            </li>
-            <li >
-                <a href="/archive">
-                    <i class="iconfont icon-guidang2"></i>
-                    <span>ARCHIVES</span>
-                </a>
-            </li>
-            <li >
-                <a href="/collect/">
-                    <i class="iconfont icon-shoucang1"></i>
-                    <span>COLLECT</span>
-                </a>
-            </li>
-            <li >
-                <a href="/about/">
-                    <i class="iconfont icon-guanyu2"></i>
-                    <span>ABOUT</span>
-                </a>
-            </li>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">随便写写</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">随便写写 - 想写就写吧</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
             
-            <li>
-                <a id="search">
-                    <i class="iconfont icon-sousuo1"></i>
-                    <span>SEARCH</span>
-                </a>
-            </li>
-            
-        </ul>
-    </div>
+
     
-        <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%BC%E8%A8%80"><span class="toc-text">导言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE"><span class="toc-text">数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83"><span class="toc-text">预训练</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%8E%E8%AE%AD%E7%BB%83"><span class="toc-text">后训练</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A8%A1%E5%9E%8B%E5%8A%A0%E9%80%9F"><span class="toc-text">模型加速</span></a></li></ol></li></ol>
-</div>
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://akazaakane.github.io/2025/04/21/Doubao%20Seedram%203.0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/img/avatar.png">
+      <meta itemprop="name" content="yxckeis8">
+      <meta itemprop="description" content="芙蓉王源">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="随便写写">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Seedream 3.0 Technical Report
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2025-04-21 00:00:00 / Modified: 21:17:54" itemprop="dateCreated datePublished" datetime="2025-04-21T00:00:00-05:00">2025-04-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
     
-</div>
-
-
-<div class="search-field" id="search-field">
-    <div class="search-bg" id="search-bg"></div>
-    <div class="search-container">
-        <div class="search-input">
-            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
-            <input id="search-input"/>
-            <span id="begin-search">search</span>
-        </div>
-        <div class="search-result-container" id="search-result-container">
-
-        </div>
-    </div>
-</div>
-
-        <div class="index-about-mobile">
-            <i> 随便写写 - 想写就写吧 </i>
-        </div>
-    </div>
     
-    <div class="index-middle">
-        <!-- Main Content -->
-        
+    
+    <div class="post-body" itemprop="articleBody">
 
-
-<div class="post-container">
-    <div class="post-title">
-        Seedream 3.0 Technical Report
-    </div>
-
-    <div class="post-meta">
-        <span class="attr">Post：<span>2025-04-21 01:00:00</span></span>
-        
-        <span class="attr">Tags：/
-        
-        <a class="tag" href="/tags/#技术" title="技术">技术</a>
-        <span>/</span>
-        
-        <a class="tag" href="/tags/#豆包" title="豆包">豆包</a>
-        <span>/</span>
-        
-        <a class="tag" href="/tags/#论文" title="论文">论文</a>
-        <span>/</span>
-        
-        
-        </span>
-        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
-</span>
-</span>
-    </div>
-    <div class="post-content no-indent">
+      
         <p>原文链接 <a href="https://arxiv.org/pdf/2504.11346">https://arxiv.org/pdf/2504.11346</a></p>
 <h2 id="导言"><a href="#导言" class="headerlink" title="导言"></a>导言</h2><p>Seedream 2.0 虽然已经很好了，但是还有一些问题：模型在复杂prompt上的对齐有待提高，尤其是在数字精度和多物体空间关系的情况下；2.0对于图片内文字的生成能力有待提升；图片美学上的问题；以及生成图片的清晰度问题。对于以上问题，豆包做了一下提升：在数据层面，引入了双倍的高质量数据；增加了训练步骤和技巧，比如混合resolution training，多模态rope，新的representation alignment loss，以及resolution aware sampling。最后，也对后训练和生成加速做了提升。总而言之，3.0是一次对于2.0的incremental change，但是仅仅才过了一个月。从这能看出来字节豆包组的含金量，以及好的ai infra对于持续research和产品迭代的重要性。</p>
 <h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p>文章提到，2.0阶段运用了严格的数据筛选机制，所以这限制了训练数据的数量。在3.0中，豆包运用了新的筛选机制，把defect小于20%的数据保留下来，并且在训练的时候运用了spatial attention mask使得这些区域会被排除出训练，在保证模型稳定性的情况下成功扩展了差不多20%的训练数据。</p>
@@ -287,130 +346,247 @@ mjx-container[display="true"] + br {
 <p>还有一点是用了vlm而不是clip作为奖励函数，具体做法如下：<br>1.Instruction as Query: The model receives a prompt, such as “A cat sitting on a couch.”​<br>2.Formulating the Question: This prompt is transformed into a question like, “Does this image depict a cat sitting on a couch? Please answer Yes or No.“<br>3.Evaluating with VLM: The VLM processes the generated image and the question, outputting probabilities for “Yes” and “No.”​<br>4.Deriving the Reward: The probability assigned to “Yes” is normalized and used as the reward signal. A higher probability indicates better alignment between the image and the prompt.</p>
 <h3 id="模型加速"><a href="#模型加速" class="headerlink" title="模型加速"></a>模型加速</h3><p>seedream3.0的模型加速基于Hyper-SD和RayFlow，相比于传统的扩散模型在降噪过程中所有的样本都是通过一样的高斯分布路径，seedream对不同样本实现了个性化的单一通路，提升了模型的稳定性和生成的多元化。并且使用了一个预训练的模型来对噪声进行预估，这个方法使得模型在加噪和去噪的过程中能以最大可能性进行收敛，使得模型现在可以用较少的步数得到非常好的结果。在训练加速上，训练了一个结合Stochastic Stein Discrepancy (SSD)的neural net来预测哪个timestamp会产生最大的training loss，所以在训练采样的时候区别于传统的uniform sampling可以更高效的采样most important timesteamps。结合以上的工作，豆包的模型得以更高的效率达到普通扩散模型采样50步才能到达的效果。</p>
 
-        
-        <br />
-        <div id="comment-container">
-        </div>
-        <div id="disqus_thread"></div>
-        <div id="lv-container"></div>
-        <div class="giscus"></div>
     </div>
-</div>
 
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+              <a href="/tags/%E8%B1%86%E5%8C%85/" rel="tag"># 豆包</a>
+              <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/03/23/2025-03-23%20%E6%9C%AC%E5%91%A8%E6%92%AD%E5%AE%A2%E8%AE%B0%E5%BD%95/" rel="prev" title="2025-03-23 本周播客记录">
+      <i class="fa fa-chevron-left"></i> 2025-03-23 本周播客记录
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/06/04/Minimax%20Speech%202.0/" rel="next" title="Minimax Speech 2.0">
+      Minimax Speech 2.0 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
-</div>
-
-
-<footer class="footer">
-    <ul class="list-inline text-center">
-        
-        
-
-        
-
-        
-
-        
-        <li>
-            <a target="_blank"  href="https://github.com/AkazaAkane">
-                            <span class="fa-stack fa-lg">
-                                <i class="iconfont icon-github"></i>
-                            </span>
-            </a>
-        </li>
-        
-
-        
-        <li>
-            <a target="_blank"  href="https://www.linkedin.com/in/yuhaoc2022">
-                            <span class="fa-stack fa-lg">
-                                <i class="iconfont icon-linkedin"></i>
-                            </span>
-            </a>
-        </li>
-        
-
-    </ul>
+      </footer>
     
-    <p>
-        <span>/</span>
-        
-        <span><a href="https://www.raychase.net/">四火的唠嗑</a></span>
-        <span>/</span>
-        
-        <span><a href="http://hanzilu.com/wordpress/">韩师傅就是我</a></span>
-        <span>/</span>
-        
-        <span><a href="https://www.ruanyifeng.com/">阮一峰的网络日志</a></span>
-        <span>/</span>
-        
-        <span><a href="https://shengxu.blog/">Sheng Xu&#39;s Blog</a></span>
-        <span>/</span>
-        
-        <span><a href="https://pyemma.github.io/">Coding Monkey&#39;s Blog</a></span>
-        <span>/</span>
-        
-        <span><a href="https://yage.ai/">Computing Life</a></span>
-        <span>/</span>
-        
-        <span><a href="https://yynnyy.cn/">随缘随笔 | Insights Flow</a></span>
-        <span>/</span>
-        
-        <span><a href="https://www.wxyaonline.top/archive">Wxya</a></span>
-        <span>/</span>
-        
-        <span><a href="https://mickqian.github.io/">Mick&#39;s Blog</a></span>
-        <span>/</span>
-        
-    </p>
-    
-    <p>
-        <span id="busuanzi_container_site_pv">
-            <span id="busuanzi_value_site_pv"></span>PV
-        </span>
-        <span id="busuanzi_container_site_uv">
-            <span id="busuanzi_value_site_uv"></span>UV
-        </span>
-        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
-</footer>
+  </article>
+  
+  
+  
 
 
 
-
-</body>
+          </div>
+          
 
 <script>
-    // We expose some of the variables needed by the front end
-    window.hexo_search_path = "search.json"
-    window.hexo_root = "/"
-    window.isPost = true
-</script>
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-
-<script src="/js/index.js"></script>
-
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-
-
-
-
-    <script src="https://giscus.app/client.js"
-    data-repo="AkazaAkane/akazaakane.github.io"
-    data-repo-id="MDEwOlJlcG9zaXRvcnkyMzk2NTg3NTg="
-    data-category="General"
-    data-category-id="DIC_kwDODkjnBs4CoDY9"
-    data-mapping="pathname"
-    data-strict="0"
-    data-reactions-enabled="1"
-    data-emit-metadata="0"
-    data-input-position="bottom"
-    data-theme="preferred_color_scheme"
-    data-lang="en"
-    crossorigin="anonymous"
-    async>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
 </script>
 
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BC%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">导言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE"><span class="nav-number">2.</span> <span class="nav-text">数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83"><span class="nav-number">3.</span> <span class="nav-text">预训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E8%AE%AD%E7%BB%83"><span class="nav-number">4.</span> <span class="nav-text">后训练</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%8A%A0%E9%80%9F"><span class="nav-number">4.1.</span> <span class="nav-text">模型加速</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="yxckeis8"
+      src="/img/avatar.png">
+  <p class="site-author-name" itemprop="name">yxckeis8</p>
+  <div class="site-description" itemprop="description">芙蓉王源</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/AkazaAkane" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;AkazaAkane" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://linkedin.com/in/yuhaoc2022" title="LinkedIn → https:&#x2F;&#x2F;linkedin.com&#x2F;in&#x2F;yuhaoc2022" rel="noopener" target="_blank"><i class="fab fa-linkedin fa-fw"></i>LinkedIn</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.raychase.net/" title="https:&#x2F;&#x2F;www.raychase.net&#x2F;" rel="noopener" target="_blank">四火的唠嗑</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://hanzilu.com/wordpress/" title="http:&#x2F;&#x2F;hanzilu.com&#x2F;wordpress&#x2F;" rel="noopener" target="_blank">韩师傅就是我</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.ruanyifeng.com/" title="https:&#x2F;&#x2F;www.ruanyifeng.com&#x2F;" rel="noopener" target="_blank">阮一峰的网络日志</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://shengxu.blog/" title="https:&#x2F;&#x2F;shengxu.blog&#x2F;" rel="noopener" target="_blank">Sheng Xu's Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://pyemma.github.io/" title="https:&#x2F;&#x2F;pyemma.github.io&#x2F;" rel="noopener" target="_blank">Coding Monkey's Blog</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yage.ai/" title="https:&#x2F;&#x2F;yage.ai&#x2F;" rel="noopener" target="_blank">Computing Life</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://yynnyy.cn/" title="https:&#x2F;&#x2F;yynnyy.cn&#x2F;" rel="noopener" target="_blank">随缘随笔 | Insights Flow</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://www.wxyaonline.top/archive" title="https:&#x2F;&#x2F;www.wxyaonline.top&#x2F;archive" rel="noopener" target="_blank">Wxya</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://mickqian.github.io/" title="https:&#x2F;&#x2F;mickqian.github.io&#x2F;" rel="noopener" target="_blank">Mick's Blog</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yxckeis8</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
 
 
 
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
 </html>
