@@ -27,32 +27,13 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
         Yuhao Chen
       </h1>
       <p class="mt-2 text-lg font-medium text-accent">
-        Senior Data Scientist & ML Engineer specializing in Large Language Models, RAG systems, and agentic workflows.
+        AI & Machine Learning Engineer specializing in Large Language Models, RAG systems, and agentic workflows.
       </p>
-
-      <div class="mt-4 flex flex-wrap gap-3">
-        <LinkButton
-          class="decoration-dashed underline-offset-4 hover:text-accent"
-          href="https://github.com/AkazaAkane"
-          target="_blank"
-        >
-          GitHub
-        </LinkButton>
-        <LinkButton
-          class="decoration-dashed underline-offset-4 hover:text-accent"
-          href="https://linkedin.com/in/yuhaoc2022"
-          target="_blank"
-        >
-          LinkedIn
-        </LinkButton>
-      </div>
 
       <div class="mt-6">
         <h2 class="text-xl font-semibold">About Me</h2>
         <p class="mt-2">
-          Based in Atlanta, GA. I hold degrees in Operations Research and Economics & Statistics.
-          My current focus is on optimizing open-source AI tools, building automated development pipelines,
-          and scaling machine learning systems.
+          I am an AI/ML Engineer actively seeking new opportunities in California. I hold dual Master's degrees in Operations Research and Economics & Statistics. My current focus is on building agentic applications and scaling robust machine learning systems.
         </p>
       </div>
 
@@ -90,9 +71,8 @@ const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
         <section id="recent-posts" class="pt-12 pb-6">
           <h2 class="text-2xl font-semibold tracking-wide">Recent Posts</h2>
           <ul>
-            {recentPosts.map(
-              (data, index) =>
-                index < SITE.postPerIndex && <Card variant="h3" {...data} />
+            {recentPosts.slice(0, SITE.postPerIndex).map(
+              data => <Card variant="h3" {...data} />
             )}
           </ul>
         </section>

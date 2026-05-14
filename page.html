@@ -1,0 +1,2713 @@
+<!DOCTYPE html><html dir="ltr" lang="zh-CN" class="false"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="http://localhost:4322/"><meta name="generator" content="Astro v5.18.1"><!-- Load Font --><style>@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86";
+  src: url("/_astro/fonts/font-google-sans-code-300-italic-latin-ebe081c5cf2bc9bf.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  font-weight: 300;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86";
+  src: url("/_astro/fonts/font-google-sans-code-400-italic-latin-ebe081c5cf2bc9bf.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86";
+  src: url("/_astro/fonts/font-google-sans-code-500-italic-latin-ebe081c5cf2bc9bf.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  font-weight: 500;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86";
+  src: url("/_astro/fonts/font-google-sans-code-600-italic-latin-ebe081c5cf2bc9bf.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  font-weight: 600;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86";
+  src: url("/_astro/fonts/font-google-sans-code-700-italic-latin-ebe081c5cf2bc9bf.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  font-weight: 700;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86";
+  src: url("/_astro/fonts/font-google-sans-code-300-normal-latin-dfc33a259d798962.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86";
+  src: url("/_astro/fonts/font-google-sans-code-400-normal-latin-dfc33a259d798962.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86";
+  src: url("/_astro/fonts/font-google-sans-code-500-normal-latin-dfc33a259d798962.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86";
+  src: url("/_astro/fonts/font-google-sans-code-600-normal-latin-dfc33a259d798962.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86";
+  src: url("/_astro/fonts/font-google-sans-code-700-normal-latin-dfc33a259d798962.woff2") format("woff2");
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86 fallback: Courier New";
+  src: local("Courier New");
+  font-display: swap;
+  font-weight: 300;
+  font-style: italic;
+  size-adjust: 99.9837%;
+  ascent-override: 96.6157%;
+  descent-override: 28.6047%;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86 fallback: Courier New";
+  src: local("Courier New");
+  font-display: swap;
+  font-weight: 400;
+  font-style: italic;
+  size-adjust: 99.9837%;
+  ascent-override: 96.6157%;
+  descent-override: 28.6047%;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86 fallback: Courier New";
+  src: local("Courier New");
+  font-display: swap;
+  font-weight: 500;
+  font-style: italic;
+  size-adjust: 99.9837%;
+  ascent-override: 96.6157%;
+  descent-override: 28.6047%;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86 fallback: Courier New";
+  src: local("Courier New");
+  font-display: swap;
+  font-weight: 600;
+  font-style: italic;
+  size-adjust: 99.9837%;
+  ascent-override: 96.6157%;
+  descent-override: 28.6047%;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86 fallback: Courier New";
+  src: local("Courier New");
+  font-display: swap;
+  font-weight: 700;
+  font-style: italic;
+  size-adjust: 99.9837%;
+  ascent-override: 96.6157%;
+  descent-override: 28.6047%;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86 fallback: Courier New";
+  src: local("Courier New");
+  font-display: swap;
+  font-weight: 300;
+  font-style: normal;
+  size-adjust: 99.9837%;
+  ascent-override: 96.6157%;
+  descent-override: 28.6047%;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86 fallback: Courier New";
+  src: local("Courier New");
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+  size-adjust: 99.9837%;
+  ascent-override: 96.6157%;
+  descent-override: 28.6047%;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86 fallback: Courier New";
+  src: local("Courier New");
+  font-display: swap;
+  font-weight: 500;
+  font-style: normal;
+  size-adjust: 99.9837%;
+  ascent-override: 96.6157%;
+  descent-override: 28.6047%;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86 fallback: Courier New";
+  src: local("Courier New");
+  font-display: swap;
+  font-weight: 600;
+  font-style: normal;
+  size-adjust: 99.9837%;
+  ascent-override: 96.6157%;
+  descent-override: 28.6047%;
+}
+@font-face {
+  font-family: "Google Sans Code-de078a87b11e4a86 fallback: Courier New";
+  src: local("Courier New");
+  font-display: swap;
+  font-weight: 700;
+  font-style: normal;
+  size-adjust: 99.9837%;
+  ascent-override: 96.6157%;
+  descent-override: 28.6047%;
+}
+:root {
+  --font-google-sans-code: "Google Sans Code-de078a87b11e4a86", "Google Sans Code-de078a87b11e4a86 fallback: Courier New", monospace;
+}
+</style><link rel="preload" href="/_astro/fonts/font-google-sans-code-400-normal-latin-dfc33a259d798962.woff2" as="font" type="font/woff2" crossorigin><!-- General Meta Tags --><title>随便写写</title><meta name="title" content="随便写写"><meta name="description" content="随便写写 - 想写就写吧"><meta name="author" content="Yuhao Chen"><link rel="sitemap" href="/sitemap-index.xml"><!-- Open Graph / Facebook --><meta property="og:title" content="随便写写"><meta property="og:description" content="随便写写 - 想写就写吧"><meta property="og:url" content="http://localhost:4322/"><meta property="og:image" content="http://localhost:4322/astropaper-og.jpg"><!-- Article Published/Modified time --><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="http://localhost:4322/"><meta property="twitter:title" content="随便写写"><meta property="twitter:description" content="随便写写 - 想写就写吧"><meta property="twitter:image" content="http://localhost:4322/astropaper-og.jpg"><!-- Google JSON-LD Structured data --><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"随便写写","image":"http://localhost:4322/astropaper-og.jpg","datePublished":"undefined","author":[{"@type":"Person","name":"Yuhao Chen","url":"https://github.com/AkazaAkane"}]}</script><!-- Enable RSS feed auto-discovery  --><!-- https://docs.astro.build/en/recipes/rss/#enabling-rss-feed-auto-discovery --><link rel="alternate" type="application/rss+xml" title="随便写写" href="https://akazaakane.github.io/rss.xml"><meta name="theme-color" content=""><meta name="astro-view-transitions-enabled" content="true"><meta name="astro-view-transitions-fallback" content="animate"><script type="module" src="/node_modules/astro/components/ClientRouter.astro?v=755d55be&astro&type=script&index=0&lang.ts"></script><!-- Minimal inline script to prevent FOUC - sets theme immediately --><script>
+      (function () {
+        const initialColorScheme = ""; // "light" | "dark"
+        const currentTheme = localStorage.getItem("theme");
+
+        function getPreferTheme() {
+          if (currentTheme) return currentTheme;
+          if (initialColorScheme) return initialColorScheme;
+          return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        }
+
+        const themeValue = getPreferTheme();
+
+        // Set theme immediately to prevent flash
+        document.firstElementChild?.setAttribute("data-theme", themeValue);
+
+        // Export minimal API for external script
+        window.theme = {
+          themeValue: themeValue,
+          getTheme: () => window.theme.themeValue,
+          setTheme: val => {
+            window.theme.themeValue = val;
+          },
+        };
+      })();
+    </script><style data-vite-dev-id="/Users/yc/Downloads/akazaakane.github.io/node_modules/astro/components/image.css">:where([data-astro-image]) {
+	object-fit: var(--fit);
+	object-position: var(--pos);
+	height: auto;
+}
+:where([data-astro-image="full-width"]) {
+	width: 100%;
+}
+:where([data-astro-image="constrained"]) {
+	max-width: 100%;
+}
+</style>
+<style data-vite-dev-id="/Users/yc/Downloads/akazaakane.github.io/node_modules/astro/components/ClientRouter.astro?astro&#38;type=style&#38;index=0&#38;lang.css">/* Route announcer */
+	.astro-route-announcer {
+		position: absolute;
+		left: 0;
+		top: 0;
+		clip: rect(0 0 0 0);
+		clip-path: inset(50%);
+		overflow: hidden;
+		white-space: nowrap;
+		width: 1px;
+		height: 1px;
+	}</style>
+<style data-vite-dev-id="/Users/yc/Downloads/akazaakane.github.io/src/styles/global.css">/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */
+@layer properties;
+@layer theme, base, components, utilities;
+@layer theme {
+  :root, :host {
+    --font-sans: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+      "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+      "Courier New", monospace;
+    --color-red-500: oklch(63.7% 0.237 25.331);
+    --color-green-400: oklch(79.2% 0.209 151.711);
+    --color-green-500: oklch(72.3% 0.219 149.579);
+    --color-slate-400: oklch(70.4% 0.04 256.788);
+    --color-black: #000;
+    --color-white: #fff;
+    --spacing: 0.25rem;
+    --container-3xl: 48rem;
+    --text-xs: 0.75rem;
+    --text-xs--line-height: calc(1 / 0.75);
+    --text-sm: 0.875rem;
+    --text-sm--line-height: calc(1.25 / 0.875);
+    --text-base: 1rem;
+    --text-base--line-height: calc(1.5 / 1);
+    --text-lg: 1.125rem;
+    --text-lg--line-height: calc(1.75 / 1.125);
+    --text-xl: 1.25rem;
+    --text-xl--line-height: calc(1.75 / 1.25);
+    --text-2xl: 1.5rem;
+    --text-2xl--line-height: calc(2 / 1.5);
+    --text-3xl: 1.875rem;
+    --text-3xl--line-height: calc(2.25 / 1.875);
+    --text-4xl: 2.25rem;
+    --text-4xl--line-height: calc(2.5 / 2.25);
+    --text-5xl: 3rem;
+    --text-5xl--line-height: 1;
+    --text-9xl: 8rem;
+    --text-9xl--line-height: 1;
+    --font-weight-light: 300;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --tracking-wide: 0.025em;
+    --tracking-wider: 0.05em;
+    --radius-sm: 0.25rem;
+    --radius-md: 0.375rem;
+    --blur-lg: 16px;
+    --default-transition-duration: 150ms;
+    --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
+    --font-app: var(--font-google-sans-code);
+    --color-muted: var(--muted);
+  }
+}
+@layer base {
+  *, ::after, ::before, ::backdrop, ::file-selector-button {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
+  html, :host {
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-family: var(--default-font-family, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji");
+    font-feature-settings: var(--default-font-feature-settings, normal);
+    font-variation-settings: var(--default-font-variation-settings, normal);
+    -webkit-tap-highlight-color: transparent;
+  }
+  hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+  abbr:where([title]) {
+    -webkit-text-decoration: underline dotted;
+    text-decoration: underline dotted;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  a {
+    color: inherit;
+    -webkit-text-decoration: inherit;
+    text-decoration: inherit;
+  }
+  b, strong {
+    font-weight: bolder;
+  }
+  code, kbd, samp, pre {
+    font-family: var(--default-mono-font-family, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace);
+    font-feature-settings: var(--default-mono-font-feature-settings, normal);
+    font-variation-settings: var(--default-mono-font-variation-settings, normal);
+    font-size: 1em;
+  }
+  small {
+    font-size: 80%;
+  }
+  sub, sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+  }
+  sub {
+    bottom: -0.25em;
+  }
+  sup {
+    top: -0.5em;
+  }
+  table {
+    text-indent: 0;
+    border-color: inherit;
+    border-collapse: collapse;
+  }
+  :-moz-focusring {
+    outline: auto;
+  }
+  progress {
+    vertical-align: baseline;
+  }
+  summary {
+    display: list-item;
+  }
+  ol, ul, menu {
+    list-style: none;
+  }
+  img, svg, video, canvas, audio, iframe, embed, object {
+    display: block;
+    vertical-align: middle;
+  }
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+  button, input, select, optgroup, textarea, ::file-selector-button {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    border-radius: 0;
+    background-color: transparent;
+    opacity: 1;
+  }
+  :where(select:is([multiple], [size])) optgroup {
+    font-weight: bolder;
+  }
+  :where(select:is([multiple], [size])) optgroup option {
+    padding-inline-start: 20px;
+  }
+  ::file-selector-button {
+    margin-inline-end: 4px;
+  }
+  ::placeholder {
+    opacity: 1;
+  }
+  @supports (not (-webkit-appearance: -apple-pay-button))  or (contain-intrinsic-size: 1px) {
+    ::placeholder {
+      color: currentcolor;
+      @supports (color: color-mix(in lab, red, red)) {
+        color: color-mix(in oklab, currentcolor 50%, transparent);
+      }
+    }
+  }
+  textarea {
+    resize: vertical;
+  }
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+  ::-webkit-date-and-time-value {
+    min-height: 1lh;
+    text-align: inherit;
+  }
+  ::-webkit-datetime-edit {
+    display: inline-flex;
+  }
+  ::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+  ::-webkit-datetime-edit, ::-webkit-datetime-edit-year-field, ::-webkit-datetime-edit-month-field, ::-webkit-datetime-edit-day-field, ::-webkit-datetime-edit-hour-field, ::-webkit-datetime-edit-minute-field, ::-webkit-datetime-edit-second-field, ::-webkit-datetime-edit-millisecond-field, ::-webkit-datetime-edit-meridiem-field {
+    padding-block: 0;
+  }
+  ::-webkit-calendar-picker-indicator {
+    line-height: 1;
+  }
+  :-moz-ui-invalid {
+    box-shadow: none;
+  }
+  button, input:where([type="button"], [type="reset"], [type="submit"]), ::file-selector-button {
+    appearance: button;
+  }
+  ::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
+    height: auto;
+  }
+  [hidden]:where(:not([hidden="until-found"])) {
+    display: none !important;
+  }
+}
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  .absolute {
+    position: absolute;
+  }
+  .fixed {
+    position: fixed;
+  }
+  .relative {
+    position: relative;
+  }
+  .inset-0 {
+    inset: calc(var(--spacing) * 0);
+  }
+  .start-16 {
+    inset-inline-start: calc(var(--spacing) * 16);
+  }
+  .end-3 {
+    inset-inline-end: calc(var(--spacing) * 3);
+  }
+  .end-4 {
+    inset-inline-end: calc(var(--spacing) * 4);
+  }
+  .-top-3 {
+    top: calc(var(--spacing) * -3);
+  }
+  .-top-6 {
+    top: calc(var(--spacing) * -6);
+  }
+  .-top-full {
+    top: -100%;
+  }
+  .top-\(--file-name-offset\) {
+    top: var(--file-name-offset);
+  }
+  .top-0 {
+    top: calc(var(--spacing) * 0);
+  }
+  .top-\[50\%\] {
+    top: 50%;
+  }
+  .bottom-8 {
+    bottom: calc(var(--spacing) * 8);
+  }
+  .left-0 {
+    left: calc(var(--spacing) * 0);
+  }
+  .left-2 {
+    left: calc(var(--spacing) * 2);
+  }
+  .left-\[50\%\] {
+    left: 50%;
+  }
+  .-z-10 {
+    z-index: calc(10 * -1);
+  }
+  .z-10 {
+    z-index: 10;
+  }
+  .z-50 {
+    z-index: 50;
+  }
+  .col-span-1 {
+    grid-column: span 1 / span 1;
+  }
+  .col-span-2 {
+    grid-column: span 2 / span 2;
+  }
+  .container {
+    width: 100%;
+    @media (width >= 40rem) {
+      max-width: 40rem;
+    }
+    @media (width >= 48rem) {
+      max-width: 48rem;
+    }
+    @media (width >= 64rem) {
+      max-width: 64rem;
+    }
+    @media (width >= 80rem) {
+      max-width: 80rem;
+    }
+    @media (width >= 96rem) {
+      max-width: 96rem;
+    }
+  }
+  .app-layout {
+    margin-inline: auto;
+    width: 100%;
+    max-width: var(--container-3xl);
+    padding-inline: calc(var(--spacing) * 4);
+  }
+  .my-2 {
+    margin-block: calc(var(--spacing) * 2);
+  }
+  .my-6 {
+    margin-block: calc(var(--spacing) * 6);
+  }
+  .my-8 {
+    margin-block: calc(var(--spacing) * 8);
+  }
+  .-ms-2 {
+    margin-inline-start: calc(var(--spacing) * -2);
+  }
+  .ms-2 {
+    margin-inline-start: calc(var(--spacing) * 2);
+  }
+  .ms-4 {
+    margin-inline-start: calc(var(--spacing) * 4);
+  }
+  .me-2 {
+    margin-inline-end: calc(var(--spacing) * 2);
+  }
+  .me-4 {
+    margin-inline-end: calc(var(--spacing) * 4);
+  }
+  .mt-2 {
+    margin-top: calc(var(--spacing) * 2);
+  }
+  .mt-4 {
+    margin-top: calc(var(--spacing) * 4);
+  }
+  .mt-6 {
+    margin-top: calc(var(--spacing) * 6);
+  }
+  .mt-8 {
+    margin-top: calc(var(--spacing) * 8);
+  }
+  .mt-auto {
+    margin-top: auto;
+  }
+  .mb-1 {
+    margin-bottom: calc(var(--spacing) * 1);
+  }
+  .mb-2 {
+    margin-bottom: calc(var(--spacing) * 2);
+  }
+  .mb-4 {
+    margin-bottom: calc(var(--spacing) * 4);
+  }
+  .mb-6 {
+    margin-bottom: calc(var(--spacing) * 6);
+  }
+  .mb-8 {
+    margin-bottom: calc(var(--spacing) * 8);
+  }
+  .mb-14 {
+    margin-bottom: calc(var(--spacing) * 14);
+  }
+  .mb-28 {
+    margin-bottom: calc(var(--spacing) * 28);
+  }
+  .block {
+    display: block;
+  }
+  .contents {
+    display: contents;
+  }
+  .flex {
+    display: flex;
+  }
+  .grid {
+    display: grid;
+  }
+  .hidden {
+    display: none;
+  }
+  .inline {
+    display: inline;
+  }
+  .inline-block {
+    display: inline-block;
+  }
+  .inline-flex {
+    display: inline-flex;
+  }
+  .size-4 {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+  .size-5 {
+    width: calc(var(--spacing) * 5);
+    height: calc(var(--spacing) * 5);
+  }
+  .size-6 {
+    width: calc(var(--spacing) * 6);
+    height: calc(var(--spacing) * 6);
+  }
+  .size-12 {
+    width: calc(var(--spacing) * 12);
+    height: calc(var(--spacing) * 12);
+  }
+  .size-14 {
+    width: calc(var(--spacing) * 14);
+    height: calc(var(--spacing) * 14);
+  }
+  .h-1 {
+    height: calc(var(--spacing) * 1);
+  }
+  .w-0 {
+    width: calc(var(--spacing) * 0);
+  }
+  .w-44 {
+    width: calc(var(--spacing) * 44);
+  }
+  .w-full {
+    width: 100%;
+  }
+  .max-w-app {
+    max-width: var(--container-3xl);
+  }
+  .min-w-5\.5 {
+    min-width: calc(var(--spacing) * 5.5);
+  }
+  .min-w-36 {
+    min-width: calc(var(--spacing) * 36);
+  }
+  .flex-1 {
+    flex: 1;
+  }
+  .flex-none {
+    flex: none;
+  }
+  .-translate-\[50\%\] {
+    --tw-translate-x: calc(50% * -1);
+    --tw-translate-y: calc(50% * -1);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .translate-y-0 {
+    --tw-translate-y: calc(var(--spacing) * 0);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .translate-y-14 {
+    --tw-translate-y: calc(var(--spacing) * 14);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .scale-0 {
+    --tw-scale-x: 0%;
+    --tw-scale-y: 0%;
+    --tw-scale-z: 0%;
+    scale: var(--tw-scale-x) var(--tw-scale-y);
+  }
+  .scale-90 {
+    --tw-scale-x: 90%;
+    --tw-scale-y: 90%;
+    --tw-scale-z: 90%;
+    scale: var(--tw-scale-x) var(--tw-scale-y);
+  }
+  .scale-100 {
+    --tw-scale-x: 100%;
+    --tw-scale-y: 100%;
+    --tw-scale-z: 100%;
+    scale: var(--tw-scale-x) var(--tw-scale-y);
+  }
+  .scale-110 {
+    --tw-scale-x: 110%;
+    --tw-scale-y: 110%;
+    --tw-scale-z: 110%;
+    scale: var(--tw-scale-x) var(--tw-scale-y);
+  }
+  .scale-125 {
+    --tw-scale-x: 125%;
+    --tw-scale-y: 125%;
+    --tw-scale-z: 125%;
+    scale: var(--tw-scale-x) var(--tw-scale-y);
+  }
+  .rotate-0 {
+    rotate: 0deg;
+  }
+  .rotate-90 {
+    rotate: 90deg;
+  }
+  .grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .flex-col {
+    flex-direction: column;
+  }
+  .flex-wrap {
+    flex-wrap: wrap;
+  }
+  .place-content-center {
+    place-content: center;
+  }
+  .items-baseline {
+    align-items: baseline;
+  }
+  .items-center {
+    align-items: center;
+  }
+  .justify-baseline {
+    justify-content: baseline;
+  }
+  .justify-between {
+    justify-content: space-between;
+  }
+  .justify-center {
+    justify-content: center;
+  }
+  .justify-end {
+    justify-content: flex-end;
+  }
+  .justify-start {
+    justify-content: flex-start;
+  }
+  .gap-0\.5 {
+    gap: calc(var(--spacing) * 0.5);
+  }
+  .gap-1 {
+    gap: calc(var(--spacing) * 1);
+  }
+  .gap-1\.5 {
+    gap: calc(var(--spacing) * 1.5);
+  }
+  .gap-2 {
+    gap: calc(var(--spacing) * 2);
+  }
+  .gap-4 {
+    gap: calc(var(--spacing) * 4);
+  }
+  .gap-6 {
+    gap: calc(var(--spacing) * 6);
+  }
+  .space-y-4 {
+    :where(& > :not(:last-child)) {
+      --tw-space-y-reverse: 0;
+      margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
+      margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
+    }
+  }
+  .gap-x-2 {
+    column-gap: calc(var(--spacing) * 2);
+  }
+  .self-end {
+    align-self: flex-end;
+  }
+  .scroll-smooth {
+    scroll-behavior: smooth;
+  }
+  .rounded {
+    border-radius: 0.25rem;
+  }
+  .rounded-full {
+    border-radius: calc(infinity * 1px);
+  }
+  .rounded-md {
+    border-radius: var(--radius-md);
+  }
+  .rounded-t-md {
+    border-top-left-radius: var(--radius-md);
+    border-top-right-radius: var(--radius-md);
+  }
+  .rounded-tl-none {
+    border-top-left-radius: 0;
+  }
+  .border {
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+  }
+  .border-t {
+    border-top-style: var(--tw-border-style);
+    border-top-width: 1px;
+  }
+  .border-b {
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+  }
+  .border-b-0 {
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 0px;
+  }
+  .border-b-2 {
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 2px;
+  }
+  .border-dashed {
+    --tw-border-style: dashed;
+    border-style: dashed;
+  }
+  .border-border {
+    border-color: var(--border);
+  }
+  .border-foreground {
+    border-color: var(--foreground);
+  }
+  .border-muted {
+    border-color: var(--muted);
+  }
+  .bg-accent {
+    background-color: var(--accent);
+  }
+  .bg-background {
+    background-color: var(--background);
+  }
+  .bg-black {
+    background-color: var(--color-black);
+  }
+  .bg-muted {
+    background-color: var(--muted);
+  }
+  .bg-muted\/50 {
+    background-color: var(--muted);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+    }
+  }
+  .bg-muted\/75 {
+    background-color: var(--muted);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--muted) 75%, transparent);
+    }
+  }
+  .bg-transparent {
+    background-color: transparent;
+  }
+  .fill-transparent {
+    fill: transparent;
+  }
+  .stroke-current {
+    stroke: currentcolor;
+  }
+  .stroke-2 {
+    stroke-width: 2;
+  }
+  .p-2 {
+    padding: calc(var(--spacing) * 2);
+  }
+  .p-3 {
+    padding: calc(var(--spacing) * 3);
+  }
+  .p-4 {
+    padding: calc(var(--spacing) * 4);
+  }
+  .px-2 {
+    padding-inline: calc(var(--spacing) * 2);
+  }
+  .px-3 {
+    padding-inline: calc(var(--spacing) * 3);
+  }
+  .py-1 {
+    padding-block: calc(var(--spacing) * 1);
+  }
+  .py-2 {
+    padding-block: calc(var(--spacing) * 2);
+  }
+  .py-4 {
+    padding-block: calc(var(--spacing) * 4);
+  }
+  .py-6 {
+    padding-block: calc(var(--spacing) * 6);
+  }
+  .pt-8 {
+    padding-top: calc(var(--spacing) * 8);
+  }
+  .pt-12 {
+    padding-top: calc(var(--spacing) * 12);
+  }
+  .pr-2 {
+    padding-right: calc(var(--spacing) * 2);
+  }
+  .pb-4 {
+    padding-bottom: calc(var(--spacing) * 4);
+  }
+  .pb-6 {
+    padding-bottom: calc(var(--spacing) * 6);
+  }
+  .pb-12 {
+    padding-bottom: calc(var(--spacing) * 12);
+  }
+  .pl-4 {
+    padding-left: calc(var(--spacing) * 4);
+  }
+  .text-center {
+    text-align: center;
+  }
+  .text-end {
+    text-align: end;
+  }
+  .text-2xl {
+    font-size: var(--text-2xl);
+    line-height: var(--tw-leading, var(--text-2xl--line-height));
+  }
+  .text-4xl {
+    font-size: var(--text-4xl);
+    line-height: var(--tw-leading, var(--text-4xl--line-height));
+  }
+  .text-9xl {
+    font-size: var(--text-9xl);
+    line-height: var(--tw-leading, var(--text-9xl--line-height));
+  }
+  .text-lg {
+    font-size: var(--text-lg);
+    line-height: var(--tw-leading, var(--text-lg--line-height));
+  }
+  .text-sm {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+  }
+  .text-xl {
+    font-size: var(--text-xl);
+    line-height: var(--tw-leading, var(--text-xl--line-height));
+  }
+  .text-xs {
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+  }
+  .leading-4 {
+    --tw-leading: calc(var(--spacing) * 4);
+    line-height: calc(var(--spacing) * 4);
+  }
+  .leading-8 {
+    --tw-leading: calc(var(--spacing) * 8);
+    line-height: calc(var(--spacing) * 8);
+  }
+  .font-bold {
+    --tw-font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-bold);
+  }
+  .font-light {
+    --tw-font-weight: var(--font-weight-light);
+    font-weight: var(--font-weight-light);
+  }
+  .font-medium {
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+  }
+  .font-semibold {
+    --tw-font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-semibold);
+  }
+  .tracking-wide {
+    --tw-tracking: var(--tracking-wide);
+    letter-spacing: var(--tracking-wide);
+  }
+  .tracking-wider {
+    --tw-tracking: var(--tracking-wider);
+    letter-spacing: var(--tracking-wider);
+  }
+  .whitespace-nowrap {
+    white-space: nowrap;
+  }
+  .text-accent {
+    color: var(--accent);
+  }
+  .text-accent\/85 {
+    color: var(--accent);
+    @supports (color: color-mix(in lab, red, red)) {
+      color: color-mix(in oklab, var(--accent) 85%, transparent);
+    }
+  }
+  .text-foreground {
+    color: var(--foreground);
+  }
+  .text-white {
+    color: var(--color-white);
+  }
+  .capitalize {
+    text-transform: capitalize;
+  }
+  .lowercase {
+    text-transform: lowercase;
+  }
+  .italic {
+    font-style: italic;
+  }
+  .no-underline {
+    text-decoration-line: none;
+  }
+  .underline {
+    text-decoration-line: underline;
+  }
+  .decoration-dashed {
+    text-decoration-style: dashed;
+  }
+  .underline-offset-4 {
+    text-underline-offset: 4px;
+  }
+  .underline-offset-8 {
+    text-underline-offset: 8px;
+  }
+  .opacity-0 {
+    opacity: 0%;
+  }
+  .opacity-50 {
+    opacity: 50%;
+  }
+  .opacity-70 {
+    opacity: 70%;
+  }
+  .opacity-75 {
+    opacity: 75%;
+  }
+  .opacity-80 {
+    opacity: 80%;
+  }
+  .opacity-90 {
+    opacity: 90%;
+  }
+  .opacity-100 {
+    opacity: 100%;
+  }
+  .shadow-xl {
+    --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgb(0 0 0 / 0.1));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .outline {
+    outline-style: var(--tw-outline-style);
+    outline-width: 1px;
+  }
+  .filter {
+    filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
+  }
+  .backdrop-blur-lg {
+    --tw-backdrop-blur: blur(var(--blur-lg));
+    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+  }
+  .transition {
+    transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow, transform, translate, scale, rotate, filter, -webkit-backdrop-filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .transition-all {
+    transition-property: all;
+    transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .duration-500 {
+    --tw-duration: 500ms;
+    transition-duration: 500ms;
+  }
+  .select-none {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .group-hover\:fill-transparent {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        fill: transparent;
+      }
+    }
+  }
+  .group-hover\:text-accent {
+    &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+        color: var(--accent);
+      }
+    }
+  }
+  .before\:absolute {
+    &::before {
+      content: var(--tw-content);
+      position: absolute;
+    }
+  }
+  .before\:top-\[45\%\] {
+    &::before {
+      content: var(--tw-content);
+      top: 45%;
+    }
+  }
+  .before\:left-2 {
+    &::before {
+      content: var(--tw-content);
+      left: calc(var(--spacing) * 2);
+    }
+  }
+  .before\:inline-block {
+    &::before {
+      content: var(--tw-content);
+      display: inline-block;
+    }
+  }
+  .before\:size-1 {
+    &::before {
+      content: var(--tw-content);
+      width: calc(var(--spacing) * 1);
+      height: calc(var(--spacing) * 1);
+    }
+  }
+  .before\:rounded-full {
+    &::before {
+      content: var(--tw-content);
+      border-radius: calc(infinity * 1px);
+    }
+  }
+  .before\:bg-green-500 {
+    &::before {
+      content: var(--tw-content);
+      background-color: var(--color-green-500);
+    }
+  }
+  .hover\:-mt-0\.5 {
+    &:hover {
+      @media (hover: hover) {
+        margin-top: calc(var(--spacing) * -0.5);
+      }
+    }
+  }
+  .hover\:rotate-6 {
+    &:hover {
+      @media (hover: hover) {
+        rotate: 6deg;
+      }
+    }
+  }
+  .hover\:border-accent {
+    &:hover {
+      @media (hover: hover) {
+        border-color: var(--accent);
+      }
+    }
+  }
+  .hover\:text-accent {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--accent);
+      }
+    }
+  }
+  .hover\:text-foreground\/75 {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--foreground);
+        @supports (color: color-mix(in lab, red, red)) {
+          color: color-mix(in oklab, var(--foreground) 75%, transparent);
+        }
+      }
+    }
+  }
+  .hover\:underline {
+    &:hover {
+      @media (hover: hover) {
+        text-decoration-line: underline;
+      }
+    }
+  }
+  .hover\:opacity-75 {
+    &:hover {
+      @media (hover: hover) {
+        opacity: 75%;
+      }
+    }
+  }
+  .focus\:top-4 {
+    &:focus {
+      top: calc(var(--spacing) * 4);
+    }
+  }
+  .focus-visible\:border-none {
+    &:focus-visible {
+      --tw-border-style: none;
+      border-style: none;
+    }
+  }
+  .focus-visible\:text-accent {
+    &:focus-visible {
+      color: var(--accent);
+    }
+  }
+  .focus-visible\:no-underline {
+    &:focus-visible {
+      text-decoration-line: none;
+    }
+  }
+  .focus-visible\:underline-offset-0 {
+    &:focus-visible {
+      text-underline-offset: 0px;
+    }
+  }
+  .max-sm\:hidden {
+    @media (width < 40rem) {
+      display: none;
+    }
+  }
+  .max-sm\:flex-col {
+    @media (width < 40rem) {
+      flex-direction: column;
+    }
+  }
+  .sm\:sr-only {
+    @media (width >= 40rem) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  }
+  .sm\:static {
+    @media (width >= 40rem) {
+      position: static;
+    }
+  }
+  .sm\:col-start-2 {
+    @media (width >= 40rem) {
+      grid-column-start: 2;
+    }
+  }
+  .sm\:my-4 {
+    @media (width >= 40rem) {
+      margin-block: calc(var(--spacing) * 4);
+    }
+  }
+  .sm\:my-6 {
+    @media (width >= 40rem) {
+      margin-block: calc(var(--spacing) * 6);
+    }
+  }
+  .sm\:my-8 {
+    @media (width >= 40rem) {
+      margin-block: calc(var(--spacing) * 8);
+    }
+  }
+  .sm\:my-auto {
+    @media (width >= 40rem) {
+      margin-block: auto;
+    }
+  }
+  .sm\:ms-2 {
+    @media (width >= 40rem) {
+      margin-inline-start: calc(var(--spacing) * 2);
+    }
+  }
+  .sm\:mt-0 {
+    @media (width >= 40rem) {
+      margin-top: calc(var(--spacing) * 0);
+    }
+  }
+  .sm\:mb-0 {
+    @media (width >= 40rem) {
+      margin-bottom: calc(var(--spacing) * 0);
+    }
+  }
+  .sm\:flex {
+    @media (width >= 40rem) {
+      display: flex;
+    }
+  }
+  .sm\:hidden {
+    @media (width >= 40rem) {
+      display: none;
+    }
+  }
+  .sm\:inline {
+    @media (width >= 40rem) {
+      display: inline;
+    }
+  }
+  .sm\:inline-block {
+    @media (width >= 40rem) {
+      display: inline-block;
+    }
+  }
+  .sm\:size-8 {
+    @media (width >= 40rem) {
+      width: calc(var(--spacing) * 8);
+      height: calc(var(--spacing) * 8);
+    }
+  }
+  .sm\:w-auto {
+    @media (width >= 40rem) {
+      width: auto;
+    }
+  }
+  .sm\:scale-110 {
+    @media (width >= 40rem) {
+      --tw-scale-x: 110%;
+      --tw-scale-y: 110%;
+      --tw-scale-z: 110%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
+    }
+  }
+  .sm\:grid-cols-2 {
+    @media (width >= 40rem) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .sm\:flex-row {
+    @media (width >= 40rem) {
+      flex-direction: row;
+    }
+  }
+  .sm\:flex-row-reverse {
+    @media (width >= 40rem) {
+      flex-direction: row-reverse;
+    }
+  }
+  .sm\:items-center {
+    @media (width >= 40rem) {
+      align-items: center;
+    }
+  }
+  .sm\:justify-end {
+    @media (width >= 40rem) {
+      justify-content: flex-end;
+    }
+  }
+  .sm\:gap-x-5 {
+    @media (width >= 40rem) {
+      column-gap: calc(var(--spacing) * 5);
+    }
+  }
+  .sm\:space-x-4 {
+    @media (width >= 40rem) {
+      :where(& > :not(:last-child)) {
+        --tw-space-x-reverse: 0;
+        margin-inline-start: calc(calc(var(--spacing) * 4) * var(--tw-space-x-reverse));
+        margin-inline-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-x-reverse)));
+      }
+    }
+  }
+  .sm\:gap-y-0 {
+    @media (width >= 40rem) {
+      row-gap: calc(var(--spacing) * 0);
+    }
+  }
+  .sm\:p-1 {
+    @media (width >= 40rem) {
+      padding: calc(var(--spacing) * 1);
+    }
+  }
+  .sm\:py-0 {
+    @media (width >= 40rem) {
+      padding-block: calc(var(--spacing) * 0);
+    }
+  }
+  .sm\:py-4 {
+    @media (width >= 40rem) {
+      padding-block: calc(var(--spacing) * 4);
+    }
+  }
+  .sm\:py-6 {
+    @media (width >= 40rem) {
+      padding-block: calc(var(--spacing) * 6);
+    }
+  }
+  .sm\:text-2xl {
+    @media (width >= 40rem) {
+      font-size: var(--text-2xl);
+      line-height: var(--tw-leading, var(--text-2xl--line-height));
+    }
+  }
+  .sm\:text-3xl {
+    @media (width >= 40rem) {
+      font-size: var(--text-3xl);
+      line-height: var(--tw-leading, var(--text-3xl--line-height));
+    }
+  }
+  .sm\:text-5xl {
+    @media (width >= 40rem) {
+      font-size: var(--text-5xl);
+      line-height: var(--tw-leading, var(--text-5xl--line-height));
+    }
+  }
+  .sm\:text-base {
+    @media (width >= 40rem) {
+      font-size: var(--text-base);
+      line-height: var(--tw-leading, var(--text-base--line-height));
+    }
+  }
+  .sm\:leading-none {
+    @media (width >= 40rem) {
+      --tw-leading: 1;
+      line-height: 1;
+    }
+  }
+  .md\:not-sr-only {
+    @media (width >= 48rem) {
+      position: static;
+      width: auto;
+      height: auto;
+      padding: 0;
+      margin: 0;
+      overflow: visible;
+      clip-path: none;
+      white-space: normal;
+    }
+  }
+  .md\:sticky {
+    @media (width >= 48rem) {
+      position: sticky;
+    }
+  }
+  .md\:end-auto {
+    @media (width >= 48rem) {
+      inset-inline-end: auto;
+    }
+  }
+  .md\:float-end {
+    @media (width >= 48rem) {
+      float: inline-end;
+    }
+  }
+  .md\:me-1 {
+    @media (width >= 48rem) {
+      margin-inline-end: calc(var(--spacing) * 1);
+    }
+  }
+  .md\:hidden {
+    @media (width >= 48rem) {
+      display: none;
+    }
+  }
+  .md\:h-8 {
+    @media (width >= 48rem) {
+      height: calc(var(--spacing) * 8);
+    }
+  }
+  .md\:w-fit {
+    @media (width >= 48rem) {
+      width: fit-content;
+    }
+  }
+  .md\:items-start {
+    @media (width >= 48rem) {
+      align-items: flex-start;
+    }
+  }
+  .md\:rounded-md {
+    @media (width >= 48rem) {
+      border-radius: var(--radius-md);
+    }
+  }
+  .md\:bg-background\/35 {
+    @media (width >= 48rem) {
+      background-color: var(--background);
+      @supports (color: color-mix(in lab, red, red)) {
+        background-color: color-mix(in oklab, var(--background) 35%, transparent);
+      }
+    }
+  }
+  .md\:bg-clip-padding {
+    @media (width >= 48rem) {
+      background-clip: padding-box;
+    }
+  }
+  .md\:opacity-0 {
+    @media (width >= 48rem) {
+      opacity: 0%;
+    }
+  }
+  .md\:shadow-none {
+    @media (width >= 48rem) {
+      --tw-shadow: 0 0 #0000;
+      box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    }
+  }
+  .md\:backdrop-blur-lg {
+    @media (width >= 48rem) {
+      --tw-backdrop-blur: blur(var(--blur-lg));
+      -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+      backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+    }
+  }
+  .md\:group-hover\:opacity-100 {
+    @media (width >= 48rem) {
+      &:is(:where(.group):hover *) {
+        @media (hover: hover) {
+          opacity: 100%;
+        }
+      }
+    }
+  }
+  .md\:focus\:opacity-100 {
+    @media (width >= 48rem) {
+      &:focus {
+        opacity: 100%;
+      }
+    }
+  }
+  .md\:focus-visible\:rounded-none {
+    @media (width >= 48rem) {
+      &:focus-visible {
+        border-radius: 0;
+      }
+    }
+  }
+  .rtl\:-rotate-180 {
+    &:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
+      rotate: calc(180deg * -1);
+    }
+  }
+  .rtl\:rotate-180 {
+    &:where(:dir(rtl), [dir="rtl"], [dir="rtl"] *) {
+      rotate: 180deg;
+    }
+  }
+  .dark\:scale-0 {
+    &:where([data-theme=dark], [data-theme=dark] *) {
+      --tw-scale-x: 0%;
+      --tw-scale-y: 0%;
+      --tw-scale-z: 0%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
+    }
+  }
+  .dark\:scale-100 {
+    &:where([data-theme=dark], [data-theme=dark] *) {
+      --tw-scale-x: 100%;
+      --tw-scale-y: 100%;
+      --tw-scale-z: 100%;
+      scale: var(--tw-scale-x) var(--tw-scale-y);
+    }
+  }
+  .dark\:-rotate-90 {
+    &:where([data-theme=dark], [data-theme=dark] *) {
+      rotate: calc(90deg * -1);
+    }
+  }
+  .dark\:rotate-0 {
+    &:where([data-theme=dark], [data-theme=dark] *) {
+      rotate: 0deg;
+    }
+  }
+  .prose-pre\:bg-\(--shiki-light-bg\) {
+    & :is(:where(pre):not(:where([class~="not-prose"],[class~="not-prose"] *))) {
+      background-color: var(--shiki-light-bg);
+    }
+  }
+  .dark\:prose-pre\:bg-\(--shiki-dark-bg\) {
+    &:where([data-theme=dark], [data-theme=dark] *) {
+      & :is(:where(pre):not(:where([class~="not-prose"],[class~="not-prose"] *))) {
+        background-color: var(--shiki-dark-bg);
+      }
+    }
+  }
+  .prose-img\:border-0 {
+    & :is(:where(img):not(:where([class~="not-prose"],[class~="not-prose"] *))) {
+      border-style: var(--tw-border-style);
+      border-width: 0px;
+    }
+  }
+  .\[\&\>li\]\:inline {
+    &>li {
+      display: inline;
+    }
+  }
+  .\[\&\>li\:not\(\:last-child\)\>a\]\:hover\:opacity-100 {
+    &>li:not(:last-child)>a {
+      &:hover {
+        @media (hover: hover) {
+          opacity: 100%;
+        }
+      }
+    }
+  }
+  .\[\&\>li\>a\]\:block {
+    &>li>a {
+      display: block;
+    }
+  }
+  .\[\&\>li\>a\]\:px-4 {
+    &>li>a {
+      padding-inline: calc(var(--spacing) * 4);
+    }
+  }
+  .\[\&\>li\>a\]\:py-3 {
+    &>li>a {
+      padding-block: calc(var(--spacing) * 3);
+    }
+  }
+  .\[\&\>li\>a\]\:text-center {
+    &>li>a {
+      text-align: center;
+    }
+  }
+  .\[\&\>li\>a\]\:font-medium {
+    &>li>a {
+      --tw-font-weight: var(--font-weight-medium);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+  .\[\&\>li\>a\]\:hover\:text-accent {
+    &>li>a {
+      &:hover {
+        @media (hover: hover) {
+          color: var(--accent);
+        }
+      }
+    }
+  }
+  .sm\:\[\&\>li\>a\]\:px-2 {
+    @media (width >= 40rem) {
+      &>li>a {
+        padding-inline: calc(var(--spacing) * 2);
+      }
+    }
+  }
+  .sm\:\[\&\>li\>a\]\:py-1 {
+    @media (width >= 40rem) {
+      &>li>a {
+        padding-block: calc(var(--spacing) * 1);
+      }
+    }
+  }
+  .\[\&\>svg\]\:stroke-accent {
+    &>svg {
+      stroke: var(--accent);
+    }
+  }
+  .hover\:\[\&\>svg\]\:stroke-accent {
+    &:hover {
+      @media (hover: hover) {
+        &>svg {
+          stroke: var(--accent);
+        }
+      }
+    }
+  }
+}
+@layer base {
+  .app-prose {
+    color: var(--tw-prose-body);
+    max-width: 65ch;
+    :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 1.25em;
+      margin-bottom: 1.25em;
+    }
+    :where([class~="lead"]):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-lead);
+      font-size: 1.25em;
+      line-height: 1.6;
+      margin-top: 1.2em;
+      margin-bottom: 1.2em;
+    }
+    :where(a):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-links);
+      text-decoration: underline;
+      font-weight: 500;
+    }
+    :where(strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-bold);
+      font-weight: 600;
+    }
+    :where(a strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: inherit;
+    }
+    :where(blockquote strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: inherit;
+    }
+    :where(thead th strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: inherit;
+    }
+    :where(ol):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      list-style-type: decimal;
+      margin-top: 1.25em;
+      margin-bottom: 1.25em;
+      padding-inline-start: 1.625em;
+    }
+    :where(ol[type="A"]):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      list-style-type: upper-alpha;
+    }
+    :where(ol[type="a"]):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      list-style-type: lower-alpha;
+    }
+    :where(ol[type="A" s]):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      list-style-type: upper-alpha;
+    }
+    :where(ol[type="a" s]):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      list-style-type: lower-alpha;
+    }
+    :where(ol[type="I"]):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      list-style-type: upper-roman;
+    }
+    :where(ol[type="i"]):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      list-style-type: lower-roman;
+    }
+    :where(ol[type="I" s]):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      list-style-type: upper-roman;
+    }
+    :where(ol[type="i" s]):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      list-style-type: lower-roman;
+    }
+    :where(ol[type="1"]):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      list-style-type: decimal;
+    }
+    :where(ul):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      list-style-type: disc;
+      margin-top: 1.25em;
+      margin-bottom: 1.25em;
+      padding-inline-start: 1.625em;
+    }
+    :where(ol > li):not(:where([class~="not-prose"],[class~="not-prose"] *))::marker {
+      font-weight: 400;
+      color: var(--tw-prose-counters);
+    }
+    :where(ul > li):not(:where([class~="not-prose"],[class~="not-prose"] *))::marker {
+      color: var(--tw-prose-bullets);
+    }
+    :where(dt):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-headings);
+      font-weight: 600;
+      margin-top: 1.25em;
+    }
+    :where(hr):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      border-color: var(--tw-prose-hr);
+      border-top-width: 1px;
+      margin-top: 3em;
+      margin-bottom: 3em;
+    }
+    :where(blockquote):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      font-weight: 500;
+      font-style: italic;
+      color: var(--tw-prose-quotes);
+      border-inline-start-width: 0.25rem;
+      border-inline-start-color: var(--tw-prose-quote-borders);
+      quotes: "\201C""\201D""\2018""\2019";
+      margin-top: 1.6em;
+      margin-bottom: 1.6em;
+      padding-inline-start: 1em;
+    }
+    :where(blockquote p:first-of-type):not(:where([class~="not-prose"],[class~="not-prose"] *))::before {
+      content: open-quote;
+    }
+    :where(blockquote p:last-of-type):not(:where([class~="not-prose"],[class~="not-prose"] *))::after {
+      content: close-quote;
+    }
+    :where(h1):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-headings);
+      font-weight: 800;
+      font-size: 2.25em;
+      margin-top: 0;
+      margin-bottom: 0.8888889em;
+      line-height: 1.1111111;
+    }
+    :where(h1 strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      font-weight: 900;
+      color: inherit;
+    }
+    :where(h2):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-headings);
+      font-weight: 700;
+      font-size: 1.5em;
+      margin-top: 2em;
+      margin-bottom: 1em;
+      line-height: 1.3333333;
+    }
+    :where(h2 strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      font-weight: 800;
+      color: inherit;
+    }
+    :where(h3):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-headings);
+      font-weight: 600;
+      font-size: 1.25em;
+      margin-top: 1.6em;
+      margin-bottom: 0.6em;
+      line-height: 1.6;
+    }
+    :where(h3 strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      font-weight: 700;
+      color: inherit;
+    }
+    :where(h4):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-headings);
+      font-weight: 600;
+      margin-top: 1.5em;
+      margin-bottom: 0.5em;
+      line-height: 1.5;
+    }
+    :where(h4 strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      font-weight: 700;
+      color: inherit;
+    }
+    :where(img):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 2em;
+      margin-bottom: 2em;
+    }
+    :where(picture):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      display: block;
+      margin-top: 2em;
+      margin-bottom: 2em;
+    }
+    :where(video):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 2em;
+      margin-bottom: 2em;
+    }
+    :where(kbd):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      font-weight: 500;
+      font-family: inherit;
+      color: var(--tw-prose-kbd);
+      box-shadow: 0 0 0 1px var(--tw-prose-kbd-shadows), 0 3px 0 var(--tw-prose-kbd-shadows);
+      font-size: 0.875em;
+      border-radius: 0.3125rem;
+      padding-top: 0.1875em;
+      padding-inline-end: 0.375em;
+      padding-bottom: 0.1875em;
+      padding-inline-start: 0.375em;
+    }
+    :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-code);
+      font-weight: 600;
+      font-size: 0.875em;
+    }
+    :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *))::before {
+      content: "`";
+    }
+    :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *))::after {
+      content: "`";
+    }
+    :where(a code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: inherit;
+    }
+    :where(h1 code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: inherit;
+    }
+    :where(h2 code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: inherit;
+      font-size: 0.875em;
+    }
+    :where(h3 code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: inherit;
+      font-size: 0.9em;
+    }
+    :where(h4 code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: inherit;
+    }
+    :where(blockquote code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: inherit;
+    }
+    :where(thead th code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: inherit;
+    }
+    :where(pre):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-pre-code);
+      background-color: var(--tw-prose-pre-bg);
+      overflow-x: auto;
+      font-weight: 400;
+      font-size: 0.875em;
+      line-height: 1.7142857;
+      margin-top: 1.7142857em;
+      margin-bottom: 1.7142857em;
+      border-radius: 0.375rem;
+      padding-top: 0.8571429em;
+      padding-inline-end: 1.1428571em;
+      padding-bottom: 0.8571429em;
+      padding-inline-start: 1.1428571em;
+    }
+    :where(pre code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      background-color: transparent;
+      border-width: 0;
+      border-radius: 0;
+      padding: 0;
+      font-weight: inherit;
+      color: inherit;
+      font-size: inherit;
+      font-family: inherit;
+      line-height: inherit;
+    }
+    :where(pre code):not(:where([class~="not-prose"],[class~="not-prose"] *))::before {
+      content: none;
+    }
+    :where(pre code):not(:where([class~="not-prose"],[class~="not-prose"] *))::after {
+      content: none;
+    }
+    :where(table):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      width: 100%;
+      table-layout: auto;
+      margin-top: 2em;
+      margin-bottom: 2em;
+      font-size: 0.875em;
+      line-height: 1.7142857;
+    }
+    :where(thead):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      border-bottom-width: 1px;
+      border-bottom-color: var(--tw-prose-th-borders);
+    }
+    :where(thead th):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-headings);
+      font-weight: 600;
+      vertical-align: bottom;
+      padding-inline-end: 0.5714286em;
+      padding-bottom: 0.5714286em;
+      padding-inline-start: 0.5714286em;
+    }
+    :where(tbody tr):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      border-bottom-width: 1px;
+      border-bottom-color: var(--tw-prose-td-borders);
+    }
+    :where(tbody tr:last-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      border-bottom-width: 0;
+    }
+    :where(tbody td):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      vertical-align: baseline;
+    }
+    :where(tfoot):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      border-top-width: 1px;
+      border-top-color: var(--tw-prose-th-borders);
+    }
+    :where(tfoot td):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      vertical-align: top;
+    }
+    :where(th, td):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      text-align: start;
+    }
+    :where(figure > *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    :where(figcaption):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: var(--tw-prose-captions);
+      font-size: 0.875em;
+      line-height: 1.4285714;
+      margin-top: 0.8571429em;
+    }
+    --tw-prose-body: oklch(37.3% 0.034 259.733);
+    --tw-prose-headings: oklch(21% 0.034 264.665);
+    --tw-prose-lead: oklch(44.6% 0.03 256.802);
+    --tw-prose-links: oklch(21% 0.034 264.665);
+    --tw-prose-bold: oklch(21% 0.034 264.665);
+    --tw-prose-counters: oklch(55.1% 0.027 264.364);
+    --tw-prose-bullets: oklch(87.2% 0.01 258.338);
+    --tw-prose-hr: oklch(92.8% 0.006 264.531);
+    --tw-prose-quotes: oklch(21% 0.034 264.665);
+    --tw-prose-quote-borders: oklch(92.8% 0.006 264.531);
+    --tw-prose-captions: oklch(55.1% 0.027 264.364);
+    --tw-prose-kbd: oklch(21% 0.034 264.665);
+    --tw-prose-kbd-shadows: color-mix(in oklab, oklch(21% 0.034 264.665) 10%, transparent);
+    --tw-prose-code: oklch(21% 0.034 264.665);
+    --tw-prose-pre-code: oklch(92.8% 0.006 264.531);
+    --tw-prose-pre-bg: oklch(27.8% 0.033 256.848);
+    --tw-prose-th-borders: oklch(87.2% 0.01 258.338);
+    --tw-prose-td-borders: oklch(92.8% 0.006 264.531);
+    --tw-prose-invert-body: oklch(87.2% 0.01 258.338);
+    --tw-prose-invert-headings: #fff;
+    --tw-prose-invert-lead: oklch(70.7% 0.022 261.325);
+    --tw-prose-invert-links: #fff;
+    --tw-prose-invert-bold: #fff;
+    --tw-prose-invert-counters: oklch(70.7% 0.022 261.325);
+    --tw-prose-invert-bullets: oklch(44.6% 0.03 256.802);
+    --tw-prose-invert-hr: oklch(37.3% 0.034 259.733);
+    --tw-prose-invert-quotes: oklch(96.7% 0.003 264.542);
+    --tw-prose-invert-quote-borders: oklch(37.3% 0.034 259.733);
+    --tw-prose-invert-captions: oklch(70.7% 0.022 261.325);
+    --tw-prose-invert-kbd: #fff;
+    --tw-prose-invert-kbd-shadows: rgb(255 255 255 / 10%);
+    --tw-prose-invert-code: #fff;
+    --tw-prose-invert-pre-code: oklch(87.2% 0.01 258.338);
+    --tw-prose-invert-pre-bg: rgb(0 0 0 / 50%);
+    --tw-prose-invert-th-borders: oklch(44.6% 0.03 256.802);
+    --tw-prose-invert-td-borders: oklch(37.3% 0.034 259.733);
+    font-size: 1rem;
+    line-height: 1.75;
+    :where(picture > img):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    :where(li):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 0.5em;
+      margin-bottom: 0.5em;
+    }
+    :where(ol > li):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      padding-inline-start: 0.375em;
+    }
+    :where(ul > li):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      padding-inline-start: 0.375em;
+    }
+    :where(.prose > ul > li p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 0.75em;
+      margin-bottom: 0.75em;
+    }
+    :where(.prose > ul > li > p:first-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 1.25em;
+    }
+    :where(.prose > ul > li > p:last-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-bottom: 1.25em;
+    }
+    :where(.prose > ol > li > p:first-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 1.25em;
+    }
+    :where(.prose > ol > li > p:last-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-bottom: 1.25em;
+    }
+    :where(ul ul, ul ol, ol ul, ol ol):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 0.75em;
+      margin-bottom: 0.75em;
+    }
+    :where(dl):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 1.25em;
+      margin-bottom: 1.25em;
+    }
+    :where(dd):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 0.5em;
+      padding-inline-start: 1.625em;
+    }
+    :where(hr + *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 0;
+    }
+    :where(h2 + *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 0;
+    }
+    :where(h3 + *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 0;
+    }
+    :where(h4 + *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 0;
+    }
+    :where(thead th:first-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      padding-inline-start: 0;
+    }
+    :where(thead th:last-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      padding-inline-end: 0;
+    }
+    :where(tbody td, tfoot td):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      padding-top: 0.5714286em;
+      padding-inline-end: 0.5714286em;
+      padding-bottom: 0.5714286em;
+      padding-inline-start: 0.5714286em;
+    }
+    :where(tbody td:first-child, tfoot td:first-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      padding-inline-start: 0;
+    }
+    :where(tbody td:last-child, tfoot td:last-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      padding-inline-end: 0;
+    }
+    :where(figure):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 2em;
+      margin-bottom: 2em;
+    }
+    :where(.prose > :first-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-top: 0;
+    }
+    :where(.prose > :last-child):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      margin-bottom: 0;
+    }
+    h1, h2, h3, h4, th {
+      margin-bottom: calc(var(--spacing) * 3);
+      color: var(--foreground);
+    }
+    h3 {
+      font-style: italic;
+    }
+    p, strong, ol, ul, figcaption, table, code {
+      color: var(--foreground);
+    }
+    a {
+      overflow-wrap: break-word;
+      color: var(--foreground);
+      text-decoration-style: dashed;
+      text-underline-offset: 4px;
+      &:hover {
+        @media (hover: hover) {
+          color: var(--accent);
+        }
+      }
+      &:focus-visible {
+        text-decoration-line: none;
+      }
+    }
+    ul {
+      overflow-x: clip;
+    }
+    li {
+      & *::marker {
+        color: var(--accent);
+      }
+      &::marker {
+        color: var(--accent);
+      }
+      & *::-webkit-details-marker {
+        color: var(--accent);
+      }
+      &::-webkit-details-marker {
+        color: var(--accent);
+      }
+    }
+    hr {
+      border-color: var(--border);
+    }
+    img {
+      margin-inline: auto;
+      border-style: var(--tw-border-style);
+      border-width: 1px;
+      border-color: var(--border);
+    }
+    figcaption {
+      opacity: 75%;
+    }
+    table {
+      th, td {
+        border-style: var(--tw-border-style);
+        border-width: 1px;
+        border-color: var(--border);
+        padding: calc(var(--spacing) * 2);
+      }
+      th {
+        padding-block: calc(var(--spacing) * 1.5);
+      }
+      code {
+        word-break: break-all;
+        @media (width >= 40rem) {
+          overflow-wrap: normal;
+          word-break: normal;
+        }
+      }
+    }
+    code {
+      border-radius: 0.25rem;
+      background-color: var(--muted);
+      @supports (color: color-mix(in lab, red, red)) {
+        background-color: color-mix(in oklab, var(--muted) 75%, transparent);
+      }
+      padding: calc(var(--spacing) * 1);
+      overflow-wrap: break-word;
+      color: var(--foreground);
+      &::before {
+        content: var(--tw-content);
+        --tw-content: none;
+        content: none;
+      }
+      &::after {
+        content: var(--tw-content);
+        --tw-content: none;
+        content: none;
+      }
+    }
+    .astro-code code {
+      flex: 1 0 100%;
+      background-color: inherit;
+      padding: calc(var(--spacing) * 0);
+    }
+    blockquote {
+      border-inline-start-color: var(--accent);
+      @supports (color: color-mix(in lab, red, red)) {
+        border-inline-start-color: color-mix(in oklab, var(--accent) 80%, transparent);
+      }
+      overflow-wrap: break-word;
+      opacity: 80%;
+    }
+    details {
+      display: inline-block;
+      cursor: pointer;
+      color: var(--foreground);
+      -webkit-user-select: none;
+      user-select: none;
+      & p {
+        display: none;
+      }
+      & ul {
+        margin-block: calc(var(--spacing) * 0) !important;
+      }
+    }
+    summary {
+      &:focus-visible {
+        text-decoration-line: none;
+      }
+      &:focus-visible {
+        outline-style: var(--tw-outline-style);
+        outline-width: 2px;
+      }
+      &:focus-visible {
+        outline-offset: 1px;
+      }
+      &:focus-visible {
+        outline-color: var(--accent);
+      }
+      &:focus-visible {
+        --tw-outline-style: dashed;
+        outline-style: dashed;
+      }
+    }
+    pre {
+      &:focus-visible {
+        border-color: transparent;
+      }
+      &:focus-visible {
+        outline-style: var(--tw-outline-style);
+        outline-width: 2px;
+      }
+      &:focus-visible {
+        outline-color: var(--accent);
+      }
+      &:focus-visible {
+        --tw-outline-style: dashed;
+        outline-style: dashed;
+      }
+    }
+  }
+  .astro-code {
+    display: flex;
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    background-color: var(--shiki-light-bg);
+    color: var(--shiki-light);
+    outline-color: var(--border);
+    & span {
+      color: var(--shiki-light);
+    }
+  }
+  html[data-theme="dark"] .astro-code {
+    background-color: var(--shiki-dark-bg);
+    color: var(--shiki-dark);
+    & span {
+      color: var(--shiki-dark);
+    }
+  }
+  .astro-code {
+    .line.diff.add {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      background-color: color-mix(in srgb, oklch(79.2% 0.209 151.711) 20%, transparent);
+      @supports (color: color-mix(in lab, red, red)) {
+        background-color: color-mix(in oklab, var(--color-green-400) 20%, transparent);
+      }
+      &::before {
+        content: var(--tw-content);
+        position: absolute;
+      }
+      &::before {
+        content: var(--tw-content);
+        left: calc(var(--spacing) * -3);
+      }
+      &::before {
+        content: var(--tw-content);
+        color: var(--color-green-500);
+      }
+      &::before {
+        --tw-content: '+';
+        content: var(--tw-content);
+      }
+    }
+    .line.diff.remove {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      background-color: color-mix(in srgb, oklch(63.7% 0.237 25.331) 20%, transparent);
+      @supports (color: color-mix(in lab, red, red)) {
+        background-color: color-mix(in oklab, var(--color-red-500) 20%, transparent);
+      }
+      &::before {
+        content: var(--tw-content);
+        position: absolute;
+      }
+      &::before {
+        content: var(--tw-content);
+        left: calc(var(--spacing) * -3);
+      }
+      &::before {
+        content: var(--tw-content);
+        color: var(--color-red-500);
+      }
+      &::before {
+        --tw-content: '-';
+        content: var(--tw-content);
+      }
+    }
+    .line.highlighted {
+      display: inline-block;
+      width: 100%;
+      background-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 20%, transparent);
+      @supports (color: color-mix(in lab, red, red)) {
+        background-color: color-mix(in oklab, var(--color-slate-400) 20%, transparent);
+      }
+    }
+    .highlighted-word {
+      border-radius: var(--radius-sm);
+      border-style: var(--tw-border-style);
+      border-width: 1px;
+      border-color: var(--border);
+      padding-inline: calc(var(--spacing) * 0.5);
+      padding-block: 1px;
+    }
+  }
+}
+:root, html[data-theme="light"] {
+  --background: #fdfdfd;
+  --foreground: #282728;
+  --accent: #006cac;
+  --muted: #e6e6e6;
+  --border: #ece9e9;
+}
+html[data-theme="dark"] {
+  --background: #212737;
+  --foreground: #eaedf3;
+  --accent: #ff6b01;
+  --muted: #343f60;
+  --border: #ab4b08;
+}
+@layer base {
+  * {
+    border-color: var(--border);
+    outline-color: var(--accent);
+    @supports (color: color-mix(in lab, red, red)) {
+      outline-color: color-mix(in oklab, var(--accent) 75%, transparent);
+    }
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-muted) transparent;
+  }
+  html {
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+  }
+  body {
+    display: flex;
+    min-height: 100svh;
+    flex-direction: column;
+    background-color: var(--background);
+    font-family: var(--font-google-sans-code);
+    color: var(--foreground);
+    & *::selection {
+      background-color: var(--accent);
+      @supports (color: color-mix(in lab, red, red)) {
+        background-color: color-mix(in oklab, var(--accent) 75%, transparent);
+      }
+    }
+    &::selection {
+      background-color: var(--accent);
+      @supports (color: color-mix(in lab, red, red)) {
+        background-color: color-mix(in oklab, var(--accent) 75%, transparent);
+      }
+    }
+    & *::selection {
+      color: var(--background);
+    }
+    &::selection {
+      color: var(--background);
+    }
+  }
+  a, button {
+    outline-offset: 1px;
+    outline-color: var(--accent);
+    &:focus-visible {
+      text-decoration-line: none;
+    }
+    &:focus-visible {
+      outline-style: var(--tw-outline-style);
+      outline-width: 2px;
+    }
+    &:focus-visible {
+      --tw-outline-style: dashed;
+      outline-style: dashed;
+    }
+  }
+  button:not(:disabled), [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+.active-nav {
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+}
+:target {
+  scroll-margin-block: 1rem;
+}
+@property --tw-translate-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-translate-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-scale-x {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-y {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-scale-z {
+  syntax: "*";
+  inherits: false;
+  initial-value: 1;
+}
+@property --tw-space-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@property --tw-leading {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-font-weight {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-tracking {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-inset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-ring-inset {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-offset-width {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --tw-ring-offset-color {
+  syntax: "*";
+  inherits: false;
+  initial-value: #fff;
+}
+@property --tw-ring-offset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-outline-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@property --tw-blur {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-brightness {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-contrast {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-grayscale {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-hue-rotate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-invert {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-opacity {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-saturate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-sepia {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-drop-shadow {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-drop-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-drop-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-drop-shadow-size {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-blur {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-brightness {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-contrast {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-grayscale {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-hue-rotate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-invert {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-opacity {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-saturate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-backdrop-sepia {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-duration {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-content {
+  syntax: "*";
+  initial-value: "";
+  inherits: false;
+}
+@property --tw-space-x-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-translate-x: 0;
+      --tw-translate-y: 0;
+      --tw-translate-z: 0;
+      --tw-scale-x: 1;
+      --tw-scale-y: 1;
+      --tw-scale-z: 1;
+      --tw-space-y-reverse: 0;
+      --tw-border-style: solid;
+      --tw-leading: initial;
+      --tw-font-weight: initial;
+      --tw-tracking: initial;
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 #0000;
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: initial;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-inset-ring-color: initial;
+      --tw-inset-ring-shadow: 0 0 #0000;
+      --tw-ring-inset: initial;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-outline-style: solid;
+      --tw-blur: initial;
+      --tw-brightness: initial;
+      --tw-contrast: initial;
+      --tw-grayscale: initial;
+      --tw-hue-rotate: initial;
+      --tw-invert: initial;
+      --tw-opacity: initial;
+      --tw-saturate: initial;
+      --tw-sepia: initial;
+      --tw-drop-shadow: initial;
+      --tw-drop-shadow-color: initial;
+      --tw-drop-shadow-alpha: 100%;
+      --tw-drop-shadow-size: initial;
+      --tw-backdrop-blur: initial;
+      --tw-backdrop-brightness: initial;
+      --tw-backdrop-contrast: initial;
+      --tw-backdrop-grayscale: initial;
+      --tw-backdrop-hue-rotate: initial;
+      --tw-backdrop-invert: initial;
+      --tw-backdrop-opacity: initial;
+      --tw-backdrop-saturate: initial;
+      --tw-backdrop-sepia: initial;
+      --tw-duration: initial;
+      --tw-content: "";
+      --tw-space-x-reverse: 0;
+    }
+  }
+}
+</style><script type="module" src="/@vite/client"></script>
+<script type="module" src="/@fs/Users/yc/Downloads/akazaakane.github.io/node_modules/astro/dist/runtime/client/dev-toolbar/entrypoint.js?v=755d55be"></script>
+<script>window.__astro_dev_toolbar__ = {"root":"/Users/yc/Downloads/akazaakane.github.io/","version":"5.18.1","debugInfo":"Astro                    v5.18.1\nNode                     v26.0.0\nSystem                   macOS (arm64)\nPackage Manager          npm\nOutput                   static\nAdapter                  none\nIntegrations             @astrojs/sitemap"}</script>
+<script type="module" src="/node_modules/astro/components/image.css"></script>
+<script type="module" src="/node_modules/astro/components/ClientRouter.astro?astro&type=style&index=0&lang.css"></script>
+<script type="module" src="/src/styles/global.css"></script></head> <body data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/layouts/Layout.astro" data-astro-source-loc="170:9">  <a id="skip-to-content" href="#main-content" class="absolute start-16 -top-full z-50 bg-background px-3 py-2 text-accent backdrop-blur-lg transition-all focus:top-4" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="29:2">
+Skip to content
+</a> <header class="app-layout flex flex-col items-center justify-between sm:flex-row" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="35:2"> <div id="top-nav-wrap" class="py-4 sm:py-6 border-b border-border relative w-full bg-background flex items-baseline justify-between sm:items-center" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="44:4"> <a href="/" class="absolute py-1 text-xl leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:text-2xl sm:leading-none" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="48:6"> 随便写写 </a> <nav id="nav-menu" class="flex w-full flex-col items-center sm:ms-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="54:6"> <button id="menu-btn" class="focus-outline self-end p-2 sm:hidden" aria-label="Open Menu" aria-expanded="false" aria-controls="menu-items" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="61:8"> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden" id="close-icon"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-menu-deep" id="menu-icon"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 6h16" /><path d="M7 12h13" /><path d="M10 18h10" /></svg> </button> <ul id="menu-items" class="mt-4 grid w-44 grid-cols-2 place-content-center gap-2 [&#38;>li>a]:block [&#38;>li>a]:px-4 [&#38;>li>a]:py-3 [&#38;>li>a]:text-center [&#38;>li>a]:font-medium [&#38;>li>a]:hover:text-accent sm:[&#38;>li>a]:px-2 sm:[&#38;>li>a]:py-1 hidden sm:mt-0 sm:flex sm:w-auto sm:gap-x-5 sm:gap-y-0" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="73:8"> <li class="col-span-2" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="74:32"> <a href="/posts" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="75:78">
+Posts
+</a> </li> <li class="col-span-2" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="79:32"> <a href="/tags" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="80:76">
+Tags
+</a> </li> <li class="col-span-2" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="84:32"> <a href="/collect" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="88:12">
+Collect
+</a> </li> <li class="col-span-2" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="94:36"> <a href="/archives" title="Archives" aria-label="archives" class="group inline-flex items-center gap-1 hover:text-accent focus-outline flex justify-center p-3 sm:p-1">  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden sm:inline-block"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 4m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z" /><path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" /><path d="M10 12l4 0" /></svg> <span class="sm:sr-only" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="107:42">Archives</span>  </a> </li> <li class="col-span-1 flex items-center justify-center" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="112:65"> <a href="/search" title="Search" aria-label="search" class="group inline-flex items-center gap-1 hover:text-accent focus-outline flex p-3 sm:p-1">  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-search"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg> <span class="sr-only" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="123:35">Search</span>  </a> </li> <li class="col-span-1 flex items-center justify-center" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="128:69"> <button id="theme-btn" class="focus-outline relative size-12 p-4 sm:size-8 hover:[&>svg]:stroke-accent" title="Toggles light & dark" aria-label="auto" aria-live="polite" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Header.astro" data-astro-source-loc="135:16"> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute top-[50%] left-[50%] -translate-[50%] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute top-[50%] left-[50%] -translate-[50%] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M14.828 14.828a4 4 0 1 0 -5.656 -5.656a4 4 0 0 0 5.656 5.656z" /><path d="M6.343 17.657l-1.414 1.414" /><path d="M6.343 6.343l-1.414 -1.414" /><path d="M17.657 6.343l1.414 -1.414" /><path d="M17.657 17.657l1.414 1.414" /><path d="M4 12h-2" /><path d="M12 4v-2" /><path d="M20 12h2" /><path d="M12 20v2" /></svg> </button> </li> </ul> </nav> </div> </header> <script type="module" src="/src/components/Header.astro?astro&type=script&index=0&lang.ts"></script> <main id="main-content" data-layout="index" class="app-layout" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="23:66"> <section id="hero" class="pt-8 pb-6 border-b border-border" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="24:77"> <p class="my-2 text-lg" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="25:31">Hi, I'm</p> <h1 class="my-2 inline-block text-4xl font-bold sm:my-4 sm:text-5xl" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="26:76">
+Yuhao Chen
+</h1> <p class="mt-2 text-lg font-medium text-accent" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="29:55">
+Senior Data Scientist & ML Engineer specializing in Large Language Models, RAG systems, and agentic workflows.
+</p> <div class="mt-6" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="34:25"> <h2 class="text-xl font-semibold" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="35:43">About Me</h2> <p class="mt-2" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="36:25">
+Looking for new opportunities in CA. I hold MS degrees in Operations Research and Economics & Statistics.
+          My current focus is on building agentic applications, and scaling machine learning systems.
+</p> </div> <div class="mt-4 flex max-sm:flex-col sm:items-center" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="44:66"> <div class="me-2 mb-1 whitespace-nowrap sm:mb-0" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="45:62">Social Links:</div> <div class="flex flex-wrap items-center gap-1" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Socials.astro" data-astro-source-loc="6:48"> <a href="https://github.com/AkazaAkane" title="随便写写 on GitHub" class="group inline-flex items-center gap-1 hover:text-accent p-2 hover:rotate-6 sm:p-1">  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg> <span class="sr-only" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Socials.astro" data-astro-source-loc="15:31">随便写写 on GitHub</span>  </a><a href="https://linkedin.com/in/yuhaoc2022" title="随便写写 on LinkedIn" class="group inline-flex items-center gap-1 hover:text-accent p-2 hover:rotate-6 sm:p-1">  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg> <span class="sr-only" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Socials.astro" data-astro-source-loc="15:31">随便写写 on LinkedIn</span>  </a><a href="mailto:yxckeis8@gmail.com" title="Send an email to 随便写写" class="group inline-flex items-center gap-1 hover:text-accent p-2 hover:rotate-6 sm:p-1">  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></svg> <span class="sr-only" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Socials.astro" data-astro-source-loc="15:31">Send an email to 随便写写</span>  </a> </div> </div> </section>  <section id="recent-posts" class="pt-12 pb-6" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="73:55"> <h2 class="text-2xl font-semibold tracking-wide" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="74:60">Recent Posts</h2> <ul data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="75:15"> <li class="my-6" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="16:18"> <a href="/posts/design-google-translate" class="inline-block text-lg font-medium text-accent decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline focus-visible:underline-offset-0" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="24:4"> <h3 style="view-transition-name:design-google-translate">Design Google Translate</h3> </a> <div class="flex items-center gap-x-2 opacity-80" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="37:71"> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block size-6 min-w-5.5 scale-90"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M7 14h.013" /><path d="M10.01 14h.005" /><path d="M13.01 14h.005" /><path d="M16.015 14h.005" /><path d="M13.015 17h.005" /><path d="M7.01 17h.005" /><path d="M10.01 17h.005" /></svg> <span class="text-sm" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="46:73">
+Updated:
+</span> <time class="text-sm" datetime="2025-06-12T00:34:44.494Z" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="53:39">11 Jun, 2025</time> </div> <p data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="32:6">System design for Google Translate: ML framing, architecture, NMT training, and inference pipeline</p> </li><li class="my-6" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="16:18"> <a href="/posts/minimax-speech-2-0" class="inline-block text-lg font-medium text-accent decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline focus-visible:underline-offset-0" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="24:4"> <h3 style="view-transition-name:minimax-speech-2-0">Minimax Speech 2.0</h3> </a> <div class="flex items-center gap-x-2 opacity-80" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="37:71"> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block size-6 min-w-5.5 scale-90"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M7 14h.013" /><path d="M10.01 14h.005" /><path d="M13.01 14h.005" /><path d="M16.015 14h.005" /><path d="M13.015 17h.005" /><path d="M7.01 17h.005" /><path d="M10.01 17h.005" /></svg> <span class="text-sm" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="46:73">
+Updated:
+</span> <time class="text-sm" datetime="2025-06-04T21:57:12.990Z" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="53:39">4 Jun, 2025</time> </div> <p data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="32:6">Minimax Speech 2.0 论文阅读笔记：语音合成模型的技术细节</p> </li><li class="my-6" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="16:18"> <a href="/posts/seedream-3-0" class="inline-block text-lg font-medium text-accent decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline focus-visible:underline-offset-0" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="24:4"> <h3 style="view-transition-name:seedream-3-0-technical-report">Seedream 3.0 Technical Report</h3> </a> <div class="flex items-center gap-x-2 opacity-80" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="37:71"> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block size-6 min-w-5.5 scale-90"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M7 14h.013" /><path d="M10.01 14h.005" /><path d="M13.01 14h.005" /><path d="M16.015 14h.005" /><path d="M13.015 17h.005" /><path d="M7.01 17h.005" /><path d="M10.01 17h.005" /></svg> <span class="text-sm" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="46:73">
+Updated:
+</span> <time class="text-sm" datetime="2025-04-22T02:17:54.000Z" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="53:39">21 Apr, 2025</time> </div> <p data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="32:6">Seedream 3.0 技术报告阅读笔记</p> </li><li class="my-6" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="16:18"> <a href="/posts/2025-03-23-podcast-notes" class="inline-block text-lg font-medium text-accent decoration-dashed underline-offset-4 hover:underline focus-visible:no-underline focus-visible:underline-offset-0" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="24:4"> <h3 style="view-transition-name:2025-03-23-本周播客记录">2025-03-23 本周播客记录</h3> </a> <div class="flex items-center gap-x-2 opacity-80" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="37:71"> <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block size-6 min-w-5.5 scale-90"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M7 14h.013" /><path d="M10.01 14h.005" /><path d="M13.01 14h.005" /><path d="M16.015 14h.005" /><path d="M13.015 17h.005" /><path d="M7.01 17h.005" /><path d="M10.01 17h.005" /></svg> <span class="text-sm" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="46:73">
+Updated:
+</span> <time class="text-sm" datetime="2025-03-26T03:05:11.000Z" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Datetime.astro" data-astro-source-loc="53:39">25 Mar, 2025</time> </div> <p data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Card.astro" data-astro-source-loc="32:6">本周播客记录：日本医保、短剧进好莱坞、特斯拉/NVIDIA、Willow量子芯片等</p> </li> </ul> </section> <div class="my-8 text-center" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/pages/index.astro" data-astro-source-loc="85:35"> <a href="/posts/" class="group inline-flex items-center gap-1 hover:text-accent"> 
+All Posts
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block rtl:-rotate-180"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M5 12l14 0" /><path d="M13 18l6 -6" /><path d="M13 6l6 6" /></svg>  </a> </div> </main> <footer class="app-layout mt-auto" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Footer.astro" data-astro-source-loc="17:2"> <div class="py-6 sm:py-4 border-t border-border flex flex-col items-center justify-between sm:flex-row-reverse" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Footer.astro" data-astro-source-loc="24:4"> <div class="flex flex-wrap items-center gap-1" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Socials.astro" data-astro-source-loc="6:48"> <a href="https://github.com/AkazaAkane" title="随便写写 on GitHub" class="group inline-flex items-center gap-1 hover:text-accent p-2 hover:rotate-6 sm:p-1">  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" /></svg> <span class="sr-only" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Socials.astro" data-astro-source-loc="15:31">随便写写 on GitHub</span>  </a><a href="https://linkedin.com/in/yuhaoc2022" title="随便写写 on LinkedIn" class="group inline-flex items-center gap-1 hover:text-accent p-2 hover:rotate-6 sm:p-1">  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 1 0 -4 0" /><path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z" /></svg> <span class="sr-only" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Socials.astro" data-astro-source-loc="15:31">随便写写 on LinkedIn</span>  </a><a href="mailto:yxckeis8@gmail.com" title="Send an email to 随便写写" class="group inline-flex items-center gap-1 hover:text-accent p-2 hover:rotate-6 sm:p-1">  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline-block size-6 scale-125 fill-transparent stroke-current stroke-2 opacity-90 group-hover:fill-transparent sm:scale-110"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" /><path d="M3 7l9 6l9 -6" /></svg> <span class="sr-only" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Socials.astro" data-astro-source-loc="15:31">Send an email to 随便写写</span>  </a> </div> <div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Footer.astro" data-astro-source-loc="26:80"> <span data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Footer.astro" data-astro-source-loc="27:13">Copyright &#169; 2026</span> <span class="hidden sm:inline" data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Footer.astro" data-astro-source-loc="28:38">&nbsp;|&nbsp;</span> <span data-astro-source-file="/Users/yc/Downloads/akazaakane.github.io/src/components/Footer.astro" data-astro-source-loc="29:13">All rights reserved.</span> </div> </div> </footer>  <!-- Load full theme logic --> <script type="module" src="/src/layouts/Layout.astro?astro&type=script&index=0&lang.ts"></script> </body> </html> <script type="module" src="/src/pages/index.astro?astro&type=script&index=0&lang.ts"></script>
