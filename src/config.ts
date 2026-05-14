@@ -1,0 +1,23 @@
+export const SITE = {
+  website: "https://akazaakane.github.io/",
+  author: "Yuhao Chen",
+  profile: "https://github.com/AkazaAkane",
+  desc: "随便写写 - 想写就写吧",
+  title: "随便写写",
+  ogImage: "astropaper-og.jpg",
+  lightAndDarkMode: true,
+  postPerIndex: 4,
+  postPerPage: 4,
+  scheduledPostMargin: 15 * 60 * 1000,
+  showArchives: true,
+  showBackButton: true,
+  editPost: {
+    enabled: false,
+    text: "Edit page",
+    url: "https://github.com/AkazaAkane/akazaakane.github.io/edit/main/",
+  },
+  dynamicOgImage: true,
+  dir: "ltr",
+  lang: "zh-CN",
+  timezone: "America/Chicago",
+} as const;
