@@ -1,0 +1,25 @@
+---
+author: Yuhao Chen
+pubDatetime: 2026-05-27T00:47:21.200Z
+title: "Design agentic alpha discovery system"
+slug: design-agentic-alpha-discovery-system
+featured: false
+draft: false
+tags:
+  - Technology
+  - LLM
+  - Agentic
+description: "Design agentic alpha discovery system"
+---
+
+When I was getting ready to write this article, I felt slightly lost: it had been a long time since I independently wrote a full article without relying on AI. For me, this piece of writing seemed to become a challenge. Still, I want to record the thought process behind this project.
+
+I have always hoped to show my own ability through non-LeetCode means, and the requirements for this role happened to be specific enough that I could build a demo. Of course, before starting this project, I needed to define a scope. On one hand, I needed to show my understanding of alpha research. Although I had some previous accumulation, I once did factor analysis during undergrad, and my graduate program was directly related to this area, many years have passed and my memory had become somewhat blurry. Thanks to Deep Research and a series of AI research tools, I was able to quickly understand the whole industry from a new perspective, as well as how specific companies do alpha research. On the other hand, this project is only a short-term MVP for demonstration, so I needed to decide which elements to focus on and which elements to leave out. On this point, I think I should emphasize the agentic part on top of the traditional alpha discovery workflow. More specifically, my plan should be divided into three parts: first, focus on the parts that should be automated with LLMs; second, explain the parts that should be deterministic rather than LLM-based; and finally, skip the parts that are omitted. In this way, I can finish the demo presentation within a limited amount of time.
+
+Theoretically speaking, a complete alpha discovery process should include the following elements: generating ideas, either from a large amount of data or by having an idea first and then looking for data; building testable metrics based on the idea; running a series of tests including backtesting; and finally doing evaluation. Among these, I think the first two steps need agentic capability the most, and automating the first step can bring the greatest benefit. The reason is that I think industry has probably automated backtesting and later steps long ago. What is more needed now is automatically generating structured hypotheses and features. As for data ingestion, I do not think it can show an AI engineer's ability very well without knowing the company's strategy.
+
+Then thinking further, among these steps, what should we let the LLM output? What should be deterministic or hard-coded? As everyone knows, the hallucination problem endogenous to LLMs comes from the limitations of pretraining and post-training themselves. So personally, I do not really dare to use an LLM to review itself, or let an LLM directly calculate results. I usually let the LLM plan and call tools, then finally produce structured output. After that, some Python scripts directly read JSON and execute the generation process from idea to raw data to feature. The advantage of doing this is high controllability. In this demo, I predefined a limited set of data operations, as well as retrieval/profiling tools. This allows the agent to think and propose freely after obtaining deterministic information, while still outputting controllable results. Under this framework, I asked Claude Code to propose the implementation plan and keep revising it, then used Codex to execute the plan. I did this because Claude Code is too expensive, Codex is relatively cheaper, and for the API I used OpenRouter's free NVIDIA Nemotron.
+
+At this point, the demo is basically near the end. Before ending this article, I also want to mention what else needs attention if this system is put into production. Scalability should be the first thing I would consider. The meaning of this system should be how to let a group of agents generate ideas and test them at the same time. The current simple design is definitely not enough; it needs parallel processing and some fault-tolerance mechanisms. At the same time, I also need to consider how researchers would combine with this system: whether by modifying prompts, or by working with us AI engineers and providing requirements. At the moment, simply letting an LLM generate hypotheses from data is still too naive. Finally, this kind of agentic system seems to need memory and self-improvement, but for now these still belong to the scope of prompt engineer/context engineer/harness engineer work.
+
+As a closing note, thank you for reading this purely hand-written article. After reading it myself, I actually feel a little strange. On one hand, I feel relieved that I can still write something different from the articles now mass-produced by AI. On the other hand, I still doubt whether the quality of articles produced by human writers can compare with AI. But no matter what, I will treat writing as a continuous practice from now on.
