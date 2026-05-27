@@ -27,7 +27,7 @@ src/
     utils.ts             # getLangFromPostId, getBaseSlug, getPostsByLang, getTranslation, getOtherLocale
 
   pages/
-    index.astro          # Redirects / → /zh/
+    index.astro          # Redirects / → /en/
     collect.md           # Static collection page (not locale-scoped)
     404.astro
     robots.txt.ts
@@ -48,8 +48,8 @@ src/
         index.astro
         [tag]/[...page].astro
 
-    posts/[...slug]/index.astro   # Backward-compat meta-refresh redirect → /zh/posts/...
-    tags/[tag]/[...page].astro    # Backward-compat meta-refresh redirect → /zh/tags/...
+    posts/[...slug]/index.astro   # Backward-compat meta-refresh redirect → /en/posts/...
+    tags/[tag]/[...page].astro    # Backward-compat meta-refresh redirect → /en/tags/...
 
   layouts/
     Layout.astro         # HTML shell; accepts lang prop for <html lang>
@@ -94,14 +94,14 @@ public/
   img/                   # Static images referenced in posts
   pagefind/              # Pagefind search index (generated on build)
 
-astro.config.ts          # i18n: defaultLocale "zh", locales ["zh","en"], prefixDefaultLocale true
+astro.config.ts          # i18n: defaultLocale "en", locales ["zh","en"], prefixDefaultLocale true
 ```
 
 ## Routing
 
 | URL | Source |
 |-----|--------|
-| `/` | Redirect → `/zh/` |
+| `/` | Redirect → `/en/` |
 | `/zh/` or `/en/` | `[lang]/index.astro` |
 | `/zh/posts/` | `[lang]/posts/[...page].astro` |
 | `/zh/posts/{slug}/` | `[lang]/posts/[...slug]/index.astro` |
@@ -109,9 +109,9 @@ astro.config.ts          # i18n: defaultLocale "zh", locales ["zh","en"], prefix
 | `/zh/tags/{tag}/` | `[lang]/tags/[tag]/[...page].astro` |
 | `/zh/archives/` | `[lang]/archives/index.astro` |
 | `/zh/search/` | `[lang]/search.astro` |
-| `/posts/{slug}/` | Meta-refresh → `/zh/posts/{slug}/` |
-| `/tags/{tag}/` | Meta-refresh → `/zh/tags/{tag}/` |
-| `/archives/`, `/tags/`, `/search/` | astro.config.ts redirect → `/zh/...` |
+| `/posts/{slug}/` | Meta-refresh → `/en/posts/{slug}/` |
+| `/tags/{tag}/` | Meta-refresh → `/en/tags/{tag}/` |
+| `/archives/`, `/tags/`, `/search/` | astro.config.ts redirect → `/en/...` |
 
 ## Adding a New Blog Post
 

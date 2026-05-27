@@ -8,11 +8,11 @@ import { SITE } from "@/config";
 
 export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const allPosts = await getCollection("blog");
-  const zhPosts = getPostsByLang(allPosts, "zh");
-  const tags = getUniqueTags(zhPosts);
+  const enPosts = getPostsByLang(allPosts, "en");
+  const tags = getUniqueTags(enPosts);
 
   return tags.flatMap(({ tag }) => {
-    const tagPosts = getPostsByTag(zhPosts, tag);
+    const tagPosts = getPostsByTag(enPosts, tag);
     return paginate(tagPosts, {
       params: { tag },
       pageSize: SITE.postPerPage,
@@ -23,7 +23,7 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
 const { tag } = Astro.params;
 const { page } = Astro.props;
 const pageNum = page?.currentPage ?? 1;
-const redirectTo = pageNum > 1 ? `/zh/tags/${tag}/${pageNum}/` : `/zh/tags/${tag}/`;
+const redirectTo = pageNum > 1 ? `/en/tags/${tag}/${pageNum}/` : `/en/tags/${tag}/`;
 ---
 <!doctype html>
 <html>

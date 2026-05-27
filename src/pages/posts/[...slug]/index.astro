@@ -5,8 +5,8 @@ import { getPostsByLang } from "@/i18n/utils";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog", ({ data }) => !data.draft);
-  const zhPosts = getPostsByLang(posts, "zh");
-  return zhPosts.map(post => ({
+  const enPosts = getPostsByLang(posts, "en");
+  return enPosts.map(post => ({
     params: { slug: getPath(post.id, post.filePath, false).replace(/^\//, "") },
     props: { redirectTo: getPath(post.id, post.filePath) },
   }));

@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 }
 
 const { lang } = Astro.params;
-if (!isValidLocale(lang)) return Astro.redirect("/zh/");
+if (!isValidLocale(lang)) return Astro.redirect("/en/");
 const t = useTranslations(lang as Locale);
 
 const allPosts = await getCollection("blog");
