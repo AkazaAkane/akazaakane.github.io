@@ -1,0 +1,40 @@
+---
+import { useTranslations, type Locale } from "@/i18n/ui";
+import { getOtherLocale } from "@/i18n/utils";
+
+type Props = {
+  lang: Locale;
+  /** href in the other language. Falls back to the other locale's homepage. */
+  translationHref?: string;
+  /** When true, the link is disabled because no translation exists for this post */
+  translationUnavailable?: boolean;
+};
+
+const { lang, translationHref, translationUnavailable = false } = Astro.props;
+const t = useTranslations(lang);
+const otherLang = getOtherLocale(lang);
+const switchLabel = t("lang.switch");
+const switchAriaLabel = t("lang.switchLabel");
+
+const href = translationHref ?? `/${otherLang}/`;
+---
+
+{
+  translationUnavailable ? (
+    <span
+      class="cursor-not-allowed select-none px-2 py-1 text-sm font-medium opacity-40"
+      title={t("lang.notAvailable")}
+      aria-label={t("lang.notAvailable")}
+    >
+      {switchLabel}
+    </span>
+  ) : (
+    <a
+      href={href}
+      aria-label={switchAriaLabel}
+      class="rounded px-2 py-1 text-sm font-medium hover:text-accent focus-visible:outline-dashed focus-visible:outline-2 focus-visible:outline-accent"
+    >
+      {switchLabel}
+    </a>
+  )
+}

@@ -9,18 +9,27 @@ import Card from "@/components/Card.astro";
 import Pagination from "@/components/Pagination.astro";
 import getSortedPosts from "@/utils/getSortedPosts";
 import { SITE } from "@/config";
+import { LOCALES, useTranslations, type Locale } from "@/i18n/ui";
+import { getPostsByLang } from "@/i18n/utils";
 
 export const getStaticPaths = (async ({ paginate }) => {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
-  return paginate(getSortedPosts(posts), { pageSize: SITE.postPerPage });
+  const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+  return LOCALES.flatMap(lang =>
+    paginate(getSortedPosts(getPostsByLang(allPosts, lang)), {
+      params: { lang },
+      pageSize: SITE.postPerPage,
+    })
+  );
 }) satisfies GetStaticPaths;
 
+const { lang } = Astro.params;
+const t = useTranslations(lang as Locale);
 const { page } = Astro.props;
 ---
 
-<Layout title={`Posts | ${SITE.title}`}>
-  <Header />
-  <Main pageTitle="Posts" pageDesc="All the articles I've posted.">
+<Layout title={`${t("posts.pageTitle")} | ${SITE.title}`} lang={lang as Locale}>
+  <Header lang={lang as Locale} />
+  <Main pageTitle={t("posts.pageTitle")} pageDesc={t("posts.pageDesc")}>
     <ul>
       {page.data.map(data => <Card {...data} />)}
     </ul>

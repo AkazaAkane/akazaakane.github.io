@@ -6,19 +6,33 @@ import IconArchive from "@/assets/icons/IconArchive.svg";
 import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
 import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
 import LinkButton from "./LinkButton.astro";
+import LanguageSwitcher from "./LanguageSwitcher.astro";
 import { SITE } from "@/config";
+import { useTranslations, DEFAULT_LOCALE, type Locale } from "@/i18n/ui";
 
+type Props = {
+  lang?: Locale;
+  /** When on a post page, pass the translation href so the switcher links correctly */
+  translationHref?: string;
+  translationUnavailable?: boolean;
+};
+
+const {
+  lang = DEFAULT_LOCALE,
+  translationHref,
+  translationUnavailable = false,
+} = Astro.props;
+
+const t = useTranslations(lang);
 const { pathname } = Astro.url;
 
-// Remove trailing slash from current pathname if exists
 const currentPath =
   pathname.endsWith("/") && pathname !== "/" ? pathname.slice(0, -1) : pathname;
 
-const isActive = (path: string) => {
-  const currentPathArray = currentPath.split("/").filter(p => p.trim());
-  const pathArray = path.split("/").filter(p => p.trim());
-
-  return currentPath === path || currentPathArray[0] === pathArray[0];
+// isActive checks if the current path starts with /{lang}/{section}
+const isActive = (section: string) => {
+  const segment = `/${lang}/${section}`;
+  return currentPath === segment || currentPath.startsWith(segment + "/") || currentPath.startsWith(segment + "?");
 };
 ---
 
@@ -27,7 +41,7 @@ const isActive = (path: string) => {
   href="#main-content"
   class="absolute start-16 -top-full z-50 bg-background px-3 py-2 text-accent backdrop-blur-lg transition-all focus:top-4"
 >
-  Skip to content
+  {t("nav.skipToContent")}
 </a>
 
 <header
@@ -43,7 +57,7 @@ const isActive = (path: string) => {
     ]}
   >
     <a
-      href="/"
+      href={`/${lang}/`}
       class="absolute py-1 text-xl leading-8 font-semibold whitespace-nowrap sm:static sm:my-auto sm:text-2xl sm:leading-none"
     >
       {SITE.title}
@@ -55,7 +69,7 @@ const isActive = (path: string) => {
       <button
         id="menu-btn"
         class="focus-outline self-end p-2 sm:hidden"
-        aria-label="Open Menu"
+        aria-label={t("nav.openMenu")}
         aria-expanded="false"
         aria-controls="menu-items"
       >
@@ -72,56 +86,63 @@ const isActive = (path: string) => {
         ]}
       >
         <li class="col-span-2">
-          <a href="/posts" class:list={{ "active-nav": isActive("/posts") }}>
-            Posts
+          <a href={`/${lang}/posts/`} class:list={{ "active-nav": isActive("posts") }}>
+            {t("nav.posts")}
           </a>
         </li>
         <li class="col-span-2">
-          <a href="/tags" class:list={{ "active-nav": isActive("/tags") }}>
-            Tags
+          <a href={`/${lang}/tags/`} class:list={{ "active-nav": isActive("tags") }}>
+            {t("nav.tags")}
           </a>
         </li>
         <li class="col-span-2">
           <a
             href="/collect"
-            class:list={{ "active-nav": isActive("/collect") }}
+            class:list={{ "active-nav": isActive("collect") }}
           >
-            Collect
+            {t("nav.collect")}
           </a>
         </li>
         {
           SITE.showArchives && (
             <li class="col-span-2">
               <LinkButton
-                href="/archives"
+                href={`/${lang}/archives/`}
                 class:list={[
                   "focus-outline flex justify-center p-3 sm:p-1",
                   {
-                    "active-nav [&>svg]:stroke-accent": isActive("/archives"),
+                    "active-nav [&>svg]:stroke-accent": isActive("archives"),
                   },
                 ]}
-                title="Archives"
+                title={t("nav.archives")}
                 aria-label="archives"
               >
                 <IconArchive class="hidden sm:inline-block" />
-                <span class="sm:sr-only">Archives</span>
+                <span class="sm:sr-only">{t("nav.archives")}</span>
               </LinkButton>
             </li>
           )
         }
         <li class="col-span-1 flex items-center justify-center">
           <LinkButton
-            href="/search"
+            href={`/${lang}/search/`}
             class:list={[
               "focus-outline flex p-3 sm:p-1",
-              { "[&>svg]:stroke-accent": isActive("/search") },
+              { "[&>svg]:stroke-accent": isActive("search") },
             ]}
-            title="Search"
+            title={t("nav.search")}
             aria-label="search"
           >
             <IconSearch />
-            <span class="sr-only">Search</span>
+            <span class="sr-only">{t("nav.search")}</span>
           </LinkButton>
+        </li>
+        <li class="col-span-1 flex items-center justify-center">
+          <LanguageSwitcher
+            {lang}
+            {translationHref}
+            {translationUnavailable}
+          />
         </li>
         {
           SITE.lightAndDarkMode && (
@@ -157,7 +178,10 @@ const isActive = (path: string) => {
       const openMenu = menuBtn.getAttribute("aria-expanded") === "true";
 
       menuBtn.setAttribute("aria-expanded", openMenu ? "false" : "true");
-      menuBtn.setAttribute("aria-label", openMenu ? "Open Menu" : "Close Menu");
+      menuBtn.setAttribute(
+        "aria-label",
+        openMenu ? "Open Menu" : "Close Menu"
+      );
 
       menuItems.classList.toggle("hidden");
       menuIcon.classList.toggle("hidden");
@@ -167,6 +191,5 @@ const isActive = (path: string) => {
 
   toggleNav();
 
-  // Runs on view transitions navigation
   document.addEventListener("astro:after-swap", toggleNav);
 </script>

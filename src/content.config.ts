@@ -5,7 +5,11 @@ import { SITE } from "@/config";
 export const BLOG_PATH = "src/data/blog";
 
 const blog = defineCollection({
-  loader: glob({ pattern: "**/[^_]*.md", base: `./${BLOG_PATH}` }),
+  loader: glob({
+    pattern: "**/[^_]*.md",
+    base: `./${BLOG_PATH}`,
+    generateId: ({ entry }) => entry.replace(/\.(md|mdx)$/, ""),
+  }),
   schema: ({ image }) =>
     z.object({
       author: z.string().default(SITE.author),

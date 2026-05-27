@@ -14,13 +14,18 @@ import { slugifyStr } from "@/utils/slugify";
 import IconChevronLeft from "@/assets/icons/IconChevronLeft.svg";
 import IconChevronRight from "@/assets/icons/IconChevronRight.svg";
 import { SITE } from "@/config";
+import { DEFAULT_LOCALE, useTranslations, type Locale } from "@/i18n/ui";
+import { getTranslation } from "@/i18n/utils";
 
 type Props = {
   post: CollectionEntry<"blog">;
   posts: CollectionEntry<"blog">[];
+  lang?: Locale;
+  allPosts?: CollectionEntry<"blog">[];
 };
 
-const { post, posts } = Astro.props;
+const { post, posts, lang = DEFAULT_LOCALE, allPosts = [] } = Astro.props;
+const t = useTranslations(lang);
 
 const {
   title,
@@ -39,19 +44,16 @@ const { Content } = await render(post);
 
 let ogImageUrl: string | undefined;
 
-// Determine OG image source
 if (typeof initOgImage === "string") {
-  ogImageUrl = initOgImage; // Remote OG image (absolute URL)
+  ogImageUrl = initOgImage;
 } else if (initOgImage?.src) {
-  ogImageUrl = initOgImage.src; // Local asset
+  ogImageUrl = initOgImage.src;
 }
 
-// Use dynamic OG image if enabled and no remote|local ogImage
 if (!ogImageUrl && SITE.dynamicOgImage) {
   ogImageUrl = `${getPath(post.id, post.filePath)}/index.png`;
 }
 
-// Resolve OG image URL (or fallback to SITE.ogImage / default `og.png`)
 const ogImage = ogImageUrl
   ? new URL(ogImageUrl, Astro.url.origin).href
   : undefined;
@@ -65,26 +67,33 @@ const layoutProps = {
   canonicalURL,
   ogImage,
   scrollSmooth: true,
+  lang,
 };
 
-/* ========== Prev/Next Posts ========== */
+/* ========== Translation Link ========== */
+const translationPost = allPosts.length > 0 ? getTranslation(post, allPosts) : undefined;
+const translationHref = translationPost
+  ? getPath(translationPost.id, translationPost.filePath)
+  : undefined;
+const translationUnavailable = !translationPost;
 
-const allPosts = posts.map(({ data: { title }, id, filePath }) => ({
+/* ========== Prev/Next Posts ========== */
+const allPostsMapped = posts.map(({ data: { title }, id, filePath }) => ({
   id,
   title,
   filePath,
 }));
 
-const currentPostIndex = allPosts.findIndex(a => a.id === post.id);
+const currentPostIndex = allPostsMapped.findIndex(a => a.id === post.id);
 
-const prevPost = currentPostIndex !== 0 ? allPosts[currentPostIndex - 1] : null;
+const prevPost = currentPostIndex !== 0 ? allPostsMapped[currentPostIndex - 1] : null;
 const nextPost =
-  currentPostIndex !== allPosts.length ? allPosts[currentPostIndex + 1] : null;
+  currentPostIndex !== allPostsMapped.length ? allPostsMapped[currentPostIndex + 1] : null;
 ---
 
 <Layout {...layoutProps}>
-  <Header />
-  <BackButton />
+  <Header {lang} {translationHref} {translationUnavailable} />
+  <BackButton {lang} />
   <main
     id="main-content"
     class:list={["app-layout pb-12", { "mt-8": !SITE.showBackButton }]}
@@ -119,7 +128,7 @@ const nextPost =
     <EditPost class="sm:hidden" {hideEditPost} {post} />
 
     <ul class="mt-4 mb-8 flex flex-wrap gap-4 sm:my-8">
-      {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
+      {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" {lang} />)}
     </ul>
 
     <BackToTopButton />
@@ -138,7 +147,7 @@ const nextPost =
           >
             <IconChevronLeft class="inline-block flex-none rtl:rotate-180" />
             <div>
-              <span>Previous Post</span>
+              <span>{t("post.prevPost")}</span>
               <div class="text-sm text-accent/85">{prevPost.title}</div>
             </div>
           </a>
@@ -151,7 +160,7 @@ const nextPost =
             class="flex w-full justify-end gap-1 text-end hover:opacity-75 sm:col-start-2"
           >
             <div>
-              <span>Next Post</span>
+              <span>{t("post.nextPost")}</span>
               <div class="text-sm text-accent/85">{nextPost.title}</div>
             </div>
             <IconChevronRight class="inline-block flex-none rtl:rotate-180" />
@@ -167,20 +176,15 @@ const nextPost =
   /** Create a progress indicator
    *  at the top */
   function createProgressBar() {
-    // Create the main container div
     const progressContainer = document.createElement("div");
     progressContainer.className =
       "progress-container fixed top-0 z-10 h-1 w-full bg-background";
 
-    // Create the progress bar div
     const progressBar = document.createElement("div");
     progressBar.className = "progress-bar h-1 w-0 bg-accent";
     progressBar.id = "myBar";
 
-    // Append the progress bar to the progress container
     progressContainer.appendChild(progressBar);
-
-    // Append the progress container to the document body or any other desired parent element
     document.body.appendChild(progressContainer);
   }
   createProgressBar();
@@ -237,12 +241,10 @@ const nextPost =
       const wrapper = document.createElement("div");
       wrapper.style.position = "relative";
 
-      // Check if --file-name-offset custom property exists
       const computedStyle = getComputedStyle(codeBlock);
       const hasFileNameOffset =
         computedStyle.getPropertyValue("--file-name-offset").trim() !== "";
 
-      // Determine the top positioning class
       const topClass = hasFileNameOffset
         ? "top-(--file-name-offset)"
         : "-top-3";
@@ -253,7 +255,6 @@ const nextPost =
       codeBlock.setAttribute("tabindex", "0");
       codeBlock.appendChild(copyButton);
 
-      // wrap codebock with relative parent element
       codeBlock?.parentNode?.insertBefore(wrapper, codeBlock);
       wrapper.appendChild(codeBlock);
 
@@ -268,7 +269,6 @@ const nextPost =
 
       await navigator.clipboard.writeText(text ?? "");
 
-      // visual feedback that task is completed
       button.innerText = "Copied";
 
       setTimeout(() => {

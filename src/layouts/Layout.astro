@@ -3,6 +3,7 @@ import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
 import { SITE } from "@/config";
+import { DEFAULT_LOCALE, type Locale } from "@/i18n/ui";
 import "@/styles/global.css";
 
 type Props = {
@@ -15,6 +16,7 @@ type Props = {
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
+  lang?: Locale;
 };
 
 const {
@@ -27,7 +29,10 @@ const {
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
+  lang = DEFAULT_LOCALE,
 } = Astro.props;
+
+const htmlLang = lang === "zh" ? "zh-CN" : "en";
 
 const socialImageURL = new URL(ogImage, Astro.url);
 
@@ -51,7 +56,7 @@ const structuredData = {
 <!doctype html>
 <html
   dir={SITE.dir}
-  lang=`${SITE.lang ?? "en"}`
+  lang={htmlLang}
   class={`${scrollSmooth ? "scroll-smooth" : ""}`}
 >
   <head>

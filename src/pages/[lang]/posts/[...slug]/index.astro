@@ -1,0 +1,34 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import PostDetails from "@/layouts/PostDetails.astro";
+import getSortedPosts from "@/utils/getSortedPosts";
+import { getPath } from "@/utils/getPath";
+import { type Locale } from "@/i18n/ui";
+import { getLangFromPostId, getPostsByLang } from "@/i18n/utils";
+
+type Props = {
+  post: CollectionEntry<"blog">;
+};
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+
+  return allPosts.map(post => {
+    const lang = getLangFromPostId(post.id);
+    // slug param is the portion after /{lang}/posts/ — no leading slash
+    const slug = getPath(post.id, post.filePath, false).replace(/^\//, "");
+    return {
+      params: { lang, slug },
+      props: { post },
+    };
+  });
+}
+
+const { post } = Astro.props;
+const { lang } = Astro.params;
+
+const allPosts = await getCollection("blog");
+const sortedLangPosts = getSortedPosts(getPostsByLang(allPosts, lang as Locale));
+---
+
+<PostDetails post={post} posts={sortedLangPosts} lang={lang as Locale} allPosts={allPosts} />

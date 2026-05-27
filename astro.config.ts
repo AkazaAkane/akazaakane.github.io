@@ -14,6 +14,11 @@ import { SITE } from "./src/config";
 // https://astro.build/config
 export default defineConfig({
   site: SITE.website,
+  redirects: {
+    "/tags": "/zh/tags",
+    "/archives": "/zh/archives",
+    "/search": "/zh/search",
+  },
   integrations: [
     sitemap({
       filter: page => SITE.showArchives || !page.endsWith("/archives"),
@@ -56,6 +61,11 @@ export default defineConfig({
         optional: true,
       }),
     },
+  },
+  i18n: {
+    defaultLocale: "zh",
+    locales: ["zh", "en"],
+    routing: { prefixDefaultLocale: true },
   },
   experimental: {
     preserveScriptOrder: true,
