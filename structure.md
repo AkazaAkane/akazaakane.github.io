@@ -12,15 +12,7 @@ src/
 
   data/blog/
     zh/                  # Chinese blog posts, organized by year/month
-      2025/03/           # e.g. why-blog.md, seedream-2-0.md
-      2025/04/
-      2025/06/
-      2026/05/           # e.g. design-agentic-alpha-discovery-system.md
     en/                  # English blog posts — same filename as zh counterpart to pair translations
-      2025/03/           # e.g. why-blog.md, seedream-2-0.md
-      2025/04/           # e.g. seedream-3-0.md
-      2025/06/           # e.g. design-google-translate.md
-      2026/05/           # e.g. design-agentic-alpha-discovery-system.md
 
   i18n/
     ui.ts                # Translation dictionary for all UI strings; LOCALES, DEFAULT_LOCALE, useTranslations()
