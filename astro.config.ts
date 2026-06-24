@@ -65,7 +65,7 @@ export default defineConfig({
   i18n: {
     defaultLocale: "en",
     locales: ["zh", "en"],
-    routing: { prefixDefaultLocale: true },
+    routing: { prefixDefaultLocale: true, redirectToDefaultLocale: false },
   },
   experimental: {
     preserveScriptOrder: true,

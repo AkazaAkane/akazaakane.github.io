@@ -1,3 +1,104 @@
 ---
-return Astro.redirect("/en/", 301);
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Socials from "@/components/Socials.astro";
+import LinkButton from "@/components/LinkButton.astro";
+import Card from "@/components/Card.astro";
+import getSortedPosts from "@/utils/getSortedPosts";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import { SITE } from "@/config";
+import { SOCIALS } from "@/constants";
+import { getPostsByLang } from "@/i18n/utils";
+import { useTranslations } from "@/i18n/ui";
+
+const lang = "en";
+const t = useTranslations(lang);
+
+const allPosts = await getCollection("blog");
+const posts = getSortedPosts(getPostsByLang(allPosts, lang));
+const featuredPosts = posts.filter(({ data }) => data.featured);
+const recentPosts = posts.filter(({ data }) => !data.featured);
 ---
+
+<Layout lang={lang}>
+  <Header lang={lang} />
+  <main id="main-content" data-layout="index" class="app-layout">
+    <section id="hero" class:list={["pt-8 pb-6", "border-b border-border"]}>
+      <p class="my-2 text-lg">Hi, I'm</p>
+      <h1 class="my-2 inline-block text-4xl font-bold sm:my-4 sm:text-5xl">
+        Yuhao Chen
+      </h1>
+      <p class="mt-2 text-lg font-medium text-accent">
+        AI & Machine Learning Engineer specializing in Large Language Models, RAG systems, and agentic workflows.
+      </p>
+
+      <div class="mt-6">
+        <h2 class="text-xl font-semibold">About Me</h2>
+        <p class="mt-2">
+          I am an AI/ML Engineer actively seeking new opportunities in California or NYC. I hold an MS in Operations Research from Columbia University and an BS in Economics & Statistics from Carnegie Mellon University. My current focus is on building agentic applications and scaling robust machine learning systems.
+        </p>
+      </div>
+
+      {
+        SOCIALS.length > 0 && (
+          <div class="mt-4 flex max-sm:flex-col sm:items-center">
+            <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">{t("index.socialLinks")}</div>
+            <Socials />
+          </div>
+        )
+      }
+    </section>
+
+    {
+      featuredPosts.length > 0 && (
+        <section
+          id="featured"
+          class:list={[
+            "pt-12 pb-6",
+            { "border-b border-border": recentPosts.length > 0 },
+          ]}
+        >
+          <h2 class="text-2xl font-semibold tracking-wide">{t("index.featured")}</h2>
+          <ul>
+            {featuredPosts.map(data => (
+              <Card variant="h3" {...data} />
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      recentPosts.length > 0 && (
+        <section id="recent-posts" class="pt-12 pb-6">
+          <h2 class="text-2xl font-semibold tracking-wide">{t("index.recentPosts")}</h2>
+          <ul>
+            {recentPosts.slice(0, SITE.postPerIndex).map(
+              data => <Card variant="h3" {...data} />
+            )}
+          </ul>
+        </section>
+      )
+    }
+
+    <div class="my-8 text-center">
+      <LinkButton href={`/${lang}/posts/`}>
+        {t("index.allPosts")}
+        <IconArrowRight class="inline-block rtl:-rotate-180" />
+      </LinkButton>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const indexLayout = (document.querySelector("#main-content") as HTMLElement)
+      ?.dataset?.layout;
+    if (indexLayout) {
+      sessionStorage.setItem("backUrl", window.location.pathname);
+    }
+  });
+</script>
