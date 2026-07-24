@@ -11,7 +11,10 @@ type Props = {
 };
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+  const allPosts = await getCollection(
+    "blog",
+    ({ data }) => !data.draft && !data.customPage
+  );
 
   return allPosts.map(post => {
     const lang = getLangFromPostId(post.id);

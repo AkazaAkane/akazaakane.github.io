@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encode Before You Admit — Pre-LM Audio Encoding with Caching · SGLang-Omni Fun-ASR</title>
+<meta name="description" content="Fun-ASR's full-context audio encoding moved ahead of LM admission: batched, single-flight deduplicated, and LRU-cached. 3.34× warm throughput, −49% p99 tail latency, identical WER. A technical walkthrough.">
+<link rel="canonical" href="https://akazaakane.github.io/en/posts/encode-before-you-admit/">
+<link rel="alternate" hreflang="en" href="https://akazaakane.github.io/en/posts/encode-before-you-admit/">
+<link rel="alternate" hreflang="zh-CN" href="https://akazaakane.github.io/zh/posts/encode-before-you-admit/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Encode Before You Admit — Pre-LM Audio Encoding with Caching">
+<meta property="og:description" content="Fun-ASR's full-context audio encoding moved ahead of LM admission: batched, single-flight deduplicated, and LRU-cached. 3.34× warm throughput, −49% p99 tail latency, identical WER.">
+<meta property="og:url" content="https://akazaakane.github.io/en/posts/encode-before-you-admit/">
+<meta property="og:image" content="https://akazaakane.github.io/en/posts/encode-before-you-admit/index.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#FFFFFF;
+  --ink-2:#FAFBFB;
+  --ink-3:#F5F6F8;
+  --panel:#ECEEF1;
+  --line:#E3E6EA;
+  --line-2:#D2D7DD;
+  --paper:#181818;
+  --paper-soft:#2E3338;
+  --paper-dim:#5C6670;
+  --paper-faint:#8A9099;
+  --green:#0CA112;
+  --green-soft:#0A7A02;
+  --blue:#1F6FD6;
+  --blue-soft:#0E63B8;
+  --blue-deep:#007EA4;
+  --red:#D93540;
+  --display:'Marcellus',serif;
+  --body:'Plus Jakarta Sans',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+::selection{background:var(--green);color:#fff}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);
+  color:var(--paper-soft);
+  font-family:var(--body);
+  font-weight:300;
+  line-height:1.8;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:998;
+  background-image:
+    linear-gradient(to right,rgba(40,70,50,.035) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(40,70,50,.035) 1px,transparent 1px);
+  background-size:88px 88px;
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.02;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+a{color:var(--blue);text-decoration:none;border-bottom:1px dotted var(--blue-deep)}
+a:hover{color:var(--green-soft);border-color:var(--green)}
+.mono{font-family:var(--mono)}
+h1,h2,h3{color:var(--paper)}
+
+/* ============ NAV ============ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 32px;
+  background:linear-gradient(to bottom,rgba(255,255,255,.95),rgba(255,255,255,.82));
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+nav .brand{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--paper-faint);border-bottom:none}
+nav .brand b{color:var(--green);font-weight:600}
+nav .links{display:flex;gap:20px;font-size:13px}
+nav .links a{color:var(--paper-faint);border:none;letter-spacing:.04em;transition:color .2s}
+nav .links a:hover{color:var(--green-soft)}
+nav .links .num{font-family:var(--mono);font-size:10px;color:var(--blue);margin-right:4px}
+@media(max-width:1000px){nav .links{display:flex}.links a:not(:last-child){display:none}}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:92vh;position:relative;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:108px 6vw 50px;
+  background:
+    radial-gradient(ellipse 80% 50% at 72% 18%,rgba(31,111,214,.06),transparent 60%),
+    radial-gradient(ellipse 60% 40% at 18% 82%,rgba(12,161,18,.06),transparent 60%);
+}
+.hero .kicker{
+  font-family:var(--mono);font-size:12px;letter-spacing:.35em;
+  color:var(--green);text-transform:uppercase;margin-bottom:28px;
+  display:flex;align-items:center;gap:14px;
+  animation:fadeUp .8s .1s both;
+}
+.hero .kicker::before{content:"";width:48px;height:1px;background:var(--green)}
+.hero h1{
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(40px,7.4vw,96px);
+  line-height:1.06;letter-spacing:.01em;
+  animation:fadeUp .8s .25s both;
+}
+.hero h1 .l2{display:block;color:var(--green-soft);font-size:.62em;margin-top:.12em}
+.hero .sub{
+  margin-top:22px;max-width:700px;font-size:16px;color:var(--paper-dim);
+  animation:fadeUp .8s .4s both;
+}
+.hero .sub b{color:var(--paper);font-weight:500}
+.hero-stats{
+  display:flex;flex-wrap:wrap;gap:0;margin-top:40px;
+  border-top:1px solid var(--line);
+  animation:fadeUp .8s .55s both;
+}
+.hero-stats .stat{
+  padding:20px 28px 4px 0;margin-right:28px;
+  border-right:1px dashed var(--line);
+}
+@media(max-width:1180px){.hero-stats{padding-bottom:110px}}
+.hero-stats .stat:last-child{border-right:none}
+.hero-stats .v{font-family:var(--mono);font-size:clamp(28px,4vw,44px);font-weight:600;color:var(--paper)}
+.hero-stats .v em{font-style:normal;font-size:.42em;color:var(--paper-faint);margin-left:4px}
+.hero-stats .k{font-size:11.5px;color:var(--paper-faint);letter-spacing:.12em;margin-top:2px}
+.hero-stats .stat:nth-child(1) .v{color:var(--green)}
+.hero-stats .stat:nth-child(2) .v{color:var(--blue)}
+.wave-strip{
+  position:absolute;left:0;right:0;bottom:0;height:120px;overflow:hidden;
+  opacity:.85;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);
+}
+.wave-strip .bars{position:absolute;inset:0;display:flex;align-items:center;gap:5px;padding:0 4vw}
+.wave-strip .bars i{
+  flex:1;background:linear-gradient(to top,#2a6fc4,#7db4ef);
+  min-width:2px;border-radius:1px;opacity:.5;
+  animation:pulse 1.6s ease-in-out infinite;
+}
+.wave-strip .bars i:nth-child(3n){background:linear-gradient(to top,#0a7a02,#2ec934)}
+@keyframes pulse{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+
+/* ============ SHARED ============ */
+section{padding:64px 6vw;position:relative}
+.sec-head{display:flex;align-items:baseline;gap:22px;margin-bottom:10px}
+.sec-head .no{
+  font-family:var(--mono);font-size:13px;color:var(--green);
+  border:1px solid rgba(12,161,18,.5);padding:4px 10px;letter-spacing:.1em;
+}
+.sec-head h2{
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(30px,4.4vw,52px);letter-spacing:.01em;
+}
+.sec-lede{max-width:780px;color:var(--paper-dim);font-size:15px;margin-bottom:30px}
+.sec-lede b{color:var(--green-soft);font-weight:500}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+code{
+  font-family:var(--mono);font-size:.86em;color:var(--blue-soft);
+  background:var(--ink-3);border:1px solid var(--line);padding:1px 7px;border-radius:3px;
+  white-space:nowrap;
+}
+.pr{
+  font-family:var(--mono);font-size:10px;letter-spacing:.06em;
+  color:var(--paper-faint);border:1px solid var(--line);padding:2px 8px;border-radius:3px;
+  white-space:nowrap;transition:color .2s,border-color .2s;
+}
+a.pr{border-bottom:1px solid var(--line)}
+a.pr:hover{color:var(--green-soft);border-color:var(--green)}
+.pr-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.note{font-size:12px;color:var(--paper-faint);font-family:var(--mono)}
+
+/* ============ 01 BEFORE/AFTER ============ */
+#problem{background:var(--ink-3);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);background:var(--ink)}
+@media(max-width:880px){.vs-grid{grid-template-columns:1fr}}
+.vs-col{padding:26px 26px 22px}
+.vs-col.before{border-right:1px solid var(--line)}
+@media(max-width:880px){.vs-col.before{border-right:none;border-bottom:1px solid var(--line)}}
+.vs-col .vtag{font-family:var(--mono);font-size:10px;letter-spacing:.24em;padding:4px 10px;display:inline-block;margin-bottom:20px}
+.vs-col.before .vtag{color:var(--red);border:1px solid rgba(217,53,64,.45)}
+.vs-col.after .vtag{color:var(--green);border:1px solid rgba(12,161,18,.5)}
+.vs-col h3{font-family:var(--display);font-size:26px;font-weight:400;margin-bottom:6px}
+.vs-col .vsub{font-family:var(--mono);font-size:11px;color:var(--paper-faint);letter-spacing:.1em;margin-bottom:18px}
+.vs-col ul{list-style:none}
+.vs-col li{
+  padding:8px 0 8px 24px;border-top:1px dashed var(--line);
+  font-size:13.5px;color:var(--paper-dim);position:relative;
+}
+.vs-col li::before{content:"›";position:absolute;left:4px;font-family:var(--mono)}
+.vs-col.before li::before{color:var(--red)}
+.vs-col.after li::before{color:var(--green)}
+.vs-col li b{color:var(--paper);font-weight:500}
+.vflow{
+  position:relative;height:54px;margin:4px 0 14px;
+  border:1px dashed var(--line-2);border-radius:4px;background:var(--ink-2);
+  display:flex;align-items:center;padding:0 16px;gap:10px;overflow:hidden;
+}
+.vf-box{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--paper-soft);
+  border:1px solid var(--line-2);background:var(--panel);padding:6px 9px;border-radius:3px;
+  white-space:nowrap;z-index:2;
+}
+.vflow.before .vf-box{border-color:rgba(217,53,64,.4)}
+.vflow.after .vf-box{border-color:rgba(12,161,18,.45)}
+.vf-box.hl{border-color:var(--green);color:var(--green-soft);background:rgba(12,161,18,.06)}
+.vf-arrow{font-family:var(--mono);font-size:10px;color:var(--paper-faint);z-index:2;animation:arrowPulse 1.2s ease-in-out infinite}
+@keyframes arrowPulse{0%,100%{opacity:.35}50%{opacity:1}}
+.vs-verdict{
+  margin-top:16px;max-width:1020px;padding:14px 22px;
+  background:linear-gradient(to right,rgba(12,161,18,.06),transparent);
+  border-left:3px solid var(--green);font-size:14px;color:var(--paper-dim);
+}
+.vs-verdict b{color:var(--green-soft);font-weight:500}
+
+/* ============ 02 PIPELINE ============ */
+.pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);background:var(--ink)}
+.pipe .node{padding:22px 20px 18px;border-right:1px solid var(--line);position:relative;transition:background .3s}
+.pipe .node:last-child{border-right:none}
+.pipe .node:hover{background:var(--panel)}
+.pipe .node::after{
+  content:"▸";position:absolute;right:-9px;top:46px;
+  color:var(--green);font-size:15px;z-index:2;background:var(--ink);padding:2px 0;
+}
+.pipe .node:last-child::after{display:none}
+.pipe .tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;padding:3px 8px;display:inline-block;margin-bottom:16px}
+.tag.cpu{color:var(--paper-faint);border:1px solid var(--line-2)}
+.tag.gpu{color:var(--blue);border:1px solid rgba(31,111,214,.45)}
+.tag.new{color:var(--green);border:1px solid rgba(12,161,18,.5)}
+.pipe h3{font-family:var(--display);font-weight:400;font-size:21px;margin-bottom:10px}
+.pipe p{font-size:12.5px;color:var(--paper-dim);line-height:1.7}
+.pipe .mono-note{font-family:var(--mono);font-size:10.5px;color:var(--green);margin-top:12px;display:block}
+.pipe .opts{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+.pipe .opts span{
+  display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;
+  color:var(--green-soft);background:rgba(12,161,18,.07);border:1px solid rgba(12,161,18,.3);
+  padding:2px 7px;border-radius:3px;margin:0 5px 6px 0;
+}
+@media(max-width:1060px){.pipe{grid-template-columns:1fr 1fr}.pipe .node:nth-child(2)::after{display:none}}
+@media(max-width:600px){.pipe{grid-template-columns:1fr}.pipe .node::after{display:none}.pipe .node{border-right:none;border-bottom:1px solid var(--line)}}
+
+.moves{display:grid;grid-template-columns:1fr;gap:10px;margin-top:34px}
+.move{
+  background:var(--ink);border:1px solid var(--line);padding:16px 18px;
+  border-left:3px solid var(--blue-deep);transition:border-color .3s;
+}
+.move:hover{border-left-color:var(--green)}
+.move .m-name{font-weight:500;font-size:15px;color:var(--paper);margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.move .m-name .mk{font-family:var(--mono);font-size:10px;color:var(--green);border:1px solid rgba(12,161,18,.5);padding:2px 7px;letter-spacing:.1em}
+.move p{font-size:13px;color:var(--paper-dim);line-height:1.7;margin-bottom:5px;max-width:940px}
+.move p:last-of-type{margin-bottom:0}
+.move p b{color:var(--paper);font-weight:500}
+.move.guard{border-left-color:var(--red)}
+.move.guard .m-name .mk{color:var(--red);border-color:rgba(217,53,64,.5)}
+.spec{
+  margin-top:14px;border:1px dashed var(--line-2);padding:12px 16px;
+  font-family:var(--mono);font-size:12px;color:var(--paper-dim);line-height:2;
+}
+.spec b{color:var(--blue-soft);font-weight:500}
+.spec .sl{color:var(--paper-faint)}
+.callout{
+  margin-top:12px;padding:14px 20px;
+  background:linear-gradient(to right,rgba(12,161,18,.06),transparent);
+  border-left:3px solid var(--green);font-size:13.5px;color:var(--paper-dim);
+}
+.callout b{color:var(--green-soft);font-weight:500}
+.callout.danger{background:linear-gradient(to right,rgba(217,53,64,.06),transparent);border-left-color:var(--red)}
+.callout.danger b{color:var(--red)}
+
+/* ============ 03–05 BENCH ============ */
+#control{background:var(--ink-3);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.bench-wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:40px;align-items:start}
+@media(max-width:980px){.bench-wrap{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px}
+thead th{
+  text-align:right;font-weight:500;color:var(--blue);font-size:11px;letter-spacing:.1em;
+  padding:12px 14px;border-bottom:1px solid var(--blue-deep);white-space:nowrap;
+}
+thead th:first-child{text-align:left}
+td{text-align:right;padding:12px 14px;border-bottom:1px solid var(--line);color:var(--paper-dim)}
+td:first-child{text-align:left;color:var(--paper);font-weight:500}
+tr.hi td{background:rgba(12,161,18,.05)}
+td .pos{color:var(--green-soft);font-weight:600}
+td .neu{color:var(--paper-faint)}
+.tbl-note{font-size:12px;color:var(--paper-faint);margin-top:14px;font-family:var(--mono)}
+.bars-title{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--paper-faint);margin-bottom:22px}
+.bbar{margin-bottom:18px}
+.bbar .lab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--paper-dim);margin-bottom:7px}
+.bbar .lab b{color:var(--blue);font-weight:600}
+.bbar .track{height:22px;background:var(--panel);border:1px solid var(--line);position:relative;overflow:hidden}
+.bbar .fill{
+  height:100%;width:0;
+  background:linear-gradient(to right,#2a6fc4,#5b9be8);
+  transition:width 1.2s cubic-bezier(.22,1,.36,1);position:relative;
+}
+.bbar .fill::after{content:"";position:absolute;right:0;top:0;bottom:0;width:2px;background:#fff;opacity:.7}
+.bbar.hot .fill{background:linear-gradient(to right,#0a7a02,#14b81b)}
+.bbar.hot .lab b{color:var(--green)}
+.bbar.dim .fill{background:linear-gradient(to right,#9aa4ae,#c3ccd4)}
+.bbar.dim .lab b{color:var(--paper-dim)}
+.rtf-pill{
+  display:inline-flex;align-items:baseline;gap:10px;margin-top:26px;
+  border:1px dashed var(--line-2);padding:16px 24px;font-family:var(--mono);
+}
+.rtf-pill .big{font-size:30px;font-weight:600;color:var(--green);white-space:nowrap}
+.rtf-pill span{font-size:12px;color:var(--paper-faint)}
+
+/* ============ 06 CORRECTNESS ============ */
+.q-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media(max-width:900px){.q-grid{grid-template-columns:1fr 1fr}}
+.q-card{border:1px solid var(--line);padding:20px 22px;background:var(--ink-3)}
+.q-card .qv{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--green)}
+.q-card .qv.blue{color:var(--blue)}
+.q-card .qk{font-size:12px;color:var(--paper-faint);margin-top:4px;line-height:1.5}
+blockquote{
+  margin:54px auto 0;max-width:840px;text-align:center;
+  font-family:var(--display);font-weight:400;font-size:clamp(20px,2.8vw,29px);
+  line-height:1.65;color:var(--paper);padding:0 20px;
+}
+blockquote .hl{color:var(--green-soft)}
+blockquote footer{font-family:var(--mono);font-size:12px;color:var(--paper-faint);margin-top:22px;letter-spacing:.15em}
+
+footer.site{
+  padding:38px 6vw 32px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;
+  font-size:13px;color:var(--paper-faint);
+}
+footer.site .src{max-width:640px}
+footer.site .src b{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--paper-dim);margin-bottom:12px}
+footer.site .src a{display:block;margin-bottom:8px;font-size:13px}
+footer.site .sig{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-align:right}
+</style>
+</head>
+<body data-pagefind-body>
+
+<nav>
+  <a class="brand" href="/en/" aria-label="Back to YC's Blog">SGLANG-OMNI <b>/ FUN-ASR</b></a>
+  <div class="links">
+    <a href="#problem"><span class="num">01</span>The Problem</a>
+    <a href="#design"><span class="num">02</span>The Design</a>
+    <a href="#bench"><span class="num">03</span>Benchmark</a>
+    <a href="#control"><span class="num">04</span>Attribution</a>
+    <a href="#cache"><span class="num">05</span>Cache Telemetry</a>
+    <a href="#correctness"><span class="num">06</span>Correctness</a>
+    <a href="/zh/posts/encode-before-you-admit/" lang="zh-CN">中文</a>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="kicker">SGLang-Omni · Fun-ASR Serving · 2026</div>
+  <h1>Encode Before You Admit<span class="l2">A Pre-LM Audio Encoder Service with Caching</span></h1>
+  <p class="sub">
+    <b>Fun-ASR</b> encodes the full audio context before any language-model decoding. That work used to
+    happen <b>inside</b> the LM stage — serialized per request, repeated for identical audio.
+    This change moves encoding <b>upstream of LM admission</b>, then arms it with batching,
+    single-flight deduplication, and a bounded CPU LRU cache.
+  </p>
+  <div class="hero-stats">
+    <div class="stat"><div class="v">3.34<em>×</em></div><div class="k">WARM-CACHE THROUGHPUT VS MAIN</div></div>
+    <div class="stat"><div class="v">−49.2<em>%</em></div><div class="k">P99 LATENCY · STRICTLY UNIQUE INPUTS</div></div>
+    <div class="stat"><div class="v">+18.0<em>pp</em></div><div class="k">GPU SM BUSY · 25.3% → 43.3%</div></div>
+    <div class="stat"><div class="v">1.710<em>%</em></div><div class="k">CORPUS WER · IDENTICAL IN ALL RUNS</div></div>
+  </div>
+  <div class="wave-strip"><div class="bars" id="waveBars"></div></div>
+</header>
+
+<!-- ================= 01 PROBLEM ================= -->
+<section id="problem">
+  <div class="sec-head reveal"><span class="no">01</span><h2>The Problem: Encoding at the Wrong Side of Admission</h2></div>
+  <p class="sec-lede reveal">
+    Fun-ASR is <b>full-context</b>: the whole utterance is encoded before the LM generates a single token.
+    On current main, that encode runs after a request is admitted to the LM stage — one request at a time,
+    inside the model runner.
+  </p>
+  <div class="vs-grid reveal">
+    <div class="vs-col before">
+      <span class="vtag">CURRENT MAIN</span>
+      <h3>Encode after admission</h3>
+      <div class="vsub">REQUEST → LM ADMIT → ENCODE → DECODE</div>
+      <div class="vflow before">
+        <span class="vf-box">request</span><span class="vf-arrow">→</span>
+        <span class="vf-box">LM admission</span><span class="vf-arrow">→</span>
+        <span class="vf-box">encode 1×1</span><span class="vf-arrow">→</span>
+        <span class="vf-box">decode</span>
+      </div>
+      <ul>
+        <li><b>Serialized encodes.</b> Concurrent short utterances encode one by one at admission — mean SM busy sits at <b>25–28%</b> under concurrency 32.</li>
+        <li><b>No dedup, no cache.</b> Identical audio submitted N times is encoded N times.</li>
+        <li><b>Encoder competes with the LM stage</b> for scheduling inside the runner.</li>
+      </ul>
+    </div>
+    <div class="vs-col after">
+      <span class="vtag">THIS CHANGE</span>
+      <h3>Encode before admission</h3>
+      <div class="vsub">REQUEST → PRE-LM ENCODE → LM ADMIT → DECODE</div>
+      <div class="vflow after">
+        <span class="vf-box">request</span><span class="vf-arrow">→</span>
+        <span class="vf-box hl">pre-LM encode · batch + cache</span><span class="vf-arrow">→</span>
+        <span class="vf-box">LM admission</span><span class="vf-arrow">→</span>
+        <span class="vf-box">decode</span>
+      </div>
+      <ul>
+        <li><b>Batched encodes</b> of concurrently arriving requests, on a dedicated CUDA stream.</li>
+        <li><b>Single-flight + LRU cache</b> — identical audio is encoded at most once.</li>
+        <li><b>Only complete, validated encodings</b> are admitted; embeddings arrive attached to the request.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="vs-verdict reveal">
+    <b>The GPU wasn't slow — it was idle.</b> The encoder sat downstream of admission where it couldn't batch,
+    so utilization and tail latency suffered long before throughput did.
+  </div>
+</section>
+
+<!-- ================= 02 DESIGN ================= -->
+<section id="design">
+  <div class="sec-head reveal"><span class="no">02</span><h2>The Design: FunAsrPreLMEncoderService</h2></div>
+  <p class="sec-lede reveal">
+    A dedicated service completes audio encoding <b>before LM admission</b>. Requests reach the LM stage
+    with LM-ready embeddings already attached — the LM never touches raw audio features.
+  </p>
+  <div class="pipe reveal">
+    <div class="node">
+      <span class="tag cpu">INGRESS</span>
+      <h3>Requests</h3>
+      <p>Concurrent audio requests. Each request's metadata now carries an <code>audio_fingerprint</code> and <code>num_audio_tokens</code>.</p>
+    </div>
+    <div class="node">
+      <span class="tag new">NEW · PRE-LM</span>
+      <h3>Encoder Service</h3>
+      <p>Batches concurrently arriving encodes, dedups identical in-flight audio, serves repeats from cache — on a dedicated CUDA stream.</p>
+      <div class="opts">
+        <span>BATCH</span><span>SINGLE-FLIGHT</span><span>LRU CACHE</span><span>CUDA STREAM</span>
+      </div>
+      <span class="mono-note">FunAsrPreLMEncoderService</span>
+    </div>
+    <div class="node">
+      <span class="tag gpu">GATE</span>
+      <h3>LM Admission</h3>
+      <p>Only complete encodings pass. Cached embeddings are validated for shape, token count, and dtype before reuse; failures never enter the LM stage.</p>
+    </div>
+    <div class="node">
+      <span class="tag gpu">GENERATE</span>
+      <h3>LM Decode</h3>
+      <p>Precomputed embeddings attach directly to the multimodal request; the original CPU feature tensor is released after encoding.</p>
+      <span class="mono-note">peak GPU mem −1.1 GiB</span>
+    </div>
+  </div>
+
+  <div class="moves">
+    <div class="move reveal">
+      <div class="m-name"><span class="mk">BATCH</span>Batched encoding with per-item fallback</div>
+      <p>Concurrently arriving encoder requests encode together. If a batched encode fails, the service degrades to per-item encoding and propagates unrecoverable failures <b>only to the affected requests</b>.</p>
+    </div>
+    <div class="move reveal">
+      <div class="m-name"><span class="mk">DEDUP</span>Single-flight execution</div>
+      <p>Concurrent requests for identical audio share <b>one</b> encoder execution. In the benchmark this merged 421 of 1,088 requests — reuse that exists even with a completely cold cache.</p>
+    </div>
+    <div class="move reveal">
+      <div class="m-name"><span class="mk">CACHE</span>Bounded CPU LRU cache</div>
+      <p>Configurable entry and byte limits. Stores only <b>complete</b> encoder/adaptor outputs — deliberately no prefix reuse of partial audio windows. <code>StageOutputCache</code> was made thread-safe for concurrent access.</p>
+    </div>
+    <div class="move guard reveal">
+      <div class="m-name"><span class="mk">GUARD</span>Cache correctness by construction</div>
+      <p>Namespaces and keys make a stale or mismatched hit structurally impossible; every hit is re-validated before use.</p>
+      <div class="spec">
+        <span class="sl">namespace =</span> <b>model</b> + <b>frontend config</b> + <b>dtype</b> + <b>device type</b> + <b>mm-attn backend</b><br>
+        <span class="sl">key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=</span> normalized <b>audio fingerprint</b><br>
+        <span class="sl">validate&nbsp;&nbsp;=</span> embedding <b>shape</b> · <b>token count</b> · <b>dtype</b> before reuse
+      </div>
+    </div>
+    <div class="move reveal">
+      <div class="m-name"><span class="mk">SHARE</span>One encoder implementation, two paths</div>
+      <p><code>_get_audio_feature_uncached()</code> is extracted so the regular and pre-LM paths run the same underlying encoder code — no behavioral fork. New encoder queue, batching, latency, failure, and cache statistics ship with the service.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 BENCH ================= -->
+<section id="bench">
+  <div class="sec-head reveal"><span class="no">03</span><h2>Benchmark: One H100, Concurrency 32</h2></div>
+  <p class="sec-lede reveal">
+    Full Seed-TTS English set — <b>1,088 samples, 666 unique audio files</b> — with
+    <code>FunAudioLLM/Fun-ASR-Nano-2512-hf</code> on one NVIDIA H100 80GB.
+    The two passes share one fresh server: cold-start on an empty cache, then warm reusing it.
+  </p>
+  <div class="bench-wrap">
+    <div class="reveal">
+      <table>
+        <thead><tr><th>Metric</th><th>Main</th><th>New · cold</th><th>New · warm</th></tr></thead>
+        <tbody>
+          <tr class="hi"><td>Throughput (samples/s)</td><td>25.962</td><td>34.738</td><td><span class="pos">86.789</span></td></tr>
+          <tr><td>Wall time (s)</td><td>41.907</td><td>31.320</td><td>12.536</td></tr>
+          <tr><td>Mean latency (s)</td><td>1.229</td><td>0.914</td><td>0.362</td></tr>
+          <tr><td>p95 latency (s)</td><td>1.802</td><td>1.114</td><td>0.504</td></tr>
+          <tr><td>p99 latency (s)</td><td>3.015</td><td>1.896</td><td>0.800</td></tr>
+          <tr><td>Mean RTF</td><td>0.26585</td><td>0.19965</td><td>0.07828</td></tr>
+          <tr><td>Corpus WER</td><td>0.01710</td><td>0.01710</td><td>0.01710</td></tr>
+          <tr><td>Skipped requests</td><td>0</td><td>0</td><td>0</td></tr>
+        </tbody>
+      </table>
+      <p class="tbl-note">// cold start: +33.8% throughput, −25.6% mean latency — before the cache has anything in it.<br>// warm: +234.3% (3.343×), wall time 41.9s → 12.5s. WER identical everywhere.</p>
+    </div>
+    <div class="reveal" style="transition-delay:.15s">
+      <div class="bars-title">THROUGHPUT — SAMPLES PER SECOND</div>
+      <div class="bbar dim"><div class="lab"><span>current main</span><b>25.96</b></div><div class="track"><div class="fill" data-w="29.9%"></div></div></div>
+      <div class="bbar"><div class="lab"><span>change · cold cache</span><b>34.74 · 1.34×</b></div><div class="track"><div class="fill" data-w="40.0%"></div></div></div>
+      <div class="bbar hot"><div class="lab"><span>change · warm cache</span><b>86.79 · 3.34×</b></div><div class="track"><div class="fill" data-w="100%"></div></div></div>
+      <div class="bars-title" style="margin-top:34px">LATENCY — SECONDS, LOWER IS BETTER</div>
+      <div class="bbar dim"><div class="lab"><span>main · mean / p95 / p99</span><b>1.23 / 1.80 / 3.02</b></div><div class="track"><div class="fill" data-w="100%"></div></div></div>
+      <div class="bbar"><div class="lab"><span>change cold · mean / p95 / p99</span><b>0.91 / 1.11 / 1.90</b></div><div class="track"><div class="fill" data-w="62.9%"></div></div></div>
+      <div class="bbar hot"><div class="lab"><span>change warm · mean / p95 / p99</span><b>0.36 / 0.50 / 0.80</b></div><div class="track"><div class="fill" data-w="26.5%"></div></div></div>
+      <div class="rtf-pill"><span class="big">RTF 0.266 → 0.078</span><span>warm cache · same model, same H100</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 ATTRIBUTION ================= -->
+<section id="control">
+  <div class="sec-head reveal"><span class="no">04</span><h2>Attribution: Where the Speedup Actually Comes From</h2></div>
+  <p class="sec-lede reveal">
+    A follow-up run pins main (<code>f916b86c</code>) against the change (<code>e6f49902</code>), plus a
+    <b>strict no-hit control</b>: 666 SHA-256-verified unique files, telemetry-confirmed
+    <code>hits=0, merged=0</code>. This separates caching from everything else.
+  </p>
+  <div class="bench-wrap">
+    <div class="reveal">
+      <div class="bars-title">GPU SM BUSY — MEAN %, 100ms NVML SAMPLING</div>
+      <div class="bbar dim"><div class="lab"><span>cold · main</span><b>25.3%</b></div><div class="track"><div class="fill" data-w="58.2%"></div></div></div>
+      <div class="bbar hot"><div class="lab"><span>cold · change</span><b>43.3% · +18.0 pp</b></div><div class="track"><div class="fill" data-w="99.5%"></div></div></div>
+      <div class="bbar dim"><div class="lab"><span>no-hit · main</span><b>28.1%</b></div><div class="track"><div class="fill" data-w="64.6%"></div></div></div>
+      <div class="bbar hot"><div class="lab"><span>no-hit · change</span><b>43.5% · +15.4 pp</b></div><div class="track"><div class="fill" data-w="100%"></div></div></div>
+      <p class="tbl-note">// batching alone doubles effective utilization — no cache hits required.<br>// exactly-idle GPU time: ~0.70s → ~0.41s; peak memory −1,099 MiB; mean power +17.6W (the GPU is finally working).</p>
+    </div>
+    <div class="reveal" style="transition-delay:.15s">
+      <table>
+        <thead><tr><th>No-hit control</th><th>Main</th><th>Change</th><th>Δ</th></tr></thead>
+        <tbody>
+          <tr><td>Throughput (samples/s)</td><td>32.178</td><td>32.231</td><td><span class="neu">+0.17%</span></td></tr>
+          <tr><td>Mean latency (s)</td><td>0.991</td><td>0.974</td><td><span class="neu">−1.7%</span></td></tr>
+          <tr class="hi"><td>p95 latency (s)</td><td>1.543</td><td>1.062</td><td><span class="pos">−31.2%</span></td></tr>
+          <tr class="hi"><td>p99 latency (s)</td><td>2.177</td><td>1.105</td><td><span class="pos">−49.2%</span></td></tr>
+          <tr><td>p95 RTF</td><td>0.3326</td><td>0.2998</td><td><span class="pos">−9.9%</span></td></tr>
+          <tr><td>Peak GPU mem (MiB)</td><td>73,062.9</td><td>71,963.5</td><td><span class="pos">−1,099.4</span></td></tr>
+          <tr><td>Corpus WER</td><td>0.017715</td><td>0.017715</td><td><span class="neu">identical</span></td></tr>
+        </tbody>
+      </table>
+      <p class="tbl-note">// 666/666 evaluated, 0 skipped, per-sample WER distribution identical.</p>
+    </div>
+  </div>
+  <div class="callout danger reveal" style="max-width:1020px">
+    <b>Honest scope.</b> With every request strictly unique, aggregate throughput is effectively neutral (+0.17%).
+    The unconditional wins are <b>GPU utilization</b> (+15.4 pp SM busy) and <b>tail latency</b> (p99 −49.2%).
+    Large throughput gains additionally require duplicate or repeated audio — which real workloads usually have.
+  </div>
+</section>
+
+<!-- ================= 05 CACHE ================= -->
+<section id="cache">
+  <div class="sec-head reveal"><span class="no">05</span><h2>Cache Telemetry: Reuse From an Empty Cache</h2></div>
+  <p class="sec-lede reveal">
+    Cold-start pass, 1,088 requests, cache empty at t=0. The <b>666 misses match the 666 unique files
+    exactly</b> — and on top of that, single-flight merged 421 concurrent duplicates that arrived before
+    the first encoding of their audio had finished.
+  </p>
+  <div class="bench-wrap">
+    <div class="reveal">
+      <div class="bars-title">COLD-START PASS — 1,088 REQUESTS</div>
+      <div class="bbar dim"><div class="lab"><span>cache misses (= unique files)</span><b>666</b></div><div class="track"><div class="fill" data-w="100%"></div></div></div>
+      <div class="bbar"><div class="lab"><span>single-flight merges</span><b>421</b></div><div class="track"><div class="fill" data-w="63.2%"></div></div></div>
+      <div class="bbar hot"><div class="lab"><span>ordinary cache hits</span><b>1</b></div><div class="track"><div class="fill" data-w="1%"></div></div></div>
+      <div class="rtf-pill"><span class="big">38.79%</span><span>of requests avoided an encoder execution — in one pass, from empty</span></div>
+    </div>
+    <div class="reveal" style="transition-delay:.15s">
+      <div class="bars-title">WARM PASS — SAME SERVER, SECOND RUN</div>
+      <div class="bbar hot"><div class="lab"><span>cache hits</span><b>1,088 / 1,088</b></div><div class="track"><div class="fill" data-w="100%"></div></div></div>
+      <div class="bbar dim"><div class="lab"><span>misses · merges · encoder executions</span><b>0 · 0 · 0</b></div><div class="track"><div class="fill" data-w="1%"></div></div></div>
+      <p class="tbl-note">// once populated, every request reuses a complete cached encoder output.<br>// caveat: the service's narrow hits/(hits+misses) metric read 0.15% on the cold pass<br>// because it excludes single-flight merges — 38.79% effective reuse is the number that matters.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 CORRECTNESS ================= -->
+<section id="correctness">
+  <div class="sec-head reveal"><span class="no">06</span><h2>Correctness: Nothing Moved Except the Speed</h2></div>
+  <p class="sec-lede reveal">
+    Main and the change — cold and warm alike — produced <b>bit-identical quality</b> on the full
+    dataset, and incomplete or failed encodings are structurally barred from the LM stage.
+  </p>
+  <div class="q-grid reveal">
+    <div class="q-card"><div class="qv">1.710%</div><div class="qk">corpus WER — identical across main, cold, and warm; per-sample WER distribution identical too</div></div>
+    <div class="q-card"><div class="qv blue">0</div><div class="qk">skipped requests — all 1,088 completed in every configuration</div></div>
+    <div class="q-card"><div class="qv">2,125/2,125</div><div class="qk">unit tests passed on self-hosted GPU CI — batching, cache, dedup, failure handling</div></div>
+    <div class="q-card"><div class="qv blue">complete-only</div><div class="qk">cache policy — no prefix reuse of partial audio windows, ever</div></div>
+  </div>
+  <div class="callout reveal" style="max-width:1020px;margin-top:26px">
+    <b>Failure containment:</b> a failed batched encode degrades to per-item retries; unrecoverable failures
+    propagate only to their own requests. The cache stores complete outputs only, namespaces prevent
+    cross-config reuse, and every hit is shape-, token-, and dtype-validated before admission.
+  </div>
+
+  <blockquote class="reveal">
+    "The GPU wasn't slow — it was <span class="hl">waiting in line</span>.<br>
+    Encode once, upstream, and admit only what's complete."
+    <footer>— SGLANG-OMNI · FUN-ASR · PRE-LM ENCODER</footer>
+  </blockquote>
+</section>
+
+<footer class="site">
+  <div class="src">
+    <b>METHODOLOGY</b>
+    <span class="note">All figures from the change's own benchmark report: full Seed-TTS EN set (1,088 samples / 666 unique files) · <code>FunAudioLLM/Fun-ASR-Nano-2512-hf</code> · one NVIDIA H100 80GB · concurrency 32 · NVML telemetry at 100 ms.</span>
+  </div>
+  <div class="sig">PRE-LM ENCODER NOTES<br>SGLANG-OMNI · 2026</div>
+</footer>
+
+<script is:inline>
+// hero wave bars
+(function(){
+  var wrap = document.getElementById('waveBars');
+  var n = Math.floor(window.innerWidth / 12);
+  for (var i = 0; i < n; i++){
+    var b = document.createElement('i');
+    b.style.height = (8 + Math.random() * 88) + '%';
+    b.style.animationDelay = (Math.random() * 1.6).toFixed(2) + 's';
+    b.style.animationDuration = (1.1 + Math.random() * 1.2).toFixed(2) + 's';
+    wrap.appendChild(b);
+  }
+})();
+
+// scroll reveal + animated bar fills
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    e.target.querySelectorAll('.fill[data-w]').forEach(function(f){
+      f.style.width = f.getAttribute('data-w');
+    });
+    io.unobserve(e.target);
+  });
+}, {threshold: .18});
+document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+</script>
+
+</body>
+</html>

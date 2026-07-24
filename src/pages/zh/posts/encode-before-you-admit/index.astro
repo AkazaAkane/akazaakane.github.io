@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>先编码，再准入 —— 带缓存的前置音频编码服务 · SGLang-Omni Fun-ASR</title>
+<meta name="description" content="Fun-ASR 的全上下文音频编码被移到 LM 准入之前：批处理、single-flight 去重、LRU 缓存。热缓存吞吐 3.34×，p99 尾延迟 −49%，WER 完全一致。技术解读。">
+<link rel="canonical" href="https://akazaakane.github.io/zh/posts/encode-before-you-admit/">
+<link rel="alternate" hreflang="zh-CN" href="https://akazaakane.github.io/zh/posts/encode-before-you-admit/">
+<link rel="alternate" hreflang="en" href="https://akazaakane.github.io/en/posts/encode-before-you-admit/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="先编码，再准入 —— 带缓存的前置音频编码服务">
+<meta property="og:description" content="Fun-ASR 的全上下文音频编码被移到 LM 准入之前：批处理、single-flight 去重、LRU 缓存。热缓存吞吐 3.34×，p99 尾延迟 −49%，WER 完全一致。">
+<meta property="og:url" content="https://akazaakane.github.io/zh/posts/encode-before-you-admit/">
+<meta property="og:image" content="https://akazaakane.github.io/zh/posts/encode-before-you-admit/index.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Noto+Serif+SC:wght@400;600&family=Noto+Sans+SC:wght@300;400;500;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#FFFFFF;
+  --ink-2:#FAFBFB;
+  --ink-3:#F5F6F8;
+  --panel:#ECEEF1;
+  --line:#E3E6EA;
+  --line-2:#D2D7DD;
+  --paper:#181818;
+  --paper-soft:#2E3338;
+  --paper-dim:#5C6670;
+  --paper-faint:#8A9099;
+  --green:#0CA112;
+  --green-soft:#0A7A02;
+  --blue:#1F6FD6;
+  --blue-soft:#0E63B8;
+  --blue-deep:#007EA4;
+  --red:#D93540;
+  --display:'Marcellus','Noto Serif SC',serif;
+  --body:'Plus Jakarta Sans','Noto Sans SC',sans-serif;
+  --mono:'IBM Plex Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+::selection{background:var(--green);color:#fff}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);
+  color:var(--paper-soft);
+  font-family:var(--body);
+  font-weight:300;
+  line-height:1.8;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:998;
+  background-image:
+    linear-gradient(to right,rgba(40,70,50,.035) 1px,transparent 1px),
+    linear-gradient(to bottom,rgba(40,70,50,.035) 1px,transparent 1px);
+  background-size:88px 88px;
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.02;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+a{color:var(--blue);text-decoration:none;border-bottom:1px dotted var(--blue-deep)}
+a:hover{color:var(--green-soft);border-color:var(--green)}
+.mono{font-family:var(--mono)}
+h1,h2,h3{color:var(--paper)}
+
+/* ============ NAV ============ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 32px;
+  background:linear-gradient(to bottom,rgba(255,255,255,.95),rgba(255,255,255,.82));
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+nav .brand{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--paper-faint);border-bottom:none}
+nav .brand b{color:var(--green);font-weight:600}
+nav .links{display:flex;gap:20px;font-size:13px}
+nav .links a{color:var(--paper-faint);border:none;letter-spacing:.04em;transition:color .2s}
+nav .links a:hover{color:var(--green-soft)}
+nav .links .num{font-family:var(--mono);font-size:10px;color:var(--blue);margin-right:4px}
+@media(max-width:1000px){nav .links{display:flex}.links a:not(:last-child){display:none}}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:92vh;position:relative;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:108px 6vw 50px;
+  background:
+    radial-gradient(ellipse 80% 50% at 72% 18%,rgba(31,111,214,.06),transparent 60%),
+    radial-gradient(ellipse 60% 40% at 18% 82%,rgba(12,161,18,.06),transparent 60%);
+}
+.hero .kicker{
+  font-family:var(--mono);font-size:12px;letter-spacing:.35em;
+  color:var(--green);text-transform:uppercase;margin-bottom:28px;
+  display:flex;align-items:center;gap:14px;
+  animation:fadeUp .8s .1s both;
+}
+.hero .kicker::before{content:"";width:48px;height:1px;background:var(--green)}
+.hero h1{
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(40px,7.4vw,96px);
+  line-height:1.1;letter-spacing:.01em;
+  animation:fadeUp .8s .25s both;
+}
+.hero h1 .l2{display:block;color:var(--green-soft);font-size:.52em;margin-top:.18em}
+.hero .sub{
+  margin-top:22px;max-width:700px;font-size:16px;color:var(--paper-dim);
+  animation:fadeUp .8s .4s both;
+}
+.hero .sub b{color:var(--paper);font-weight:500}
+.hero-stats{
+  display:flex;flex-wrap:wrap;gap:0;margin-top:40px;
+  border-top:1px solid var(--line);
+  animation:fadeUp .8s .55s both;
+}
+.hero-stats .stat{
+  padding:20px 28px 4px 0;margin-right:28px;
+  border-right:1px dashed var(--line);
+}
+.hero-stats .stat:last-child{border-right:none}
+.hero-stats .v{font-family:var(--mono);font-size:clamp(28px,4vw,44px);font-weight:600;color:var(--paper)}
+.hero-stats .v em{font-style:normal;font-size:.42em;color:var(--paper-faint);margin-left:4px}
+.hero-stats .k{font-size:11.5px;color:var(--paper-faint);letter-spacing:.12em;margin-top:2px}
+.hero-stats .stat:nth-child(1) .v{color:var(--green)}
+.hero-stats .stat:nth-child(2) .v{color:var(--blue)}
+@media(max-width:1180px){.hero-stats{padding-bottom:110px}}
+.wave-strip{
+  position:absolute;left:0;right:0;bottom:0;height:120px;overflow:hidden;
+  opacity:.85;pointer-events:none;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(to right,transparent,#000 12%,#000 88%,transparent);
+}
+.wave-strip .bars{position:absolute;inset:0;display:flex;align-items:center;gap:5px;padding:0 4vw}
+.wave-strip .bars i{
+  flex:1;background:linear-gradient(to top,#2a6fc4,#7db4ef);
+  min-width:2px;border-radius:1px;opacity:.5;
+  animation:pulse 1.6s ease-in-out infinite;
+}
+.wave-strip .bars i:nth-child(3n){background:linear-gradient(to top,#0a7a02,#2ec934)}
+@keyframes pulse{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+
+/* ============ SHARED ============ */
+section{padding:64px 6vw;position:relative}
+.sec-head{display:flex;align-items:baseline;gap:22px;margin-bottom:10px}
+.sec-head .no{
+  font-family:var(--mono);font-size:13px;color:var(--green);
+  border:1px solid rgba(12,161,18,.5);padding:4px 10px;letter-spacing:.1em;
+}
+.sec-head h2{
+  font-family:var(--display);font-weight:400;
+  font-size:clamp(28px,4vw,46px);letter-spacing:.01em;
+}
+.sec-lede{max-width:780px;color:var(--paper-dim);font-size:15px;margin-bottom:30px}
+.sec-lede b{color:var(--green-soft);font-weight:500}
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+code{
+  font-family:var(--mono);font-size:.86em;color:var(--blue-soft);
+  background:var(--ink-3);border:1px solid var(--line);padding:1px 7px;border-radius:3px;
+  white-space:nowrap;
+}
+.note{font-size:12px;color:var(--paper-faint);font-family:var(--mono)}
+
+/* ============ 01 BEFORE/AFTER ============ */
+#problem{background:var(--ink-3);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);background:var(--ink)}
+@media(max-width:880px){.vs-grid{grid-template-columns:1fr}}
+.vs-col{padding:26px 26px 22px}
+.vs-col.before{border-right:1px solid var(--line)}
+@media(max-width:880px){.vs-col.before{border-right:none;border-bottom:1px solid var(--line)}}
+.vs-col .vtag{font-family:var(--mono);font-size:10px;letter-spacing:.24em;padding:4px 10px;display:inline-block;margin-bottom:20px}
+.vs-col.before .vtag{color:var(--red);border:1px solid rgba(217,53,64,.45)}
+.vs-col.after .vtag{color:var(--green);border:1px solid rgba(12,161,18,.5)}
+.vs-col h3{font-family:var(--display);font-size:26px;font-weight:400;margin-bottom:6px}
+.vs-col .vsub{font-family:var(--mono);font-size:11px;color:var(--paper-faint);letter-spacing:.1em;margin-bottom:18px}
+.vs-col ul{list-style:none}
+.vs-col li{
+  padding:8px 0 8px 24px;border-top:1px dashed var(--line);
+  font-size:13.5px;color:var(--paper-dim);position:relative;
+}
+.vs-col li::before{content:"›";position:absolute;left:4px;font-family:var(--mono)}
+.vs-col.before li::before{color:var(--red)}
+.vs-col.after li::before{color:var(--green)}
+.vs-col li b{color:var(--paper);font-weight:500}
+.vflow{
+  position:relative;height:54px;margin:4px 0 14px;
+  border:1px dashed var(--line-2);border-radius:4px;background:var(--ink-2);
+  display:flex;align-items:center;padding:0 16px;gap:10px;overflow:hidden;
+}
+.vf-box{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--paper-soft);
+  border:1px solid var(--line-2);background:var(--panel);padding:6px 9px;border-radius:3px;
+  white-space:nowrap;z-index:2;
+}
+.vflow.before .vf-box{border-color:rgba(217,53,64,.4)}
+.vflow.after .vf-box{border-color:rgba(12,161,18,.45)}
+.vf-box.hl{border-color:var(--green);color:var(--green-soft);background:rgba(12,161,18,.06)}
+.vf-arrow{font-family:var(--mono);font-size:10px;color:var(--paper-faint);z-index:2;animation:arrowPulse 1.2s ease-in-out infinite}
+@keyframes arrowPulse{0%,100%{opacity:.35}50%{opacity:1}}
+.vs-verdict{
+  margin-top:16px;max-width:1020px;padding:14px 22px;
+  background:linear-gradient(to right,rgba(12,161,18,.06),transparent);
+  border-left:3px solid var(--green);font-size:14px;color:var(--paper-dim);
+}
+.vs-verdict b{color:var(--green-soft);font-weight:500}
+
+/* ============ 02 PIPELINE ============ */
+.pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);background:var(--ink)}
+.pipe .node{padding:22px 20px 18px;border-right:1px solid var(--line);position:relative;transition:background .3s}
+.pipe .node:last-child{border-right:none}
+.pipe .node:hover{background:var(--panel)}
+.pipe .node::after{
+  content:"▸";position:absolute;right:-9px;top:46px;
+  color:var(--green);font-size:15px;z-index:2;background:var(--ink);padding:2px 0;
+}
+.pipe .node:last-child::after{display:none}
+.pipe .tag{font-family:var(--mono);font-size:10px;letter-spacing:.2em;padding:3px 8px;display:inline-block;margin-bottom:16px}
+.tag.cpu{color:var(--paper-faint);border:1px solid var(--line-2)}
+.tag.gpu{color:var(--blue);border:1px solid rgba(31,111,214,.45)}
+.tag.new{color:var(--green);border:1px solid rgba(12,161,18,.5)}
+.pipe h3{font-family:var(--display);font-weight:400;font-size:21px;margin-bottom:10px}
+.pipe p{font-size:12.5px;color:var(--paper-dim);line-height:1.7}
+.pipe .mono-note{font-family:var(--mono);font-size:10.5px;color:var(--green);margin-top:12px;display:block}
+.pipe .opts{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+.pipe .opts span{
+  display:inline-block;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;
+  color:var(--green-soft);background:rgba(12,161,18,.07);border:1px solid rgba(12,161,18,.3);
+  padding:2px 7px;border-radius:3px;margin:0 5px 6px 0;
+}
+@media(max-width:1060px){.pipe{grid-template-columns:1fr 1fr}.pipe .node:nth-child(2)::after{display:none}}
+@media(max-width:600px){.pipe{grid-template-columns:1fr}.pipe .node::after{display:none}.pipe .node{border-right:none;border-bottom:1px solid var(--line)}}
+
+.moves{display:grid;grid-template-columns:1fr;gap:10px;margin-top:34px}
+.move{
+  background:var(--ink);border:1px solid var(--line);padding:16px 18px;
+  border-left:3px solid var(--blue-deep);transition:border-color .3s;
+}
+.move:hover{border-left-color:var(--green)}
+.move .m-name{font-weight:500;font-size:15px;color:var(--paper);margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.move .m-name .mk{font-family:var(--mono);font-size:10px;color:var(--green);border:1px solid rgba(12,161,18,.5);padding:2px 7px;letter-spacing:.1em}
+.move p{font-size:13px;color:var(--paper-dim);line-height:1.7;margin-bottom:5px;max-width:940px}
+.move p:last-of-type{margin-bottom:0}
+.move p b{color:var(--paper);font-weight:500}
+.move.guard{border-left-color:var(--red)}
+.move.guard .m-name .mk{color:var(--red);border-color:rgba(217,53,64,.5)}
+.spec{
+  margin-top:14px;border:1px dashed var(--line-2);padding:12px 16px;
+  font-family:var(--mono);font-size:12px;color:var(--paper-dim);line-height:2;
+}
+.spec b{color:var(--blue-soft);font-weight:500}
+.spec .sl{color:var(--paper-faint)}
+.callout{
+  margin-top:12px;padding:14px 20px;
+  background:linear-gradient(to right,rgba(12,161,18,.06),transparent);
+  border-left:3px solid var(--green);font-size:13.5px;color:var(--paper-dim);
+}
+.callout b{color:var(--green-soft);font-weight:500}
+.callout.danger{background:linear-gradient(to right,rgba(217,53,64,.06),transparent);border-left-color:var(--red)}
+.callout.danger b{color:var(--red)}
+
+/* ============ 03–05 BENCH ============ */
+#control{background:var(--ink-3);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.bench-wrap{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:40px;align-items:start}
+@media(max-width:980px){.bench-wrap{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:13px}
+thead th{
+  text-align:right;font-weight:500;color:var(--blue);font-size:11px;letter-spacing:.1em;
+  padding:12px 14px;border-bottom:1px solid var(--blue-deep);white-space:nowrap;
+}
+thead th:first-child{text-align:left}
+td{text-align:right;padding:12px 14px;border-bottom:1px solid var(--line);color:var(--paper-dim)}
+td:first-child{text-align:left;color:var(--paper);font-weight:500}
+tr.hi td{background:rgba(12,161,18,.05)}
+td .pos{color:var(--green-soft);font-weight:600}
+td .neu{color:var(--paper-faint)}
+.tbl-note{font-size:12px;color:var(--paper-faint);margin-top:14px;font-family:var(--mono)}
+.bars-title{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--paper-faint);margin-bottom:22px}
+.bbar{margin-bottom:18px}
+.bbar .lab{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--paper-dim);margin-bottom:7px}
+.bbar .lab b{color:var(--blue);font-weight:600}
+.bbar .track{height:22px;background:var(--panel);border:1px solid var(--line);position:relative;overflow:hidden}
+.bbar .fill{
+  height:100%;width:0;
+  background:linear-gradient(to right,#2a6fc4,#5b9be8);
+  transition:width 1.2s cubic-bezier(.22,1,.36,1);position:relative;
+}
+.bbar .fill::after{content:"";position:absolute;right:0;top:0;bottom:0;width:2px;background:#fff;opacity:.7}
+.bbar.hot .fill{background:linear-gradient(to right,#0a7a02,#14b81b)}
+.bbar.hot .lab b{color:var(--green)}
+.bbar.dim .fill{background:linear-gradient(to right,#9aa4ae,#c3ccd4)}
+.bbar.dim .lab b{color:var(--paper-dim)}
+.rtf-pill{
+  display:inline-flex;align-items:baseline;gap:10px;margin-top:26px;
+  border:1px dashed var(--line-2);padding:16px 24px;font-family:var(--mono);
+}
+.rtf-pill .big{font-size:30px;font-weight:600;color:var(--green);white-space:nowrap}
+.rtf-pill span{font-size:12px;color:var(--paper-faint)}
+
+/* ============ 06 CORRECTNESS ============ */
+.q-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media(max-width:900px){.q-grid{grid-template-columns:1fr 1fr}}
+.q-card{border:1px solid var(--line);padding:20px 22px;background:var(--ink-3)}
+.q-card .qv{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--green)}
+.q-card .qv.blue{color:var(--blue)}
+.q-card .qk{font-size:12px;color:var(--paper-faint);margin-top:4px;line-height:1.5}
+blockquote{
+  margin:54px auto 0;max-width:840px;text-align:center;
+  font-family:var(--display);font-weight:400;font-size:clamp(20px,2.8vw,29px);
+  line-height:1.65;color:var(--paper);padding:0 20px;
+}
+blockquote .hl{color:var(--green-soft)}
+blockquote footer{font-family:var(--mono);font-size:12px;color:var(--paper-faint);margin-top:22px;letter-spacing:.15em}
+
+footer.site{
+  padding:38px 6vw 32px;border-top:1px solid var(--line);
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:24px;
+  font-size:13px;color:var(--paper-faint);
+}
+footer.site .src{max-width:640px}
+footer.site .src b{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--paper-dim);margin-bottom:12px}
+footer.site .sig{font-family:var(--mono);font-size:11px;letter-spacing:.15em;text-align:right}
+</style>
+</head>
+<body data-pagefind-body>
+
+<nav>
+  <a class="brand" href="/zh/" aria-label="返回 YC 的博客">SGLANG-OMNI <b>/ FUN-ASR</b></a>
+  <div class="links">
+    <a href="#problem"><span class="num">01</span>问题</a>
+    <a href="#design"><span class="num">02</span>设计</a>
+    <a href="#bench"><span class="num">03</span>基准测试</a>
+    <a href="#control"><span class="num">04</span>归因</a>
+    <a href="#cache"><span class="num">05</span>缓存遥测</a>
+    <a href="#correctness"><span class="num">06</span>正确性</a>
+    <a href="/en/posts/encode-before-you-admit/" lang="en">EN</a>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="kicker">SGLang-Omni · Fun-ASR 推理服务 · 2026</div>
+  <h1>先编码，再准入<span class="l2">带缓存的前置（Pre-LM）音频编码服务</span></h1>
+  <p class="sub">
+    <b>Fun-ASR</b> 在语言模型解码之前对整段音频做全上下文编码。过去这一步发生在 LM 阶段
+    <b>内部</b>——逐请求串行执行，相同音频反复重算。本次改动把编码移到
+    <b>LM 准入之前</b>，并为它配上批处理、single-flight 去重和有界 CPU LRU 缓存。
+  </p>
+  <div class="hero-stats">
+    <div class="stat"><div class="v">3.34<em>×</em></div><div class="k">热缓存吞吐 · 相对 MAIN</div></div>
+    <div class="stat"><div class="v">−49.2<em>%</em></div><div class="k">P99 延迟 · 严格唯一输入</div></div>
+    <div class="stat"><div class="v">+18.0<em>pp</em></div><div class="k">GPU SM 占用 · 25.3% → 43.3%</div></div>
+    <div class="stat"><div class="v">1.710<em>%</em></div><div class="k">语料 WER · 所有运行完全一致</div></div>
+  </div>
+  <div class="wave-strip"><div class="bars" id="waveBars"></div></div>
+</header>
+
+<!-- ================= 01 PROBLEM ================= -->
+<section id="problem">
+  <div class="sec-head reveal"><span class="no">01</span><h2>问题：编码发生在准入的错误一侧</h2></div>
+  <p class="sec-lede reveal">
+    Fun-ASR 是<b>全上下文</b>模型：整段语音在 LM 生成第一个 token 之前就必须完成编码。
+    在当前 main 上，这一步发生在请求被 LM 阶段准入之后——在 model runner 里一次处理一个请求。
+  </p>
+  <div class="vs-grid reveal">
+    <div class="vs-col before">
+      <span class="vtag">当前 MAIN</span>
+      <h3>准入后编码</h3>
+      <div class="vsub">请求 → LM 准入 → 编码 → 解码</div>
+      <div class="vflow before">
+        <span class="vf-box">request</span><span class="vf-arrow">→</span>
+        <span class="vf-box">LM admission</span><span class="vf-arrow">→</span>
+        <span class="vf-box">encode 1×1</span><span class="vf-arrow">→</span>
+        <span class="vf-box">decode</span>
+      </div>
+      <ul>
+        <li><b>串行编码。</b>并发到达的短语音在准入后逐条编码——并发 32 时平均 SM 占用只有 <b>25–28%</b>。</li>
+        <li><b>无去重、无缓存。</b>相同音频提交 N 次，就编码 N 次。</li>
+        <li><b>编码器与 LM 阶段</b>在 runner 内争抢调度。</li>
+      </ul>
+    </div>
+    <div class="vs-col after">
+      <span class="vtag">本次改动</span>
+      <h3>准入前编码</h3>
+      <div class="vsub">请求 → 前置编码 → LM 准入 → 解码</div>
+      <div class="vflow after">
+        <span class="vf-box">request</span><span class="vf-arrow">→</span>
+        <span class="vf-box hl">pre-LM encode · batch + cache</span><span class="vf-arrow">→</span>
+        <span class="vf-box">LM admission</span><span class="vf-arrow">→</span>
+        <span class="vf-box">decode</span>
+      </div>
+      <ul>
+        <li><b>批量编码</b>并发到达的请求，运行在专用 CUDA stream 上。</li>
+        <li><b>single-flight + LRU 缓存</b>——相同音频最多编码一次。</li>
+        <li><b>只有完整、通过校验的编码</b>才会被准入；embedding 随请求一并携带。</li>
+      </ul>
+    </div>
+  </div>
+  <div class="vs-verdict reveal">
+    <b>GPU 并不慢——它在空转。</b>编码器位于准入的下游，无法组批；利用率和尾延迟因此先于吞吐出问题。
+  </div>
+</section>
+
+<!-- ================= 02 DESIGN ================= -->
+<section id="design">
+  <div class="sec-head reveal"><span class="no">02</span><h2>设计：FunAsrPreLMEncoderService</h2></div>
+  <p class="sec-lede reveal">
+    一个独立服务在 <b>LM 准入之前</b>完成音频编码。请求到达 LM 阶段时已携带可直接使用的
+    embedding——LM 不再接触原始音频特征。
+  </p>
+  <div class="pipe reveal">
+    <div class="node">
+      <span class="tag cpu">入口</span>
+      <h3>请求</h3>
+      <p>并发音频请求。请求元数据新增 <code>audio_fingerprint</code> 与 <code>num_audio_tokens</code> 两个字段。</p>
+    </div>
+    <div class="node">
+      <span class="tag new">新增 · PRE-LM</span>
+      <h3>编码服务</h3>
+      <p>批量处理并发到达的编码请求，对在途的相同音频去重，重复请求走缓存——运行在专用 CUDA stream 上。</p>
+      <div class="opts">
+        <span>BATCH</span><span>SINGLE-FLIGHT</span><span>LRU CACHE</span><span>CUDA STREAM</span>
+      </div>
+      <span class="mono-note">FunAsrPreLMEncoderService</span>
+    </div>
+    <div class="node">
+      <span class="tag gpu">闸门</span>
+      <h3>LM 准入</h3>
+      <p>只有完整的编码才能通过。缓存命中在使用前校验形状、token 数与 dtype；失败的编码永远不会进入 LM 阶段。</p>
+    </div>
+    <div class="node">
+      <span class="tag gpu">生成</span>
+      <h3>LM 解码</h3>
+      <p>预计算 embedding 直接挂到多模态请求上；原始 CPU 特征张量在编码完成后立即释放。</p>
+      <span class="mono-note">峰值显存 −1.1 GiB</span>
+    </div>
+  </div>
+
+  <div class="moves">
+    <div class="move reveal">
+      <div class="m-name"><span class="mk">BATCH</span>批量编码，失败时逐条回退</div>
+      <p>并发到达的编码请求一起执行。若批量编码失败，服务降级为逐条编码，并把不可恢复的失败<b>只传播给受影响的请求</b>。</p>
+    </div>
+    <div class="move reveal">
+      <div class="m-name"><span class="mk">DEDUP</span>single-flight 执行</div>
+      <p>针对相同音频的并发请求共享<b>一次</b>编码执行。基准测试中有 421 / 1,088 个请求被合并——即使缓存完全为空，这部分复用也存在。</p>
+    </div>
+    <div class="move reveal">
+      <div class="m-name"><span class="mk">CACHE</span>有界 CPU LRU 缓存</div>
+      <p>条目数与字节数上限均可配置。只缓存<b>完整</b>的编码器/适配器输出——刻意不做部分音频窗口的前缀复用。<code>StageOutputCache</code> 同步改为线程安全。</p>
+    </div>
+    <div class="move guard reveal">
+      <div class="m-name"><span class="mk">GUARD</span>构造即正确的缓存</div>
+      <p>命名空间与键的设计让过期或错配的命中在结构上不可能发生；每次命中在使用前还要重新校验。</p>
+      <div class="spec">
+        <span class="sl">namespace =</span> <b>模型</b> + <b>前端配置</b> + <b>dtype</b> + <b>设备类型</b> + <b>多模态注意力后端</b><br>
+        <span class="sl">key&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=</span> 归一化<b>音频指纹</b><br>
+        <span class="sl">validate&nbsp;&nbsp;=</span> 复用前校验 embedding 的<b>形状</b> · <b>token 数</b> · <b>dtype</b>
+      </div>
+    </div>
+    <div class="move reveal">
+      <div class="m-name"><span class="mk">SHARE</span>两条路径，同一编码器实现</div>
+      <p>抽取出 <code>_get_audio_feature_uncached()</code>，常规路径与前置路径运行同一份编码器代码——行为不分叉。服务同时新增编码队列、批处理、延迟、失败与缓存统计指标。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 BENCH ================= -->
+<section id="bench">
+  <div class="sec-head reveal"><span class="no">03</span><h2>基准测试：单卡 H100，并发 32</h2></div>
+  <p class="sec-lede reveal">
+    完整 Seed-TTS 英文集——<b>1,088 条样本，666 个唯一音频文件</b>——模型
+    <code>FunAudioLLM/Fun-ASR-Nano-2512-hf</code>，单张 NVIDIA H100 80GB。
+    两次运行共用同一个新启动的 server：先在空缓存上冷启动，再热缓存复用。
+  </p>
+  <div class="bench-wrap">
+    <div class="reveal">
+      <table>
+        <thead><tr><th>指标</th><th>Main</th><th>改动 · 冷</th><th>改动 · 热</th></tr></thead>
+        <tbody>
+          <tr class="hi"><td>吞吐 (samples/s)</td><td>25.962</td><td>34.738</td><td><span class="pos">86.789</span></td></tr>
+          <tr><td>墙钟时间 (s)</td><td>41.907</td><td>31.320</td><td>12.536</td></tr>
+          <tr><td>平均延迟 (s)</td><td>1.229</td><td>0.914</td><td>0.362</td></tr>
+          <tr><td>p95 延迟 (s)</td><td>1.802</td><td>1.114</td><td>0.504</td></tr>
+          <tr><td>p99 延迟 (s)</td><td>3.015</td><td>1.896</td><td>0.800</td></tr>
+          <tr><td>平均 RTF</td><td>0.26585</td><td>0.19965</td><td>0.07828</td></tr>
+          <tr><td>语料 WER</td><td>0.01710</td><td>0.01710</td><td>0.01710</td></tr>
+          <tr><td>跳过请求数</td><td>0</td><td>0</td><td>0</td></tr>
+        </tbody>
+      </table>
+      <p class="tbl-note">// 冷启动：吞吐 +33.8%，平均延迟 −25.6%——此时缓存里还什么都没有。<br>// 热缓存：+234.3%（3.343×），墙钟 41.9s → 12.5s。WER 完全一致。</p>
+    </div>
+    <div class="reveal" style="transition-delay:.15s">
+      <div class="bars-title">吞吐 —— 每秒样本数</div>
+      <div class="bbar dim"><div class="lab"><span>当前 main</span><b>25.96</b></div><div class="track"><div class="fill" data-w="29.9%"></div></div></div>
+      <div class="bbar"><div class="lab"><span>改动 · 冷缓存</span><b>34.74 · 1.34×</b></div><div class="track"><div class="fill" data-w="40.0%"></div></div></div>
+      <div class="bbar hot"><div class="lab"><span>改动 · 热缓存</span><b>86.79 · 3.34×</b></div><div class="track"><div class="fill" data-w="100%"></div></div></div>
+      <div class="bars-title" style="margin-top:34px">延迟 —— 秒，越低越好</div>
+      <div class="bbar dim"><div class="lab"><span>main · 均值 / p95 / p99</span><b>1.23 / 1.80 / 3.02</b></div><div class="track"><div class="fill" data-w="100%"></div></div></div>
+      <div class="bbar"><div class="lab"><span>改动·冷 · 均值 / p95 / p99</span><b>0.91 / 1.11 / 1.90</b></div><div class="track"><div class="fill" data-w="62.9%"></div></div></div>
+      <div class="bbar hot"><div class="lab"><span>改动·热 · 均值 / p95 / p99</span><b>0.36 / 0.50 / 0.80</b></div><div class="track"><div class="fill" data-w="26.5%"></div></div></div>
+      <div class="rtf-pill"><span class="big">RTF 0.266 → 0.078</span><span>热缓存 · 同模型、同一张 H100</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 ATTRIBUTION ================= -->
+<section id="control">
+  <div class="sec-head reveal"><span class="no">04</span><h2>归因：加速到底来自哪里</h2></div>
+  <p class="sec-lede reveal">
+    后续测试将 main（<code>f916b86c</code>）与本次改动（<code>e6f49902</code>）固定对比，并加入
+    <b>严格无命中对照</b>：666 个经 SHA-256 校验的唯一文件，遥测确认
+    <code>hits=0, merged=0</code>。这把缓存的作用与其他因素彻底分开。
+  </p>
+  <div class="bench-wrap">
+    <div class="reveal">
+      <div class="bars-title">GPU SM 占用 —— 均值 %，100MS NVML 采样</div>
+      <div class="bbar dim"><div class="lab"><span>冷 · main</span><b>25.3%</b></div><div class="track"><div class="fill" data-w="58.2%"></div></div></div>
+      <div class="bbar hot"><div class="lab"><span>冷 · 改动</span><b>43.3% · +18.0 pp</b></div><div class="track"><div class="fill" data-w="99.5%"></div></div></div>
+      <div class="bbar dim"><div class="lab"><span>无命中 · main</span><b>28.1%</b></div><div class="track"><div class="fill" data-w="64.6%"></div></div></div>
+      <div class="bbar hot"><div class="lab"><span>无命中 · 改动</span><b>43.5% · +15.4 pp</b></div><div class="track"><div class="fill" data-w="100%"></div></div></div>
+      <p class="tbl-note">// 仅批处理一项就把有效利用率翻倍——完全不需要缓存命中。<br>// 完全空闲时间 ~0.70s → ~0.41s；峰值显存 −1,099 MiB；平均功耗 +17.6W（GPU 终于在工作了）。</p>
+    </div>
+    <div class="reveal" style="transition-delay:.15s">
+      <table>
+        <thead><tr><th>无命中对照</th><th>Main</th><th>改动</th><th>Δ</th></tr></thead>
+        <tbody>
+          <tr><td>吞吐 (samples/s)</td><td>32.178</td><td>32.231</td><td><span class="neu">+0.17%</span></td></tr>
+          <tr><td>平均延迟 (s)</td><td>0.991</td><td>0.974</td><td><span class="neu">−1.7%</span></td></tr>
+          <tr class="hi"><td>p95 延迟 (s)</td><td>1.543</td><td>1.062</td><td><span class="pos">−31.2%</span></td></tr>
+          <tr class="hi"><td>p99 延迟 (s)</td><td>2.177</td><td>1.105</td><td><span class="pos">−49.2%</span></td></tr>
+          <tr><td>p95 RTF</td><td>0.3326</td><td>0.2998</td><td><span class="pos">−9.9%</span></td></tr>
+          <tr><td>峰值显存 (MiB)</td><td>73,062.9</td><td>71,963.5</td><td><span class="pos">−1,099.4</span></td></tr>
+          <tr><td>语料 WER</td><td>0.017715</td><td>0.017715</td><td><span class="neu">一致</span></td></tr>
+        </tbody>
+      </table>
+      <p class="tbl-note">// 666/666 全部完成评估，0 跳过，逐样本 WER 分布一致。</p>
+    </div>
+  </div>
+  <div class="callout danger reveal" style="max-width:1020px">
+    <b>诚实的适用范围。</b>当每个请求严格唯一时，总吞吐基本持平（+0.17%）。无条件的收益是
+    <b>GPU 利用率</b>（+15.4 pp SM 占用）和<b>尾延迟</b>（p99 −49.2%）；大幅吞吐提升还需要
+    重复或相同的音频——而真实负载通常恰好如此。
+  </div>
+</section>
+
+<!-- ================= 05 CACHE ================= -->
+<section id="cache">
+  <div class="sec-head reveal"><span class="no">05</span><h2>缓存遥测：从空缓存开始的复用</h2></div>
+  <p class="sec-lede reveal">
+    冷启动 pass，1,088 个请求，t=0 时缓存为空。<b>666 次 miss 与 666 个唯一文件精确对应</b>——
+    在此之上，single-flight 合并了 421 个并发重复请求（它们在对应音频的首次编码完成之前到达）。
+  </p>
+  <div class="bench-wrap">
+    <div class="reveal">
+      <div class="bars-title">冷启动 PASS —— 1,088 个请求</div>
+      <div class="bbar dim"><div class="lab"><span>缓存 miss（= 唯一文件数）</span><b>666</b></div><div class="track"><div class="fill" data-w="100%"></div></div></div>
+      <div class="bbar"><div class="lab"><span>single-flight 合并</span><b>421</b></div><div class="track"><div class="fill" data-w="63.2%"></div></div></div>
+      <div class="bbar hot"><div class="lab"><span>普通缓存命中</span><b>1</b></div><div class="track"><div class="fill" data-w="1%"></div></div></div>
+      <div class="rtf-pill"><span class="big">38.79%</span><span>的请求免去了一次编码执行——单 pass、从空缓存开始</span></div>
+    </div>
+    <div class="reveal" style="transition-delay:.15s">
+      <div class="bars-title">热缓存 PASS —— 同一 SERVER，第二次运行</div>
+      <div class="bbar hot"><div class="lab"><span>缓存命中</span><b>1,088 / 1,088</b></div><div class="track"><div class="fill" data-w="100%"></div></div></div>
+      <div class="bbar dim"><div class="lab"><span>miss · 合并 · 编码执行</span><b>0 · 0 · 0</b></div><div class="track"><div class="fill" data-w="1%"></div></div></div>
+      <p class="tbl-note">// 缓存填满后，每个请求都复用完整的缓存编码输出。<br>// 注意：服务内部的窄口径 hits/(hits+misses) 指标在冷启动 pass 只有 0.15%，<br>// 因为它不含 single-flight 合并——38.79% 的有效复用才是有意义的数字。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 CORRECTNESS ================= -->
+<section id="correctness">
+  <div class="sec-head reveal"><span class="no">06</span><h2>正确性：除了速度，什么都没变</h2></div>
+  <p class="sec-lede reveal">
+    main 与本次改动——无论冷热缓存——在全量数据集上产出了<b>完全一致的质量</b>；
+    不完整或失败的编码在结构上被挡在 LM 阶段之外。
+  </p>
+  <div class="q-grid reveal">
+    <div class="q-card"><div class="qv">1.710%</div><div class="qk">语料 WER——main、冷、热三种运行完全一致，逐样本 WER 分布亦一致</div></div>
+    <div class="q-card"><div class="qv blue">0</div><div class="qk">跳过请求——1,088 条样本在每种配置下全部完成</div></div>
+    <div class="q-card"><div class="qv">2,125/2,125</div><div class="qk">单元测试在 GPU CI 上全部通过——覆盖批处理、缓存、去重与失败处理</div></div>
+    <div class="q-card"><div class="qv blue">仅完整输出</div><div class="qk">缓存策略——永远不做部分音频窗口的前缀复用</div></div>
+  </div>
+  <div class="callout reveal" style="max-width:1020px;margin-top:26px">
+    <b>失败隔离：</b>批量编码失败会回退为逐条重试；不可恢复的失败只传播给对应请求。
+    缓存只存完整输出，命名空间防止跨配置复用，每次命中在准入前都经过形状、token 数与 dtype 校验。
+  </div>
+
+  <blockquote class="reveal">
+    "GPU 并不慢——它只是<span class="hl">在排队</span>。<br>
+    在上游编码一次，只准入完整的结果。"
+    <footer>— SGLANG-OMNI · FUN-ASR · PRE-LM ENCODER</footer>
+  </blockquote>
+</section>
+
+<footer class="site">
+  <div class="src">
+    <b>方法论</b>
+    <span class="note">全部数据来自该改动自带的基准报告：完整 Seed-TTS 英文集（1,088 样本 / 666 唯一文件）· <code>FunAudioLLM/Fun-ASR-Nano-2512-hf</code> · 单张 NVIDIA H100 80GB · 并发 32 · NVML 100ms 遥测。</span>
+  </div>
+  <div class="sig">前置编码笔记<br>SGLANG-OMNI · 2026</div>
+</footer>
+
+<script is:inline>
+// hero wave bars
+(function(){
+  var wrap = document.getElementById('waveBars');
+  var n = Math.floor(window.innerWidth / 12);
+  for (var i = 0; i < n; i++){
+    var b = document.createElement('i');
+    b.style.height = (8 + Math.random() * 88) + '%';
+    b.style.animationDelay = (Math.random() * 1.6).toFixed(2) + 's';
+    b.style.animationDuration = (1.1 + Math.random() * 1.2).toFixed(2) + 's';
+    wrap.appendChild(b);
+  }
+})();
+
+// scroll reveal + animated bar fills
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    e.target.querySelectorAll('.fill[data-w]').forEach(function(f){
+      f.style.width = f.getAttribute('data-w');
+    });
+    io.unobserve(e.target);
+  });
+}, {threshold: .18});
+document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+</script>
+
+</body>
+</html>
