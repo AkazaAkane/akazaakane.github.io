@@ -52,6 +52,10 @@
   .side{display:flex; gap:26px; align-items:flex-start; flex-wrap:wrap;}
   .side .note{flex:1; min-width:260px; font-size:13.5px; color:var(--mut);}
   .side .note b{color:var(--ink);}
+  .map-visual{min-width:0;}
+  .map-caption{margin-top:8px; color:var(--mut); font-size:11.5px; text-align:center;}
+  .asr-callout{margin-top:16px; padding:12px 16px; border:1px solid var(--line); border-radius:10px; background:#f3f5f8; color:var(--mut); font-size:13px;}
+  .asr-callout b{display:block; margin-bottom:2px; color:var(--ink);}
   #sec-reference h2{font-size:28px; gap:12px;}
   #sec-reference h2 .no{font-size:13px; padding:4px 10px;}
   #sec-reference .lead{font-size:15.5px;}
@@ -143,7 +147,14 @@
     <h2><span class="no">7</span><span data-t="sec6_h"></span></h2>
     <p class="lead" data-t="sec6_lead"></p>
     <div class="card side">
-      <div id="fig-map"></div>
+      <div class="map-visual">
+        <div id="fig-map"></div>
+        <p class="map-caption" data-t="sec6_caption"></p>
+        <div class="asr-callout">
+          <b data-t="sec6_asr_h"></b>
+          <span data-t="sec6_asr_models"></span>
+        </div>
+      </div>
       <div class="note" data-t="sec6_note" style="max-width:360px"></div>
     </div>
   </section>
@@ -196,11 +207,14 @@ const I18N = {
               "ASR 只保留底下两个阶段。除了一个选择之外全部共享：编码器。"],
   sec5_take: ["<b>Takeaway</b> — encoder → projector → LLM is the settled recipe; the only real decision is attention structure: dynamic window (AuT), streaming-friendly FSMN memory (SANM), or non-streamable full attention (Whisper). Fun-ASR adds a CTC sidecar whose first-pass hypothesis feeds timestamps and hotword hints.",
               "<b>要点</b>——encoder → projector → LLM 已是定式；唯一真正的决策是注意力结构：动态窗口（AuT）、流式友好的 FSMN 记忆（SANM）、还是不可流式的全注意力（Whisper）。Fun-ASR 额外挂了一个 CTC 旁路，用初识别假设产出时间戳和热词提示。"],
-  sec6_h: ["All Models Projected onto the Framework", "所有模型投影到框架上"],
-  sec6_lead: ["Every Talker on the two axes that matter — how inter-layer dependency is modeled, and whether the representation is discrete or continuous.",
-              "把所有 Talker 画在两条关键轴上——层间依赖如何建模、表示离散还是连续。"],
-  sec6_note: ["<b>Reading the map:</b> the discrete camp clusters left (delay pattern → Dual-AR → MTP, in increasing serialization); the continuous camp clusters right (ODE denoising). Voxtral sits in between.<br><br><b>For a serving engine</b> (sglang-omni), x-position predicts scheduling shape: left = one AR loop with wider heads; middle = nested loops needing static KV for the inner loop; right = fixed-step iterative compute that fits CUDA graphs naturally.",
-              "<b>怎么读：</b>离散派聚在左侧（delay pattern → Dual-AR → MTP，串行度递增）；连续派聚在右侧（ODE 去噪）。Voxtral 居中。<br><br><b>对推理引擎</b>（sglang-omni）而言，横坐标决定调度形态：左侧＝单 AR 循环加宽头；中间＝嵌套循环，内层需要静态 KV；右侧＝固定步数迭代计算，天然适合 CUDA Graph。"],
+  sec6_h: ["Talker Architectures Projected onto Two Axes", "Talker 架构投影到两个轴上"],
+  sec6_lead: ["Talker architectures organized by representation and intra-frame generation order.",
+              "按表示形式与帧内生成顺序组织 Talker 架构。"],
+  sec6_note: ["<b>Reading the map:</b> discrete Talkers cluster left, continuous Talkers cluster right, and Voxtral bridges the two. Position also hints at serving shape: wider AR heads, nested loops, or fixed-step iterative compute.",
+              "<b>怎么读：</b>离散 Talker 聚在左侧，连续 Talker 聚在右侧，Voxtral 连接两者。位置也暗示了推理形态：更宽的 AR head、嵌套循环或固定步数的迭代计算。"],
+  sec6_caption: ["Positions are qualitative architectural groupings, not measured values.", "位置表示定性的架构分组，而非测量值。"],
+  sec6_asr_h: ["ASR — no Talker", "ASR——无 Talker"],
+  sec6_asr_models: ["Whisper · Fun-ASR · Qwen3-ASR", "Whisper · Fun-ASR · Qwen3-ASR"],
   sec7_h: ["Summary Table: The Numeric Facts", "总结表：数字细节"],
   sec7_lead: ["The figures deliberately omit numbers that don't change a model's architectural category — they all live here.",
               "凡是不会改变模型架构归类判断的数字，图里都刻意省略了——它们全部在这里。"],
@@ -573,9 +587,6 @@ const MAP_TICKS = [
   {x:3.0, t:['continuous latents','连续 latent']},
 ];
 const MAP_POINTS = [
-  {x:0.6, y:0.22, name:'Whisper'},
-  {x:1.15, y:0.18, name:'Fun-ASR'},
-  {x:1.55, y:0.25, name:'Qwen3-ASR'},
   {x:1.35, y:0.45, name:'MOSS-Local'},
   {x:1.55, y:0.55, name:'MOSS delay'},
   {x:1.75, y:0.62, name:'Higgs / ZONOS2'},
@@ -588,7 +599,7 @@ const MAP_POINTS = [
   {x:2.95, y:0.85, name:'Ming-flash-omni'},
 ];
 const MAP_XLAB = ['Talker representation · discrete → continuous','Talker 表示 · 离散 → 连续'];
-const MAP_YLAB = ['Inter-layer serialization ↑','层间串行化程度 ↑'];
+const MAP_YLAB = ['More serialized intra-frame generation ↑','更串行的帧内生成 ↑'];
 
 const CMP_HEAD = ['Model','Thinker / Backbone','Talker strategy','Codec / VAE','Rate','Vocoder','Cold-start'];
 const CMP_ROWS = [
@@ -812,8 +823,8 @@ function renderFigure(cfg,mount){
 }
 
 /* ---------- map ---------- */
-const MAP_FAM={'Whisper':'a','Fun-ASR':'a','Qwen3-ASR':'a','MOSS-Local':'d','MOSS delay':'d','Higgs / ZONOS2':'d','Qwen3-TTS':'d','Qwen3-Omni':'d','Fish S2-Pro':'d','Voxtral':'h','dots.tts':'c','Ming-omni-TTS':'c','Ming-flash-omni':'c'};
-const MAP_FC={a:'#98a2b3',d:'#D97B29',c:'#3D9970',h:'#7A5C9E'};
+const MAP_FAM={'MOSS-Local':'d','MOSS delay':'d','Higgs / ZONOS2':'d','Qwen3-TTS':'d','Qwen3-Omni':'d','Fish S2-Pro':'d','Voxtral':'h','dots.tts':'c','Ming-omni-TTS':'c','Ming-flash-omni':'c'};
+const MAP_FC={d:'#D97B29',c:'#3D9970',h:'#7A5C9E'};
 function renderMap(mount){
   const W=680,H=470,PL=46,PR=16,PT=20,PB=54;
   const sx=v=>PL+v/3.4*(W-PL-PR), sy=v=>H-PB-v/1.05*(H-PB-PT);
@@ -826,9 +837,8 @@ function renderMap(mount){
   s+=`<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${H-PB}" stroke="#c9d0da"/>`;
   s+=text((PL+W-PR)/2,H-12,T(MAP_XLAB),{px:12,wgt:700,c:INK,anchor:'middle'});
   s+=`<text x="14" y="${(PT+H-PB)/2}" font-size="12" font-weight="700" fill="${INK}" text-anchor="middle" transform="rotate(-90 14 ${(PT+H-PB)/2})">${esc(T(MAP_YLAB))}</text>`;
-  s+=text(sx(0.55),sy(1.0),T(['ASR: no Talker','ASR：无 Talker']),{px:10,c:'#98a2b3'});
   for(const p of MAP_POINTS){
-    const c=MAP_FC[MAP_FAM[p.name]||'a'];
+    const c=MAP_FC[MAP_FAM[p.name]];
     s+=`<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="6" fill="${c}" opacity="0.9"/>`;
     s+=text(sx(p.x)+9,sy(p.y)+4,p.name,{px:11,wgt:600,c:'#39404d'});
   }
