@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Omni Model Architectures: One Framework, Two Families</title>
+<meta name="description" content="A visual comparison of omni model architectures across audio encoding, Thinker, Talker, vocoder, discrete codecs, continuous latents, and ASR.">
+<link rel="canonical" href="https://akazaakane.github.io/en/posts/omni-model-architectures/">
+<link rel="alternate" hreflang="en" href="https://akazaakane.github.io/en/posts/omni-model-architectures/">
+<link rel="alternate" hreflang="zh-CN" href="https://akazaakane.github.io/zh/posts/omni-model-architectures/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Omni Model Architectures: One Framework, Two Families">
+<meta property="og:description" content="A visual comparison of omni model architectures across audio encoding, Thinker, Talker, vocoder, discrete codecs, continuous latents, and ASR.">
+<meta property="og:url" content="https://akazaakane.github.io/en/posts/omni-model-architectures/">
+<meta property="og:image" content="https://akazaakane.github.io/en/posts/omni-model-architectures/index.png">
+<style>
+  :root{
+    --enc:#3E7CB1; --thk:#7A5C9E; --tlk:#D97B29; --voc:#3D9970;
+    --ink:#1c2330; --mut:#5b6472; --line:#e4e8ef; --bg:#f7f8fa; --card:#ffffff;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.55;
+  }
+  .wrap{max-width:1280px; margin:0 auto; padding:0 24px 96px;}
+  header.hero{padding:56px 0 28px;}
+  .kicker{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--mut); font-weight:600;}
+  h1{font-size:34px; font-weight:800; letter-spacing:-.02em; margin:8px 0 10px;}
+  .sub{color:var(--mut); font-size:15px; max-width:860px;}
+  .lang-toggle{
+    position:fixed; top:18px; right:22px; z-index:50; display:flex; border:1px solid var(--line);
+    border-radius:999px; overflow:hidden; background:var(--card); box-shadow:0 2px 10px rgba(20,30,50,.08);
+  }
+  .lang-toggle a{border:0; background:transparent; padding:7px 16px; font-size:13px; cursor:pointer; color:var(--mut); font-weight:600; text-decoration:none;}
+  .lang-toggle a.on{background:var(--ink); color:#fff;}
+  section{margin-top:56px;}
+  h2{font-size:23px; font-weight:800; letter-spacing:-.01em; display:flex; align-items:center; gap:10px;}
+  h2 .no{font-size:12px; font-weight:700; color:#fff; background:var(--ink); border-radius:8px; padding:3px 9px; letter-spacing:.05em;}
+  h3{font-size:17.5px; font-weight:800; margin:34px 0 4px; letter-spacing:-.01em;}
+  .lead{color:var(--mut); font-size:14px; max-width:900px; margin-top:8px;}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:22px; margin-top:14px; box-shadow:0 1px 3px rgba(20,30,50,.04);}
+  .scroll-x{overflow-x:auto; padding-bottom:6px;}
+  .legend{display:flex; flex-wrap:wrap; gap:18px; margin-top:16px; font-size:13px; color:var(--mut);}
+  .legend .item{display:flex; align-items:center; gap:7px;}
+  .sw{display:inline-block; width:14px; height:14px; border-radius:4px;}
+  .sw.key{background:#fff; border:2px solid var(--tlk);}
+  .sw.common{background:#f3f5f8; border:1.5px solid #d3d9e1;}
+  .sw.pill{background:#eef1f5; border:1px solid #c9d0da; border-radius:999px; width:22px; height:12px;}
+  .sw.chip{background:var(--tlk); border-radius:6px; width:16px; height:10px;}
+  .side{display:flex; gap:26px; align-items:flex-start; flex-wrap:wrap;}
+  .side .note{flex:1; min-width:260px; font-size:13.5px; color:var(--mut);}
+  .side .note b{color:var(--ink);}
+  .takeaway{
+    border-left:3px solid var(--ink); background:#eef1f6; padding:11px 16px; border-radius:0 10px 10px 0;
+    font-size:13.5px; margin-top:14px; color:#39404d; max-width:1100px;
+  }
+  .takeaway b{color:var(--ink);}
+  table.cmp{width:100%; border-collapse:collapse; font-size:13px; margin-top:6px;}
+  table.cmp th, table.cmp td{padding:9px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top;}
+  table.cmp th{font-size:11.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--mut); border-bottom:2px solid var(--ink);}
+  table.cmp td:first-child{font-weight:700; white-space:nowrap;}
+  footer{margin-top:64px; color:var(--mut); font-size:12px; border-top:1px solid var(--line); padding-top:18px;}
+  svg text{font-family:inherit;}
+</style>
+</head>
+<body>
+<div class="lang-toggle">
+  <a id="btn-en" class="on" href="/en/posts/omni-model-architectures/" lang="en">EN</a>
+  <a id="btn-zh" href="/zh/posts/omni-model-architectures/" lang="zh-CN">中文</a>
+</div>
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker" data-t="kicker"></div>
+    <h1 data-t="title"></h1>
+    <p class="sub" data-t="subtitle"></p>
+    <div class="legend" id="legend"></div>
+  </header>
+
+  <section id="sec-reference">
+    <h2><span class="no">1</span><span data-t="sec0_h"></span></h2>
+    <p class="lead" data-t="sec0_lead"></p>
+    <div class="card side">
+      <div id="fig-reference"></div>
+      <div class="note" data-t="sec0_note" style="max-width:360px"></div>
+    </div>
+  </section>
+
+  <section id="sec-families">
+    <h2><span class="no">2</span><span data-t="sec1_h"></span></h2>
+    <p class="lead" data-t="sec1_lead"></p>
+    <div class="card scroll-x"><div id="fig-families"></div></div>
+    <div class="takeaway" data-t="sec1_take"></div>
+  </section>
+
+  <section id="sec-discrete">
+    <h2><span class="no">3</span><span data-t="sec2_h"></span></h2>
+    <p class="lead" data-t="sec2_lead"></p>
+    <div id="discrete-figs"></div>
+  </section>
+
+  <section id="sec-continuous">
+    <h2><span class="no">4</span><span data-t="sec3_h"></span></h2>
+    <p class="lead" data-t="sec3_lead"></p>
+    <div class="card scroll-x"><div id="fig-cont"></div></div>
+    <div class="takeaway" data-t="sec3_take"></div>
+  </section>
+
+  <section id="sec-omni">
+    <h2><span class="no">5</span><span data-t="sec4_h"></span></h2>
+    <p class="lead" data-t="sec4_lead"></p>
+    <div class="card scroll-x"><div id="fig-omni"></div></div>
+    <div class="takeaway" data-t="sec4_take"></div>
+  </section>
+
+  <section id="sec-asr">
+    <h2><span class="no">6</span><span data-t="sec5_h"></span></h2>
+    <p class="lead" data-t="sec5_lead"></p>
+    <div class="card scroll-x"><div id="fig-asr"></div></div>
+    <div class="takeaway" data-t="sec5_take"></div>
+  </section>
+
+  <section id="sec-map">
+    <h2><span class="no">7</span><span data-t="sec6_h"></span></h2>
+    <p class="lead" data-t="sec6_lead"></p>
+    <div class="card side">
+      <div id="fig-map"></div>
+      <div class="note" data-t="sec6_note" style="max-width:360px"></div>
+    </div>
+  </section>
+
+  <section id="sec-table">
+    <h2><span class="no">8</span><span data-t="sec7_h"></span></h2>
+    <p class="lead" data-t="sec7_lead"></p>
+    <div class="card"><div class="scroll-x"><table class="cmp" id="cmp-table"></table></div></div>
+  </section>
+
+  <footer data-t="footer"></footer>
+</div>
+
+<script is:inline>
+"use strict";
+/* ============================= i18n ============================= */
+let LANG = 'en';
+const T = pair => pair[LANG === 'en' ? 0 : 1];
+
+const I18N = {
+  kicker: ["SGLANG-OMNI · SUPPORTED MODELS · ARCHITECTURE COMPARISON", "SGLANG-OMNI · 支持模型 · 架构对比"],
+  title: ["Omni Model Architectures: One Framework, Two Families", "Omni 模型架构：一个框架，两大流派"],
+  subtitle: ["Every omni model does one thing — hear speech in, speak speech out — through up to four stages: Audio Encoding → Understanding (Thinker) → Speech Synthesis (Talker) → Audio Decoding (Vocoder). These figures are organized to show the shared pattern first and the differences second: gray is the common recipe, color is the architectural decision being compared, chips are spec details. Numeric facts live in the summary table at the end.",
+             "每个 omni 模型做的事都是“听懂语音、说出语音”，最多经过四个阶段：音频编码 → 理解（Thinker）→ 语音合成（Talker）→ 音频解码（Vocoder）。这组图的组织原则是“先看共性、再看差异”：灰色是共享配方，彩色是被比较的架构决策，小徽章是规格参数。数字细节集中在文末总结表。"],
+  sec0_h: ["The Common Framework: Four Stages", "共同框架：四个阶段"],
+  sec0_lead: ["Every model below is a specialization or truncation of this pipeline. Encoding and Decoding are stable across models; the divergence lives in the middle two stages.",
+              "下面所有模型都是这条 pipeline 的特化或裁剪。编码与解码在模型间高度稳定，分歧集中在中间两步。"],
+  sec0_note: ["<b>Three axes of divergence</b>, all in the middle two stages:<br><br><b>① Thinker–Talker coupling</b> — nested single decode loop vs. asynchronous dual-loop pipeline; text tokens + hidden states (text as explicit semantic anchor) vs. hidden states only. Pure TTS like S2-Pro skips the text bridge entirely — the backbone directly generates semantic codec tokens.<br><br><b>② Inter-codebook dependency</b> — delay pattern (parallel heads), nested Dual-AR, backbone + MTP, or ODE denoising.<br><br><b>③ Representation</b> — discrete codec tokens vs. continuous VAE latents. Input side deliberately avoids quantization; output side embraces it (or rejects it, in the continuous camp).",
+              "<b>三个分歧轴</b>，全部位于中间两步：<br><br><b>① Thinker–Talker 耦合</b>——嵌套单循环 vs 异步双循环流水线；跨边界传「文本 token + hidden states」（文本作显式语义锚点）还是仅 hidden states。S2-Pro 这类纯 TTS 干脆没有文本桥梁——主干直接自回归生成 semantic codec token。<br><br><b>② codebook 层间依赖</b>——delay pattern（并行头）、嵌套 Dual-AR、主干 + MTP、或 ODE 去噪。<br><br><b>③ 表示</b>——离散 codec token vs 连续 VAE latent。输入侧刻意避开量化；输出侧拥抱量化（连续派除外）。"],
+  sec1_h: ["Every Talker Is One of Two Families", "所有 Talker 都属两大流派之一"],
+  sec1_lead: ["Strip away the details and every speech generator reduces to one of two computations: autoregressive prediction of discrete codec IDs, or iterative generation of continuous acoustic latents.",
+              "剥掉细节，每个语音生成器都可归约为两种计算之一：自回归预测离散 codec ID，或迭代生成连续声学 latent。"],
+  sec1_take: ["<b>Takeaway</b> — the discrete family turns speech into a language-modeling problem (and inherits the LLM serving stack); the continuous family trades that away for acoustic headroom. Voxtral sits between them: AR for semantics, flow for acoustics.",
+              "<b>要点</b>——离散派把语音变成语言建模问题（从而继承 LLM 推理技术栈）；连续派放弃这一点换取声学上限。Voxtral 居中：语义走 AR、声学走 flow。"],
+  sec2_h: ["The Discrete Family: One Recipe, Several Implementations", "离散派：一个配方，多种实现"],
+  sec2_lead: ["Within the discrete family, the computation is identical; what changes is the backbone, the codebook count, and how residual layers are completed.",
+              "离散派内部，计算是相同的；变化的是 backbone、码本层数、以及残差层的补全方式。"],
+  sec3_h: ["The Continuous Family: Latent Generation Instead of Codebook Prediction", "连续派：用 latent 生成取代码本预测"],
+  sec3_lead: ["dots.tts and Ming-omni-TTS make the same architectural jump: no discrete tokens anywhere — reference audio and output both live in a VAE latent space.",
+              "dots.tts 与 Ming-omni-TTS 做了同一个架构跳跃：全链路无离散 token——参考音频与输出都活在 VAE latent 空间。"],
+  sec3_take: ["<b>Takeaway</b> — same skeleton as the discrete family (conditioning → backbone → per-frame generation → decoder), but the frame is a latent vector produced by flow-matching, not a set of categorical IDs. The cost: iterative ODE steps on the latency path.",
+              "<b>要点</b>——骨架与离散派相同（条件 → backbone → 逐帧生成 → 解码器），但一帧是 flow-matching 产出的 latent 向量，而不是一组离散 ID。代价：延迟路径上的迭代 ODE 步。"],
+  sec4_h: ["Full Omni: Same Thinker→Talker Skeleton, Opposite Acoustics", "完整 Omni：相同的 Thinker→Talker 骨架，相反的声学表示"],
+  sec4_lead: ["The only two full four-stage models share the coupling — Thinker hidden states flow to a Talker in an async dual-loop pipeline. The decomposition does not determine the acoustics: Qwen's Talker emits discrete codec frames, Ming's emits continuous latents.",
+              "仅有的两个完整四阶段模型共享同一种耦合——Thinker hidden states 经异步双循环流向 Talker。但这个分解并不决定声学表示：Qwen 的 Talker 产出离散 codec 帧，Ming 的产出连续 latent。"],
+  sec4_take: ["<b>Takeaway</b> — Thinker↔Talker coupling is a settled question (hidden states, dual-loop); the open question is the Talker's representation. That is why the two figures above are really one argument repeated at two scales.",
+              "<b>要点</b>——Thinker↔Talker 耦合已是定论（hidden states + 双循环）；开放问题只剩 Talker 的表示。所以前面两张图本质上是同一个论点在两个尺度上的重复。"],
+  sec5_h: ["ASR: The Same Pipeline Minus the Talker", "ASR：同一条 pipeline 砍掉 Talker"],
+  sec5_lead: ["ASR models keep only the bottom two stages. Everything is shared except one choice: the encoder.",
+              "ASR 只保留底下两个阶段。除了一个选择之外全部共享：编码器。"],
+  sec5_take: ["<b>Takeaway</b> — encoder → projector → LLM is the settled recipe; the only real decision is attention structure: dynamic window (AuT), streaming-friendly FSMN memory (SANM), or non-streamable full attention (Whisper). Fun-ASR adds a CTC sidecar whose first-pass hypothesis feeds timestamps and hotword hints.",
+              "<b>要点</b>——encoder → projector → LLM 已是定式；唯一真正的决策是注意力结构：动态窗口（AuT）、流式友好的 FSMN 记忆（SANM）、还是不可流式的全注意力（Whisper）。Fun-ASR 额外挂了一个 CTC 旁路，用初识别假设产出时间戳和热词提示。"],
+  sec6_h: ["All Models Projected onto the Framework", "所有模型投影到框架上"],
+  sec6_lead: ["Every Talker on the two axes that matter — how inter-layer dependency is modeled, and whether the representation is discrete or continuous.",
+              "把所有 Talker 画在两条关键轴上——层间依赖如何建模、表示离散还是连续。"],
+  sec6_note: ["<b>Reading the map:</b> the discrete camp clusters left (delay pattern → Dual-AR → MTP, in increasing serialization); the continuous camp clusters right (ODE denoising). Voxtral sits in between.<br><br><b>For a serving engine</b> (sglang-omni), x-position predicts scheduling shape: left = one AR loop with wider heads; middle = nested loops needing static KV for the inner loop; right = fixed-step iterative compute that fits CUDA graphs naturally.",
+              "<b>怎么读：</b>离散派聚在左侧（delay pattern → Dual-AR → MTP，串行度递增）；连续派聚在右侧（ODE 去噪）。Voxtral 居中。<br><br><b>对推理引擎</b>（sglang-omni）而言，横坐标决定调度形态：左侧＝单 AR 循环加宽头；中间＝嵌套循环，内层需要静态 KV；右侧＝固定步数迭代计算，天然适合 CUDA Graph。"],
+  sec7_h: ["Summary Table: The Numeric Facts", "总结表：数字细节"],
+  sec7_lead: ["The figures deliberately omit numbers that don't change a model's architectural category — they all live here.",
+              "凡是不会改变模型架构归类判断的数字，图里都刻意省略了——它们全部在这里。"],
+  footer: ["Framework & inference-flow reference: <a href='https://github.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/blob/main/transformers/omni/readme.md'>Awesome-ML-SYS-Tutorial — Codec, RVQ, Dual AR, Thinker-Talker</a>. Architecture data: Qwen3-Omni / Qwen3-TTS / Qwen3-ASR tech reports · inclusionAI Ming-Omni · Fish Audio S2-Pro · Voxtral (Mistral) · MOSS (OpenMOSS) · Higgs Audio v3 (Boson AI) · ZONOS2 · dots.tts · Fun-ASR-Nano (Alibaba). Parameter counts are approximate.",
+           "框架与推理流程参考：<a href='https://github.com/zhaochenyang20/Awesome-ML-SYS-Tutorial/blob/main/transformers/omni/readme.md'>Awesome-ML-SYS-Tutorial——Codec、RVQ、Dual AR、Thinker-Talker</a>。架构数据来源：Qwen3-Omni / Qwen3-TTS / Qwen3-ASR 技术报告 · inclusionAI Ming-Omni · Fish Audio S2-Pro · Voxtral（Mistral）· MOSS（OpenMOSS）· Higgs Audio v3（Boson AI）· ZONOS2 · dots.tts · Fun-ASR-Nano（阿里）。参数量为约数。"],
+  lg_key: ["color border = the decision being compared", "彩色框 = 被比较的架构决策"],
+  lg_common: ["gray = shared pattern", "灰框 = 共享模式"],
+  lg_pill: ["pill = input / output", "胶囊 = 输入/输出"],
+  lg_chip: ["chip = spec detail", "徽章 = 规格参数"],
+};
+
+/* ============================= stage defs ============================= */
+const STAGES = {
+  encoder:{c:'#3E7CB1', name:['Audio Encoding','音频编码'],     desc:['waveform → representation','波形 → 表示']},
+  thinker:{c:'#7A5C9E', name:['Understanding · Thinker','理解 · Thinker'], desc:['prefill + decode, audio tokens mixed in','prefill + decode，混入 audio token']},
+  talker: {c:'#D97B29', name:['Speech Synthesis · Talker','语音合成 · Talker'], desc:['text/hidden → codec tokens or latents','文本/hidden → codec token 或 latent']},
+  vocoder:{c:'#3D9970', name:['Audio Decoding · Vocoder','音频解码 · Vocoder'], desc:['tokens/latents → waveform','token/latent → 波形']},
+};
+/* item kinds:
+   {b:'pill', l:[en,zh]}                                  small gray I/O pill
+   {b:'box', l:[[en,zh],...], style:'key'|'common', tag:[en,zh], c:'#hex'}   box; key=colored (decision), common=gray (shared)
+   {b:'badge', l:[en,zh], c:'#hex'}                       spec chip
+   {b:'grid', grid:{levels,cols,ellipsis}, c:'#hex'}      delay-pattern stagger matrix
+   {b:'split', items:[boxA, boxB]}                        two parallel alternatives ("or")
+   {b:'side', l:[[en,zh],...]}                            dashed gray sidecar
+   cell = {flow:[...bottom-up...], edges:[{f,t,label}]}
+   fig = {lanes:[{name,badge,models}], bands:[{stage,title?,segs:[{key,type}]}], cells:{li:{key:cell}}, shared:{key:{flow}}}
+*/
+
+const REF_FIG = {
+  lanes:[{name:['Full Omni Pipeline','完整 Omni Pipeline'], badge:['reference','基准']}],
+  bands:[
+    {stage:'vocoder', segs:[{key:'voc', type:'lanes'}]},
+    {stage:'talker',  segs:[{key:'talker', type:'lanes'}]},
+    {stage:'thinker', segs:[{key:'thinker', type:'lanes'}]},
+    {stage:'encoder', segs:[{key:'enc', type:'lanes'}]},
+  ],
+  cells:{0:{
+    voc:{flow:[
+      {b:'box', style:'common', l:[['causal ConvNet decoder','因果 ConvNet 解码器'],['Vocos / HiFi-GAN / EVA-GAN — never the bottleneck','Vocos / HiFi-GAN / EVA-GAN——从不是瓶颈']]},
+      {b:'pill', l:['waveform','波形']},
+    ]},
+    talker:{flow:[
+      {b:'pill', l:['text + Thinker hidden states','文本 + Thinker hidden states']},
+      {b:'split', items:[
+        {b:'box', l:[['discrete AR','离散 AR'],['delay / Dual-AR / MTP','delay / Dual-AR / MTP']]},
+        {b:'box', l:[['continuous','连续'],['flow-matching / ODE','flow-matching / ODE']]},
+      ]},
+      {b:'pill', l:['codec tokens / latents','codec token / latent']},
+    ]},
+    thinker:{flow:[
+      {b:'pill', l:['audio states + text tokens','音频表示 + 文本 token']},
+      {b:'box', style:'common', l:[['LLM / MoE','LLM / MoE'],['prefill + decode','prefill + decode']]},
+      {b:'pill', l:['text via LM head · hidden states → Talker','LM head 出文本 · hidden states → Talker']},
+    ]},
+    enc:{flow:[
+      {b:'pill', l:['waveform','波形']},
+      {b:'box', style:'common', l:[['semantic encoder','理解型编码器'],['AuT / Whisper / SANM · no quantization bottleneck','AuT / Whisper / SANM · 避开量化瓶颈']]},
+      {b:'pill', l:['continuous states ≈12.5 Hz','连续表示 ≈12.5Hz']},
+    ]},
+  }},
+};
+
+const FAMILIES_FIG = {
+  lanes:[
+    {name:['DISCRETE','离散派'], badge:['codec tokens','codec token'], c:'#D97B29',
+     models:['Higgs · ZONOS2 · MOSS · S2-Pro · Qwen3-Omni · Qwen3-TTS','Higgs · ZONOS2 · MOSS · S2-Pro · Qwen3-Omni · Qwen3-TTS']},
+    {name:['CONTINUOUS','连续派'], badge:['VAE latents','VAE latent'], c:'#3D9970',
+     models:['dots.tts · Ming-omni-TTS · Ming-flash-omni · (Voxtral hybrid)','dots.tts · Ming-omni-TTS · Ming-flash-omni ·（Voxtral 混血）']},
+  ],
+  bands:[{stage:'talker', title:[['TALKER → VOCODER','TALKER → VOCODER']], segs:[{key:'main', type:'lanes'}]}],
+  cells:{
+    0:{main:{flow:[
+      {b:'pill', l:['text (+ hidden states)','文本（+ hidden states）']},
+      {b:'box', l:[['AR backbone','AR 骨干']]},
+      {b:'box', l:[['categorical heads → codec IDs','分类头 → codec ID']]},
+      {b:'box', c:'#3D9970', l:[['codec decoder','codec 解码器']]},
+      {b:'pill', l:['waveform','波形']},
+    ]}},
+    1:{main:{flow:[
+      {b:'pill', l:['text (+ hidden states)','文本（+ hidden states）']},
+      {b:'box', l:[['Talker / backbone','Talker / 骨干']]},
+      {b:'box', l:[['flow / CFM denoising','flow / CFM 去噪']]},
+      {b:'box', c:'#3D9970', l:[['VAE decoder','VAE 解码器']]},
+      {b:'pill', l:['waveform','波形']},
+    ]}},
+  },
+};
+
+const TRIO_FIG = {
+  lanes:[
+    {name:['Higgs Audio v3','Higgs Audio v3'], badge:['≈4B','≈4B']},
+    {name:['ZONOS2','ZONOS2'], badge:['8B / 0.9B act.','8B / 激活 0.9B']},
+    {name:['MOSS-TTS (delay)','MOSS-TTS（delay）'], badge:['8B','8B']},
+  ],
+  bands:[
+    {stage:'vocoder', segs:[{key:'voc', type:'lanes'}]},
+    {stage:'talker',  segs:[{key:'tk_sh', type:'shared'}, {key:'tk_pre', type:'lanes'}]},
+    {stage:'encoder', segs:[{key:'enc', type:'lanes'}]},
+  ],
+  shared:{tk_sh:{flow:[
+    {b:'box', style:'common', tag:['SHARED RECIPE','共享配方'], l:[['delay-pattern AR','delay-pattern AR'],['one multi-codebook frame per step','每步产出一帧多码本']]},
+    {b:'grid', grid:{levels:6, cols:6, ellipsis:true}},
+  ]}},
+  cells:{
+    0:{
+      enc:{flow:[{b:'pill',l:['reference audio','参考音频']},{b:'box',style:'common',l:[['codec encoder','codec 编码器']]},{b:'badge',c:'#3E7CB1',l:['8 cb · 25 fps','8 cb · 25 fps']}]},
+      tk_pre:{flow:[{b:'pill',l:['text + ref prefix','文本 + 参考前缀']},{b:'box',l:[['Qwen3 ≈4B','Qwen3 ≈4B'],['fused multi-cb head','融合多码本头']]}]},
+      voc:{flow:[{b:'box',style:'common',l:[['codec decoder','codec 解码器']]},{b:'pill',l:['waveform','波形']}]},
+    },
+    1:{
+      enc:{flow:[{b:'pill',l:['reference audio','参考音频']},{b:'box',style:'common',l:[['DAC encoder','DAC 编码器']]},{b:'badge',c:'#3E7CB1',l:['9 cb · DAC','9 cb · DAC']}]},
+      tk_pre:{flow:[{b:'pill',l:['text + ref prefix','文本 + 参考前缀']},{b:'box',l:[['MoE 8B','MoE 8B'],['0.9B active per token','每 token 激活 0.9B']]}]},
+      voc:{flow:[{b:'box',style:'common',l:[['DAC decoder','DAC 解码器']]},{b:'pill',l:['waveform','波形']}]},
+    },
+    2:{
+      enc:{flow:[{b:'pill',l:['reference audio','参考音频']},{b:'box',style:'common',l:[['codec encoder','codec 编码器']]},{b:'badge',c:'#3E7CB1',l:['32 cb · 12.5 Hz','32 cb · 12.5Hz']}]},
+      tk_pre:{flow:[{b:'pill',l:['text + ref prefix','文本 + 参考前缀']},{b:'box',l:[['8B backbone','8B 骨干'],['33 parallel heads','33 个并行头']]}]},
+      voc:{flow:[{b:'box',style:'common',l:[['codec decoder','codec 解码器']]},{b:'pill',l:['waveform','波形']}]},
+    },
+  },
+};
+
+const MOSS_FIG = {
+  lanes:[
+    {name:['MOSS-TTS (delay)','MOSS-TTS（delay 版）'], badge:['parallel','并行']},
+    {name:['MOSS-TTS-Local','MOSS-TTS-Local'], badge:['sequential','串行']},
+  ],
+  bands:[
+    {stage:'vocoder', segs:[{key:'voc', type:'lanes'}]},
+    {stage:'talker',  segs:[{key:'tk_post', type:'lanes'}, {key:'tk_sh', type:'shared'}, {key:'tk_pre', type:'lanes'}]},
+    {stage:'encoder', segs:[{key:'enc', type:'lanes'}]},
+  ],
+  shared:{tk_sh:{flow:[
+    {b:'box', style:'common', tag:['SHARED','共享'], l:[['backbone 8B','backbone 8B'],['one step per frame → frame hidden','每帧一步 → 帧级 hidden']]},
+  ]}},
+  cells:{
+    0:{
+      enc:{flow:[{b:'pill',l:['reference audio','参考音频']},{b:'box',style:'common',l:[['codec encoder','codec 编码器']]},{b:'badge',c:'#3E7CB1',l:['32 cb · 12.5 Hz','32 cb · 12.5Hz']}]},
+      tk_pre:{flow:[{b:'pill',l:['text + ref prefix','文本 + 参考前缀']}]},
+      tk_post:{flow:[
+        {b:'box', l:[['33 parallel heads','33 个并行头'],['all 32 levels in one step','一步产出全部 32 层']]},
+        {b:'grid', grid:{levels:6, cols:6, ellipsis:true}},
+      ]},
+      voc:{flow:[{b:'box',style:'common',l:[['codec decoder','codec 解码器']]},{b:'pill',l:['waveform','波形']}]},
+    },
+    1:{
+      enc:{flow:[{b:'pill',l:['reference audio','参考音频']},{b:'box',style:'common',l:[['codec encoder','codec 编码器']]},{b:'badge',c:'#3E7CB1',l:['32 cb · 12.5 Hz','32 cb · 12.5Hz']}]},
+      tk_pre:{flow:[{b:'pill',l:['text + ref prefix','文本 + 参考前缀']}]},
+      tk_post:{flow:[
+        {b:'box', l:[['Local Transformer','Local Transformer'],['cb0 → cb1 → … → cb31','cb0 → cb1 → … → cb31']], tag:['intra-frame ×32 steps','帧内 ×32 步']},
+      ]},
+      voc:{flow:[{b:'box',style:'common',l:[['codec decoder','codec 解码器']]},{b:'pill',l:['waveform','波形']}]},
+    },
+  },
+};
+
+const RESIDUAL_FIG = {
+  lanes:[
+    {name:['Qwen3-TTS','Qwen3-TTS'], badge:['MTP · fixed steps','MTP · 固定步数']},
+    {name:['Fish Audio S2-Pro','Fish Audio S2-Pro'], badge:['nested AR ×9','嵌套 AR ×9']},
+  ],
+  bands:[
+    {stage:'vocoder', segs:[{key:'voc', type:'lanes'}]},
+    {stage:'talker',  segs:[{key:'tk_post', type:'lanes'}, {key:'tk_sh', type:'shared'}, {key:'tk_pre', type:'lanes'}]},
+    {stage:'encoder', segs:[{key:'enc', type:'lanes'}]},
+  ],
+  shared:{tk_sh:{flow:[
+    {b:'box', style:'common', tag:['SHARED','共享'], l:[['AR backbone → codebook-0','AR 主干 → codebook-0'],['one step per frame · semantic layer','每帧一步 · 语义层'],['frame embeddings summed → next-step input (MCF-style)','帧内各层 embedding 求和回喂下一步（MCF 式）']]},
+  ]}},
+  cells:{
+    0:{
+      enc:{flow:[{b:'pill',l:['ref audio (voice clone)','参考音频（克隆）']},{b:'box',style:'common',l:[['codec encoder','codec 编码器']]},{b:'badge',c:'#3E7CB1',l:['16 cb · 12.5 Hz','16 cb · 12.5Hz']}]},
+      tk_pre:{flow:[{b:'pill',l:['text (+ ref prefix)','文本（+ 参考前缀）']}]},
+      tk_post:{flow:[
+        {b:'box', l:[['MTP module','MTP 模块'],['cb1…cb15 completed in parallel','并行补全 cb1…cb15']], tag:['fixed steps per frame','每帧固定步数']},
+      ]},
+      voc:{flow:[{b:'box',style:'common',l:[['Code2Wav-family decoder','Code2Wav 系解码器']]},{b:'pill',l:['waveform','波形']}]},
+    },
+    1:{
+      enc:{flow:[{b:'pill',l:['reference audio','参考音频']},{b:'box',style:'common',l:[['RVQ codec encoder','RVQ codec 编码器']]},{b:'badge',c:'#3E7CB1',l:['10 cb · ~21 Hz','10 cb · ~21Hz']}]},
+      tk_pre:{flow:[{b:'pill',l:['text (+ ref prefix)','文本（+ 参考前缀）']}]},
+      tk_post:{flow:[
+        {b:'box', l:[['Fast AR · 400M · 4L','Fast AR · 400M · 4层'],['cb1 → … → cb9 · from Slow hidden','cb1 → … → cb9 · 条件为 Slow hidden']], tag:['nested ×9 AR steps','嵌套 ×9 步 AR']},
+      ]},
+      voc:{flow:[{b:'box',style:'common',l:[['EVA-GAN decoder','EVA-GAN 解码器']]},{b:'pill',l:['44.1 kHz waveform','44.1kHz 波形']}]},
+    },
+  },
+};
+
+const VOXTRAL_FIG = {
+  lanes:[{name:['Voxtral TTS (Mistral)','Voxtral TTS（Mistral）'], badge:['3.4B + 390M · hybrid','3.4B + 390M · 混血']}],
+  bands:[
+    {stage:'vocoder', segs:[{key:'voc', type:'lanes'}]},
+    {stage:'talker',  segs:[{key:'talker', type:'lanes'}]},
+    {stage:'encoder', segs:[{key:'enc', type:'lanes'}]},
+  ],
+  cells:{0:{
+    enc:{flow:[{b:'pill',l:['reference audio','参考音频']},{b:'box',style:'common',l:[['semantic VQ tokenizer','语义 VQ tokenizer'],['Whisper-distilled','Whisper 蒸馏']]},{b:'pill',l:['semantic prefix','语义前缀']}]},
+    talker:{flow:[
+      {b:'pill', l:['text + semantic prefix','文本 + 语义前缀']},
+      {b:'box', l:[['AR decoder 3.4B','AR 解码器 3.4B'],['1 semantic token / frame (VQ 8192)','每帧 1 个语义 token（VQ 8192）']]},
+      {b:'box', l:[['flow-matching · 390M','flow-matching · 390M'],['→ 36 FSQ acoustic tokens','→ 36 个 FSQ 声学 token']], tag:['8 NFE per frame','每帧 8 次 NFE']},
+      {b:'pill', l:['1 VQ + 36 FSQ per frame','每帧 1 VQ + 36 FSQ']},
+    ]},
+    voc:{flow:[{b:'box',style:'common',l:[['codec decoder · 300M','codec 解码器 · 300M']]},{b:'pill',l:['24 kHz waveform','24kHz 波形']}]},
+  }},
+};
+
+const DISCRETE_FIGS = [
+  {fig:TRIO_FIG,
+   claim:['Discrete TTS converges on frame-wise multi-codebook prediction','离散 TTS 收敛到逐帧多码本预测'],
+   sub:['Higgs, ZONOS2 and MOSS-TTS(delay) share the entire pipeline shape — they differ only in backbone, codebook count and codec choice.','Higgs、ZONOS2、MOSS-TTS（delay）的 pipeline 形态完全一致——差异只在 backbone、码本数与 codec 选型。'],
+   take:['<b>Takeaway</b> — same recipe, three implementations: Qwen3 ≈4B vs MoE 8B vs 8B + 33 heads; 8 vs 9 vs 32 codebooks; codec vs DAC. Everything else is identical — which is why these models inherit the LLM serving stack almost unchanged.','<b>要点</b>——同一配方、三次实现：Qwen3 ≈4B vs MoE 8B vs 8B+33 并行头；8 vs 9 vs 32 层码本；codec vs DAC。其余完全相同——这正是它们能几乎原样继承 LLM 推理技术栈的原因。']},
+  {fig:MOSS_FIG,
+   claim:['Same backbone, two ways to model codebook depth: parallel fan-out vs sequential unroll','同一个 backbone，两种建模码本深度的方式：并行扇出 vs 串行展开'],
+   sub:['MOSS-TTS ships both variants of the same 8B model — the cleanest existing A/B of the inter-layer design axis.','MOSS-TTS 在同一个 8B 模型上同时提供两种变体——这是层间设计轴上最干净的一组对照实验。'],
+   take:['<b>Takeaway</b> — delay pattern turns depth into width (33 heads, one step per frame); the Local Transformer turns depth into sequence (32 intra-frame steps). The same trade-off reappears below as MTP vs nested AR.','<b>要点</b>——delay pattern 把深度变成宽度（33 个头、每帧一步）；Local Transformer 把深度变成序列（帧内 32 步）。同样的权衡在下面还会以 MTP vs 嵌套 AR 的形式再现。']},
+  {fig:RESIDUAL_FIG,
+   claim:['Completing residual codebooks: fixed-step MTP vs nested AR','残差码本补全：固定步数 MTP vs 嵌套 AR'],
+   sub:['Qwen3-TTS and Fish S2-Pro make the identical functional split — AR for the semantic layer, a submodule for the rest — and differ only in how that submodule runs.','Qwen3-TTS 与 Fish S2-Pro 的功能划分完全相同——AR 管语义层、子模块管残差——区别只在子模块怎么跑。'],
+   take:['<b>Takeaway</b> — MTP completes all 15 residual layers in a fixed number of steps (deterministic compute, CUDA-graph friendly); S2-Pro nests a 9-step Fast-AR loop inside every Slow step — serial, with a static length-11 KV cache rebuilt every frame. Both submodules are per-step callbacks: no continuous batching, no paged KV.','<b>要点</b>——MTP 以固定步数并行补全 15 层残差（计算量确定，适合 CUDA Graph）；S2-Pro 在每个 Slow 步内嵌套 9 步 Fast AR 循环——串行，静态长度 11 的 KV cache 每帧重建。两个子模块都是逐步回调：无需 continuous batching，无需 paged KV。']},
+  {fig:VOXTRAL_FIG,
+   claim:['Voxtral splits the difference: AR for semantics, flow for acoustics','Voxtral 取中庸：语义走 AR，声学走 flow'],
+   sub:['The hybrid between the two families: a small AR decoder guarantees long-range consistency; a flow-matching head fills in acoustic detail.','两派之间的混血：小型 AR 保证长程一致性，flow-matching 头补齐声学细节。'],
+   take:['<b>Takeaway</b> — one frame = 1 categorical token (discrete) + 36 FSQ tokens from 8 flow-matching evaluations (continuous). The two families are not rivals; they are being composed.','<b>要点</b>——一帧 = 1 个离散语义 token + 8 次 flow-matching 求值产出的 36 个 FSQ token（连续）。两大流派并非对手，而是正在被组合。']},
+];
+
+const CONT_FIG = {
+  lanes:[
+    {name:['dots.tts','dots.tts'], badge:['1.5B + AR flow head','1.5B + AR flow 头']},
+    {name:['Ming-omni-TTS','Ming-omni-TTS'], badge:['dense Talker + CFM','dense Talker + CFM']},
+  ],
+  bands:[
+    {stage:'vocoder', segs:[{key:'voc', type:'lanes'}]},
+    {stage:'talker',  segs:[{key:'tk_post', type:'lanes'}, {key:'tk_pre', type:'lanes'}]},
+    {stage:'encoder', segs:[{key:'enc', type:'lanes'}]},
+  ],
+  cells:{
+    0:{
+      enc:{flow:[{b:'pill',l:['reference audio','参考音频']},{b:'box',style:'common',l:[['AudioVAE encoder','AudioVAE 编码器']],c:'#3E7CB1'}]},
+      tk_pre:{flow:[{b:'pill',l:['text (+ ref latent prefix)','文本（+ 参考 latent 前缀）']}]},
+      tk_post:{flow:[
+        {b:'box', l:[['Qwen2.5-1.5B backbone','Qwen2.5-1.5B 骨干']]},
+        {b:'box', l:[['AR flow head (DiTAR-style)','AR flow 头（DiTAR 式）'],['regresses next latent','回归下一帧 latent']], tag:['1 step / frame','每帧 1 步']},
+        {b:'pill', l:['continuous latents','连续 latent']},
+      ]},
+      voc:{flow:[{b:'box',style:'common',l:[['AudioVAE decoder + BigVGAN','AudioVAE 解码器 + BigVGAN']]},{b:'pill',l:['48 kHz waveform','48kHz 波形']}]},
+    },
+    1:{
+      enc:{flow:[{b:'pill',l:['reference audio','参考音频']},{b:'box',style:'common',l:[['AudioVAE encoder','AudioVAE 编码器']],c:'#3E7CB1'}]},
+      tk_pre:{flow:[{b:'pill',l:['text + speaker cond','文本 + 说话人条件']}]},
+      tk_post:{flow:[
+        {b:'box', l:[['dense Talker','dense Talker']]},
+        {b:'box', l:[['CFM / DiT','CFM / DiT'],['denoises a window of latents','对一个 latent 窗口去噪']], tag:['multi-step ODE','多步 ODE']},
+        {b:'pill', l:['continuous latents','连续 latent']},
+      ]},
+      voc:{flow:[{b:'box',style:'common',l:[['AudioVAE decoder','AudioVAE 解码器']]},{b:'pill',l:['waveform','波形']}]},
+    },
+  },
+};
+
+const OMNI_FIG = {
+  lanes:[
+    {name:['Qwen3-Omni-30B-A3B','Qwen3-Omni-30B-A3B'], badge:['discrete Talker','离散 Talker'], c:'#D97B29'},
+    {name:['Ming-flash-omni-2.0','Ming-flash-omni-2.0'], badge:['continuous Talker','连续 Talker'], c:'#3D9970'},
+  ],
+  bands:[
+    {stage:'vocoder', segs:[{key:'voc', type:'lanes'}]},
+    {stage:'talker',  segs:[{key:'tk', type:'lanes'}]},
+    {stage:'thinker', segs:[{key:'thinker', type:'lanes'}]},
+    {stage:'encoder', segs:[{key:'enc', type:'lanes'}]},
+  ],
+  cells:{
+    0:{
+      enc:{flow:[
+        {b:'pill', l:['waveform','波形']},
+        {b:'box', style:'common', l:[['AuT encoder · 650M','AuT 编码器 · 650M']], tag:['fixed 12.5 Hz','固定 12.5Hz'], c:'#3E7CB1'},
+        {b:'pill', l:['continuous states 12.5 Hz','连续表示 12.5Hz']},
+      ]},
+      thinker:{flow:[
+        {b:'box', style:'common', l:[['MoE Thinker 30B-A3B · 48L','MoE Thinker 30B-A3B · 48层'],['relay: L24 audio/visual hidden + L0 text embed','中继：第24层 audio/visual hidden + 第0层文本 embedding']], tag:['async dual-loop with Talker','与 Talker 异步双循环'], c:'#7A5C9E'},
+      ]},
+      tk:{flow:[
+        {b:'pill', l:['text + Thinker hidden','文本 + Thinker hidden']},
+        {b:'box', l:[['Talker MoE 3B-A0.3B · 20L','Talker MoE 3B-A0.3B · 20层'],['one cb0 token / step · codec vocab 3072','每步 1 个 cb0 token · codec 词表 3072']]},
+        {b:'box', l:[['MTP · 80M · 5L','MTP · 80M · 5层'],['cb1…cb15 in parallel','并行补全 cb1…cb15']], tag:['fixed steps','固定步数']},
+        {b:'pill', l:['16 codebooks · 12.5 Hz','16 码本 · 12.5Hz']},
+      ]},
+      voc:{flow:[
+        {b:'box', style:'common', l:[['Code2Wav ≈200M','Code2Wav ≈200M'],['causal streaming ConvNet','因果流式 ConvNet']], c:'#3D9970'},
+        {b:'pill', l:['waveform · 234 ms TTFB','波形 · TTFB 234ms']},
+      ]},
+    },
+    1:{
+      enc:{flow:[
+        {b:'pill', l:['waveform','波形']},
+        {b:'box', style:'common', l:[['Whisper enc + Conv1d + MLP','Whisper 编码 + Conv1d + MLP']], c:'#3E7CB1'},
+        {b:'pill', l:['continuous states','连续表示']},
+      ]},
+      thinker:{flow:[
+        {b:'box', style:'common', l:[['BailingMoE v2 · 32L','BailingMoE v2 · 32层'],['256 experts · top-8 + 1 shared','256 专家 · top-8 + 1 共享']], tag:['hidden states ↓ to Talker','hidden states ↓ 传给 Talker'], c:'#7A5C9E'},
+      ]},
+      tk:{flow:[
+        {b:'pill', l:['text + Thinker hidden','文本 + Thinker hidden']},
+        {b:'box', l:[['dense Talker h=896','dense Talker h=896']]},
+        {b:'box', l:[['CFM / DiT · 28L + aggregator','CFM / DiT · 28层 + 聚合器'],['denoise → continuous latents','去噪 → 连续 latent']], tag:['10-step ODE','10 步 ODE']},
+        {b:'pill', l:['continuous latents','连续 latent']},
+      ]},
+      voc:{flow:[
+        {b:'box', style:'common', l:[['AudioVAE decoder','AudioVAE 解码器']], c:'#3D9970'},
+        {b:'pill', l:['44.1 kHz waveform','44.1kHz 波形']},
+      ]},
+    },
+  },
+};
+
+const ASR_FIG = {
+  lanes:[
+    {name:['Qwen3-ASR','Qwen3-ASR'], badge:['AuT · 12.5 Hz','AuT · 12.5Hz']},
+    {name:['Fun-ASR-Nano-2512','Fun-ASR-Nano-2512'], badge:['SANM · streaming','SANM · 流式']},
+    {name:['Whisper','Whisper'], badge:['non-streaming','非流式']},
+  ],
+  bands:[
+    {stage:'thinker', segs:[{key:'dec', type:'lanes'}]},
+    {stage:'encoder', segs:[{key:'enc', type:'lanes'}]},
+  ],
+  cells:{
+    0:{
+      enc:{flow:[
+        {b:'pill', l:['waveform','波形']},
+        {b:'box', style:'common', l:[['AuT encoder · 650M','AuT 编码器 · 650M'],['Conv2D 8× · dynamic 1–8 s window','Conv2D 8× · 动态 1–8s 窗口']], tag:['streaming','流式'], c:'#3E7CB1'},
+        {b:'pill', l:['12.5 Hz states → projector','12.5Hz 表示 → projector']},
+      ]},
+      dec:{flow:[
+        {b:'box', style:'common', l:[['Qwen3 LLM','Qwen3 LLM'],['autoregressive text decode','自回归文本解码']], c:'#7A5C9E'},
+        {b:'pill', l:['text','文本']},
+      ]},
+    },
+    1:{
+      enc:{flow:[
+        {b:'pill', l:['waveform','波形']},
+        {b:'box', style:'common', l:[['SenseVoice enc · 221M','SenseVoice 编码器 · 221M'],['SANM · FSMN memory blocks','SANM · FSMN 记忆块']], tag:['streaming','流式'], c:'#3E7CB1'},
+        {b:'pill', l:['512-d states → adaptor 2L','512 维表示 → 2层 adaptor']},
+      ]},
+      dec:{flow:[
+        {b:'box', style:'common', l:[['Qwen3-0.6B · 28L','Qwen3-0.6B · 28层'],['autoregressive text decode','自回归文本解码']], c:'#7A5C9E'},
+        {b:'side', l:[['CTC branch · 5L','CTC 分支 · 5层'],['timestamps / hotwords','时间戳 / 热词']]},
+        {b:'pill', l:['text','文本']},
+      ]},
+    },
+    2:{
+      enc:{flow:[
+        {b:'pill', l:['waveform','波形']},
+        {b:'box', style:'common', l:[['Whisper encoder','Whisper 编码器'],['full attention over 30 s','30 秒全注意力']], c:'#3E7CB1'},
+        {b:'pill', l:['50 Hz states','50Hz 表示']},
+      ]},
+      dec:{flow:[
+        {b:'box', style:'common', l:[['Transformer AED decoder','Transformer AED 解码器'],['cross-attn · autoregressive','交叉注意力 · 自回归']], c:'#7A5C9E'},
+        {b:'pill', l:['text','文本']},
+      ]},
+    },
+  },
+};
+
+/* ============================= map + table data ============================= */
+const MAP_TICKS = [
+  {x:1.3, t:['discrete codec tokens','离散 codec token']},
+  {x:2.3, t:['hybrid','混合']},
+  {x:3.0, t:['continuous latents','连续 latent']},
+];
+const MAP_POINTS = [
+  {x:0.6, y:0.22, name:'Whisper'},
+  {x:1.15, y:0.18, name:'Fun-ASR'},
+  {x:1.55, y:0.25, name:'Qwen3-ASR'},
+  {x:1.35, y:0.45, name:'MOSS-Local'},
+  {x:1.55, y:0.55, name:'MOSS delay'},
+  {x:1.75, y:0.62, name:'Higgs / ZONOS2'},
+  {x:2.45, y:0.60, name:'Voxtral'},
+  {x:2.30, y:0.85, name:'Qwen3-TTS'},
+  {x:2.70, y:0.92, name:'Qwen3-Omni'},
+  {x:2.55, y:0.70, name:'Fish S2-Pro'},
+  {x:2.85, y:0.45, name:'dots.tts'},
+  {x:2.95, y:0.62, name:'Ming-omni-TTS'},
+  {x:2.95, y:0.85, name:'Ming-flash-omni'},
+];
+const MAP_XLAB = ['Talker representation · discrete → continuous','Talker 表示 · 离散 → 连续'];
+const MAP_YLAB = ['Inter-layer serialization ↑','层间串行化程度 ↑'];
+
+const CMP_HEAD = ['Model','Thinker / Backbone','Talker strategy','Codec / VAE','Rate','Vocoder','Cold-start'];
+const CMP_ROWS = [
+  ['Qwen3-Omni-30B-A3B','MoE 30B-A3B · 48L · hidden 2048','Talker MoE 3B-A0.3B · 20L + MTP 80M · 5L (fixed steps)','16 codebooks · vocab 3072','12.5 Hz','Code2Wav ≈200M causal ConvNet · 24 kHz','234 ms TTFB'],
+  ['Ming-flash-omni-2.0','BailingMoE v2 · 32L · 256 experts top-8+1','dense Talker + CFM/DiT 28L (10-step ODE)','AudioVAE latents','—','AudioVAE decoder','—'],
+  ['Fish Audio S2-Pro','Slow AR 4B · 36L','nested Fast AR 400M · 4L ×9 steps (static KV)','RVQ 10 codebooks','~21 Hz','EVA-GAN','—'],
+  ['Higgs Audio v3','Qwen3 ≈4B','delay pattern · fused multi-cb head','8 codebooks · vocab 1026','25 fps','codec decoder','—'],
+  ['ZONOS2','MoE 8B / 0.9B active','delay pattern','DAC 9 codebooks','—','DAC decoder','—'],
+  ['MOSS-TTS (delay)','8B','delay pattern · 33 parallel heads','32 codebooks','12.5 Hz','codec decoder','—'],
+  ['MOSS-TTS-Local','8B (same backbone)','intra-frame Local Transformer ×32 steps','32 codebooks','12.5 Hz','codec decoder','—'],
+  ['Qwen3-TTS','AR backbone (Qwen3 family)','cb0 AR + MTP ×15 (fixed steps)','16 codebooks','12.5 Hz','Code2Wav family','—'],
+  ['Voxtral TTS','AR decoder 3.4B','1 semantic token/frame + flow-matching 390M · 8 NFE → 36 FSQ','VQ 8192 + FSQ','—','codec decoder 300M','—'],
+  ['dots.tts','Qwen2.5-1.5B','AR flow head (DiTAR-style) · 1 step/frame','AudioVAE latents','—','AudioVAE + BigVGAN 48 kHz','—'],
+  ['Ming-omni-TTS','dense Talker','CFM / DiT · multi-step ODE','AudioVAE latents','—','AudioVAE decoder','—'],
+  ['Qwen3-ASR','Qwen3 LLM','— (ASR)','AuT encoder 12.5 Hz continuous','12.5 Hz','—','—'],
+  ['Fun-ASR-Nano-2512','Qwen3-0.6B · 28L + CTC 5L sidecar','— (ASR)','SenseVoice SANM encoder 512-d','—','—','—'],
+];
+
+/* ============================= SVG helpers ============================= */
+const CW=252, CG=24, PADX=16, ITEM_GAP=9, SEG_GAP=16, BAND_GAP=22, BAND_HEAD=26, LANE_HEAD=66;
+const INK='#1c2330', MUT='#5b6472', ARR='#98a2b3';
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function estW(s,px){let w=0;for(const ch of String(s)){w+=(ch.codePointAt(0)>255?px*0.98:px*0.52);}return w;}
+function wrapText(s,px,w){
+  if(estW(s,px)<=w) return [s];
+  const isZh=/[\u4e00-\u9fff]/.test(s);
+  const toks=isZh?[...s]:String(s).split(' ');
+  const lines=[];let cur='';
+  for(const t of toks){
+    const trial=isZh?cur+t:(cur?cur+' '+t:t);
+    if(estW(trial,px)<=w||!cur) cur=trial;
+    else{lines.push(cur);cur=t;}
+  }
+  if(cur)lines.push(cur);
+  return lines.slice(0,3);
+}
+function text(x,y,s,o={}){
+  const {px=12,wgt=400,c=INK,anchor='start',ls=0}=o;
+  return `<text x="${x}" y="${y}" font-size="${px}" font-weight="${wgt}" fill="${c}" text-anchor="${anchor}"${ls?` letter-spacing="${ls}"`:''}>${esc(s)}</text>`;
+}
+
+/* ---------- item layout ---------- */
+function boxLayout(it,w){
+  const pad=9, iw=w-pad*2;
+  const L={tag:it.tag?T(it.tag):null, title:wrapText(T(it.l[0]),12.5,iw).slice(0,2), subs:[]};
+  let h=pad+(L.tag?13:0)+L.title.length*16;
+  for(let i=1;i<it.l.length;i++){
+    const ls=wrapText(T(it.l[i]),11,iw).slice(0,2);
+    L.subs.push(ls); h+=ls.length*14+1;
+  }
+  h+=pad-3;
+  return {h,L};
+}
+function itemH(it,w){
+  switch(it.b){
+    case 'pill': return 24;
+    case 'badge': return 20;
+    case 'box': case 'side': return boxLayout(it,w).h;
+    case 'split': return Math.max(...it.items.map(b=>boxLayout(b,(w-28)/2).h));
+    case 'grid': {const lv=Math.min(it.grid.levels,6); return lv*11+8;}
+  }
+  return 0;
+}
+function cellH(cell,w){
+  if(!cell||!cell.flow||!cell.flow.length) return 0;
+  return cell.flow.reduce((a,it)=>a+itemH(it,w),0)+(cell.flow.length-1)*ITEM_GAP;
+}
+
+/* ---------- item drawing ---------- */
+function drawBox(it,x,y,w){
+  const {h,L}=boxLayout(it,w);
+  const common=it.style==='common', side=it.b==='side';
+  const col=it.c||STAGES.talker.c;
+  const fill=side?'#fafbfc':(common?'#f3f5f8':'#fff');
+  const stroke=side?'#b9c1cc':(common?'#d3d9e1':col);
+  const sw=side||common?1.5:2;
+  let s=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"${side?' stroke-dasharray="5 4"':''}/>`;
+  let ty=y+9+9;
+  if(L.tag){s+=text(x+9,ty-2,L.tag,{px:9,wgt:700,c:side||common?'#8a93a1':col,ls:'.07em'});ty+=13;}
+  for(const ln of L.title){s+=text(x+9,ty,ln,{px:12.5,wgt:side||common?600:700,c:side||common?'#39404d':INK});ty+=16;}
+  for(const sub of L.subs)for(const ln of sub){s+=text(x+9,ty-2,ln,{px:11,c:MUT});ty+=14;}
+  return s;
+}
+function drawItem(it,x,y,w){
+  switch(it.b){
+    case 'pill':{
+      const t=T(it.l), pw=Math.min(w,estW(t,11)+26), px=x+(w-pw)/2;
+      return `<rect x="${px}" y="${y}" width="${pw}" height="24" rx="12" fill="#eef1f5" stroke="#c9d0da" stroke-width="1"/>`+text(x+w/2,y+16,t,{px:11,c:'#4b5563',anchor:'middle'});
+    }
+    case 'badge':{
+      const t=T(it.l), bw=estW(t,10.5)+18, bx=x+(w-bw)/2;
+      return `<rect x="${bx}" y="${y}" width="${bw}" height="20" rx="5" fill="${it.c||'#6b7280'}"/>`+text(x+w/2,y+14,t,{px:10.5,wgt:700,c:'#fff',anchor:'middle'});
+    }
+    case 'box': case 'side': return drawBox(it,x,y,w);
+    case 'split':{
+      const bw=(w-28)/2, h=itemH(it,w);
+      let s='';
+      it.items.forEach((b,i)=>{
+        const bh=boxLayout(b,bw).h, by=y+(h-bh)/2;
+        s+=drawBox(b,x+i*(bw+28),by,bw);
+      });
+      // "or" gutter
+      s+=text(x+w/2,y+h/2+4,T(['or','或']),{px:10.5,wgt:700,c:MUT,anchor:'middle'});
+      return s;
+    }
+    case 'grid':{
+      const lv=Math.min(it.grid.levels,6), cols=Math.min(it.grid.cols,6), sq=8, g=3;
+      const gw=cols*(sq+g)-g, ell=it.grid.ellipsis;
+      const x0=x+(w-gw-(ell?16:0))/2, col=it.c||STAGES.talker.c;
+      let s='';
+      for(let r=0;r<lv;r++)for(let c=0;c<cols;c++){
+        const on=c>=r;
+        s+=`<rect x="${x0+c*(sq+g)}" y="${y+4+r*(sq+g)}" width="${sq}" height="${sq}" rx="1.5" fill="${on?col:'#e2e7ee'}"${on?' opacity="0.88"':''}/>`;
+      }
+      if(ell) s+=text(x0+gw+6,y+4+lv*(sq+g)/2+3,'…',{px:12,wgt:700,c:MUT});
+      return s;
+    }
+  }
+  return '';
+}
+
+/* ---------- figure renderer ---------- */
+function renderFigure(cfg,mount){
+  const n=cfg.lanes.length, W=PADX*2+n*CW+(n-1)*CG;
+  const laneX=i=>PADX+i*(CW+CG), laneCx=i=>laneX(i)+CW/2;
+  const areaCx=(laneCx(0)+laneCx(n-1))/2;
+  const SW=Math.min(360,n*CW+(n-1)*CG-60);
+
+  /* layout pass */
+  let y=LANE_HEAD;
+  const bandLay=[];
+  for(const band of cfg.bands){
+    const bl={band,yHead:y,segs:[]};
+    y+=BAND_HEAD;
+    for(const seg of band.segs){
+      const h=seg.type==='shared'?cellH(cfg.shared[seg.key],SW)
+        :Math.max(0,...cfg.lanes.map((_,i)=>cellH((cfg.cells[i]||{})[seg.key],CW)));
+      bl.segs.push({seg,y,h});
+      y+=h+SEG_GAP;
+    }
+    bl.yBot=y-SEG_GAP;
+    y+=BAND_GAP;
+    bandLay.push(bl);
+  }
+  const H=y+4;
+
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img">`;
+  s+=`<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto"><path d="M0 0L10 5L0 10z" fill="${ARR}"/></marker></defs>`;
+
+  /* band tints + thin headers */
+  for(const bl of bandLay){
+    const st=STAGES[bl.band.stage];
+    s+=`<rect x="4" y="${bl.yHead-4}" width="${W-8}" height="${bl.yBot-bl.yHead+12}" rx="10" fill="${st.c}" opacity="0.045"/>`;
+    s+=`<circle cx="16" cy="${bl.yHead+9}" r="4" fill="${st.c}"/>`;
+    const nm=bl.band.title?T(bl.band.title[0]):T(st.name), ds=T(st.desc);
+    s+=text(26,bl.yHead+13,nm,{px:12,wgt:800,c:st.c,ls:'.04em'});
+    if(26+estW(nm,12)+estW(ds,10.5)+60<W) s+=text(W-14,bl.yHead+12,ds,{px:10.5,c:MUT,anchor:'end'});
+    s+=`<line x1="10" y1="${bl.yHead+BAND_HEAD-7}" x2="${W-10}" y2="${bl.yHead+BAND_HEAD-7}" stroke="#e4e8ef" stroke-width="1"/>`;
+  }
+
+  /* lane headers */
+  cfg.lanes.forEach((ln,i)=>{
+    const cx=laneCx(i);
+    s+=text(cx,15,T(ln.name),{px:13,wgt:800,anchor:'middle'});
+    if(ln.badge){
+      const bt=T(ln.badge), bw=estW(bt,10)+16;
+      s+=`<rect x="${cx-bw/2}" y="22" width="${bw}" height="16" rx="4" fill="${ln.c||'#6b7280'}"/>`;
+      s+=text(cx,34,bt,{px:10,wgt:700,c:'#fff',anchor:'middle'});
+    }
+    if(ln.models){
+      wrapText(T(ln.models),10,CW-8).slice(0,2).forEach((ln2,k)=>{
+        s+=text(cx,50+k*12,ln2,{px:10,c:MUT,anchor:'middle'});
+      });
+    }
+  });
+
+  /* cells (items flow bottom-up) */
+  const drawCell=(cell,x,w,yBot)=>{
+    let iy=yBot;
+    for(const it of cell.flow){
+      const h=itemH(it,w); iy-=h;
+      s+=drawItem(it,x,iy,w);
+      iy-=ITEM_GAP;
+    }
+  };
+  for(const bl of bandLay)for(const sl of bl.segs){
+    if(sl.seg.type==='shared'){
+      const cell=cfg.shared[sl.seg.key];
+      if(cell) drawCell(cell,areaCx-SW/2,SW,sl.y+sl.h);
+    }else{
+      cfg.lanes.forEach((_,i)=>{
+        const cell=(cfg.cells[i]||{})[sl.seg.key];
+        if(cell) drawCell(cell,laneX(i),CW,sl.y+sl.h);
+      });
+    }
+  }
+
+  /* connectors, bottom→top */
+  const seq=[];
+  [...bandLay].reverse().forEach(bl=>[...bl.segs].reverse().forEach(sl=>seq.push(sl)));
+  for(let k=0;k<seq.length-1;k++){
+    const lo=seq[k], up=seq[k+1];
+    const y1=lo.y, y2=up.y+up.h;   // from top of lower seg → bottom of upper seg (upward)
+    const loS=lo.seg.type==='shared', upS=up.seg.type==='shared';
+    const link=(x1,x2)=>{
+      if(Math.abs(x1-x2)<1) s+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${ARR}" stroke-width="1.6" marker-end="url(#ah)"/>`;
+      else{const my=(y1+y2)/2;s+=`<path d="M ${x1} ${y1} C ${x1} ${my}, ${x2} ${my}, ${x2} ${y2}" fill="none" stroke="${ARR}" stroke-width="1.6" marker-end="url(#ah)"/>`;}
+    };
+    for(let i=0;i<n;i++){
+      const hasLo=loS||((cfg.cells[i]||{})[lo.seg.key]), hasUp=upS||((cfg.cells[i]||{})[up.seg.key]);
+      if(!hasLo||!hasUp) continue;
+      const xl=loS?areaCx+(laneCx(i)-areaCx)*0.5:laneCx(i);
+      const xu=upS?areaCx+(laneCx(i)-areaCx)*0.5:laneCx(i);
+      link(xl,xu);
+    }
+  }
+
+  s+='</svg>';
+  mount.innerHTML=s;
+}
+
+/* ---------- map ---------- */
+const MAP_FAM={'Whisper':'a','Fun-ASR':'a','Qwen3-ASR':'a','MOSS-Local':'d','MOSS delay':'d','Higgs / ZONOS2':'d','Qwen3-TTS':'d','Qwen3-Omni':'d','Fish S2-Pro':'d','Voxtral':'h','dots.tts':'c','Ming-omni-TTS':'c','Ming-flash-omni':'c'};
+const MAP_FC={a:'#98a2b3',d:'#D97B29',c:'#3D9970',h:'#7A5C9E'};
+function renderMap(mount){
+  const W=680,H=470,PL=46,PR=16,PT=20,PB=54;
+  const sx=v=>PL+v/3.4*(W-PL-PR), sy=v=>H-PB-v/1.05*(H-PB-PT);
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  for(const t of MAP_TICKS){
+    s+=`<line x1="${sx(t.x)}" y1="${PT}" x2="${sx(t.x)}" y2="${H-PB}" stroke="#e4e8ef" stroke-dasharray="4 4"/>`;
+    s+=text(sx(t.x),H-PB+16,T(t.t),{px:10.5,c:MUT,anchor:'middle'});
+  }
+  s+=`<line x1="${PL}" y1="${H-PB}" x2="${W-PR}" y2="${H-PB}" stroke="#c9d0da"/>`;
+  s+=`<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${H-PB}" stroke="#c9d0da"/>`;
+  s+=text((PL+W-PR)/2,H-12,T(MAP_XLAB),{px:12,wgt:700,c:INK,anchor:'middle'});
+  s+=`<text x="14" y="${(PT+H-PB)/2}" font-size="12" font-weight="700" fill="${INK}" text-anchor="middle" transform="rotate(-90 14 ${(PT+H-PB)/2})">${esc(T(MAP_YLAB))}</text>`;
+  s+=text(sx(0.55),sy(1.0),T(['ASR: no Talker','ASR：无 Talker']),{px:10,c:'#98a2b3'});
+  for(const p of MAP_POINTS){
+    const c=MAP_FC[MAP_FAM[p.name]||'a'];
+    s+=`<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="6" fill="${c}" opacity="0.9"/>`;
+    s+=text(sx(p.x)+9,sy(p.y)+4,p.name,{px:11,wgt:600,c:'#39404d'});
+  }
+  s+='</svg>';
+  mount.innerHTML=s;
+}
+
+/* ---------- table ---------- */
+function renderTable(mount){
+  let s='<thead><tr>'+CMP_HEAD.map(h=>`<th>${esc(h)}</th>`).join('')+'</tr></thead><tbody>';
+  for(const r of CMP_ROWS) s+='<tr>'+r.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>';
+  mount.innerHTML=s+'</tbody>';
+}
+
+/* ---------- page ---------- */
+function renderAll(){
+  document.querySelectorAll('[data-t]').forEach(el=>{el.innerHTML=T(I18N[el.dataset.t]);});
+  document.getElementById('legend').innerHTML=[
+    ['sw key','lg_key'],['sw common','lg_common'],['sw pill','lg_pill'],['sw chip','lg_chip'],
+  ].map(([cls,k])=>`<span class="item"><span class="sw ${cls}"></span>${T(I18N[k])}</span>`).join('');
+
+  renderFigure(REF_FIG,document.getElementById('fig-reference'));
+  renderFigure(FAMILIES_FIG,document.getElementById('fig-families'));
+
+  const dc=document.getElementById('discrete-figs');
+  dc.innerHTML=DISCRETE_FIGS.map((d,i)=>`
+    <h3><span style="color:var(--mut)">3.${i+1}</span> ${T(d.claim)}</h3>
+    <p class="lead">${T(d.sub)}</p>
+    <div class="card scroll-x"><div id="dfig-${i}"></div></div>
+    <div class="takeaway">${T(d.take)}</div>`).join('');
+  DISCRETE_FIGS.forEach((d,i)=>renderFigure(d.fig,document.getElementById('dfig-'+i)));
+
+  renderFigure(CONT_FIG,document.getElementById('fig-cont'));
+  renderFigure(OMNI_FIG,document.getElementById('fig-omni'));
+  renderFigure(ASR_FIG,document.getElementById('fig-asr'));
+  renderMap(document.getElementById('fig-map'));
+  renderTable(document.getElementById('cmp-table'));
+}
+renderAll();
+</script>
+</body>
+</html>
