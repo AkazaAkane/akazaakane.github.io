@@ -52,6 +52,17 @@
   .side{display:flex; gap:26px; align-items:flex-start; flex-wrap:wrap;}
   .side .note{flex:1; min-width:260px; font-size:13.5px; color:var(--mut);}
   .side .note b{color:var(--ink);}
+  #sec-reference h2{font-size:28px; gap:12px;}
+  #sec-reference h2 .no{font-size:13px; padding:4px 10px;}
+  #sec-reference .lead{font-size:15.5px;}
+  .reference-card{display:grid; grid-template-columns:minmax(340px,38fr) minmax(0,54fr); gap:48px; align-items:stretch; padding:30px 32px; border-radius:12px;}
+  #fig-reference{display:flex; justify-content:center; min-width:0;}
+  #fig-reference svg{width:min(100%,360px); height:auto;}
+  .reference-note{display:flex; min-width:0; flex-direction:column; justify-content:space-between; color:var(--mut); font-size:15px; line-height:1.6;}
+  .reference-note b{color:var(--ink);}
+  .reference-note-heading{font-size:16px;}
+  .reference-axis{display:grid; grid-template-columns:24px minmax(0,1fr); gap:8px;}
+  .reference-axis-number{color:var(--ink); font-weight:700;}
   .takeaway{
     border-left:3px solid var(--ink); background:#eef1f6; padding:11px 16px; border-radius:0 10px 10px 0;
     font-size:13.5px; margin-top:14px; color:#39404d; max-width:1100px;
@@ -65,6 +76,11 @@
   table.cmp td:first-child{font-weight:700; white-space:nowrap;}
   footer{margin-top:64px; color:var(--mut); font-size:12px; border-top:1px solid var(--line); padding-top:18px;}
   svg text{font-family:inherit;}
+  @media (max-width:780px){
+    #sec-reference h2{font-size:24px;}
+    .reference-card{grid-template-columns:1fr; gap:28px; padding:22px;}
+    .reference-note{gap:24px;}
+  }
 </style>
 </head>
 <body>
@@ -83,9 +99,9 @@
   <section id="sec-reference">
     <h2><span class="no">1</span><span data-t="sec0_h"></span></h2>
     <p class="lead" data-t="sec0_lead"></p>
-    <div class="card side">
+    <div class="card reference-card">
       <div id="fig-reference"></div>
-      <div class="note" data-t="sec0_note" style="max-width:360px"></div>
+      <div class="reference-note" data-t="sec0_note"></div>
     </div>
   </section>
 
@@ -155,8 +171,8 @@ const I18N = {
   sec0_h: ["The Common Framework: Four Stages", "共同框架：四个阶段"],
   sec0_lead: ["Every model below is a specialization or truncation of this pipeline. Encoding and Decoding are stable across models; the divergence lives in the middle two stages.",
               "下面所有模型都是这条 pipeline 的特化或裁剪。编码与解码在模型间高度稳定，分歧集中在中间两步。"],
-  sec0_note: ["<b>Three axes of divergence</b>, all in the middle two stages:<br><br><b>① Thinker–Talker coupling</b> — nested single decode loop vs. asynchronous dual-loop pipeline; text tokens + hidden states (text as explicit semantic anchor) vs. hidden states only. Pure TTS like S2-Pro skips the text bridge entirely — the backbone directly generates semantic codec tokens.<br><br><b>② Inter-codebook dependency</b> — delay pattern (parallel heads), nested Dual-AR, backbone + MTP, or ODE denoising.<br><br><b>③ Representation</b> — discrete codec tokens vs. continuous VAE latents. Input side deliberately avoids quantization; output side embraces it (or rejects it, in the continuous camp).",
-              "<b>三个分歧轴</b>，全部位于中间两步：<br><br><b>① Thinker–Talker 耦合</b>——嵌套单循环 vs 异步双循环流水线；跨边界传「文本 token + hidden states」（文本作显式语义锚点）还是仅 hidden states。S2-Pro 这类纯 TTS 干脆没有文本桥梁——主干直接自回归生成 semantic codec token。<br><br><b>② codebook 层间依赖</b>——delay pattern（并行头）、嵌套 Dual-AR、主干 + MTP、或 ODE 去噪。<br><br><b>③ 表示</b>——离散 codec token vs 连续 VAE latent。输入侧刻意避开量化；输出侧拥抱量化（连续派除外）。"],
+  sec0_note: ["<div class='reference-note-heading'><b>Three axes of divergence</b>, all in the middle two stages:</div><div class='reference-axis'><span class='reference-axis-number'>①</span><div><b>Thinker–Talker coupling</b> — nested single decode loop vs. asynchronous dual-loop pipeline; text tokens + hidden states (text as explicit semantic anchor) vs. hidden states only. Pure TTS like S2-Pro skips the text bridge entirely — the backbone directly generates semantic codec tokens.</div></div><div class='reference-axis'><span class='reference-axis-number'>②</span><div><b>Inter-codebook dependency</b> — delay pattern (parallel heads), nested Dual-AR, backbone + MTP, or ODE denoising.</div></div><div class='reference-axis'><span class='reference-axis-number'>③</span><div><b>Representation</b> — discrete codec tokens vs. continuous VAE latents. Input side deliberately avoids quantization; output side embraces it (or rejects it, in the continuous camp).</div></div>",
+              "<div class='reference-note-heading'><b>三个分歧轴</b>，全部位于中间两步：</div><div class='reference-axis'><span class='reference-axis-number'>①</span><div><b>Thinker–Talker 耦合</b>——嵌套单循环 vs 异步双循环流水线；跨边界传「文本 token + hidden states」（文本作显式语义锚点）还是仅 hidden states。S2-Pro 这类纯 TTS 干脆没有文本桥梁——主干直接自回归生成 semantic codec token。</div></div><div class='reference-axis'><span class='reference-axis-number'>②</span><div><b>codebook 层间依赖</b>——delay pattern（并行头）、嵌套 Dual-AR、主干 + MTP、或 ODE 去噪。</div></div><div class='reference-axis'><span class='reference-axis-number'>③</span><div><b>表示</b>——离散 codec token vs 连续 VAE latent。输入侧刻意避开量化；输出侧拥抱量化（连续派除外）。</div></div>"],
   sec1_h: ["Every Talker Is One of Two Families", "所有 Talker 都属两大流派之一"],
   sec1_lead: ["Strip away the details and every speech generator reduces to one of two computations: autoregressive prediction of discrete codec IDs, or iterative generation of continuous acoustic latents.",
               "剥掉细节，每个语音生成器都可归约为两种计算之一：自回归预测离散 codec ID，或迭代生成连续声学 latent。"],
