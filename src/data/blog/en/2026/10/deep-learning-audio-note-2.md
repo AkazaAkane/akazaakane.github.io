@@ -1,6 +1,7 @@
 ---
 author: Yuhao Chen
 pubDatetime: 2026-10-04T07:00:00.000Z
+modDatetime: 2026-10-04T20:00:28.000Z
 title: "Deep Learning Audio Note 2: ASR and Speech Representations"
 featured: false
 draft: false
@@ -28,15 +29,16 @@ This post is part I of my explanation of ASR models. I assume readers have some 
 
 ## ASR applications and system modes
 
-From a system perspective, we can consider three modes:
+Based on whether the complete recording is available, we can distinguish two ASR operating modes:
 
 1. **Offline ASR:** the complete recording is already available, as with podcast or video subtitles. Accuracy is usually the priority, with less sensitivity to latency.
 2. **Streaming ASR:** speech arrives while the model produces output. Live captions and telephone customer service are common examples. Latency and continuity matter alongside accuracy.
-3. **ASR in full-duplex voice interaction:** the system must keep listening while handling interruptions and barge-in. Here, ASR is part of a real-time voice interaction system rather than just transcription.
+
+**Full-duplex speech interaction** describes a broader interaction system that keeps listening while producing speech and handles interruptions and barge-in. ASR or speech understanding is one component of that system, rather than a third ASR mode alongside offline and streaming.
 
 ## Evaluating ASR
 
-Before getting into the principles and models, we should understand how to evaluate an ASR model. At the model level, we mainly care about accuracy and robustness. At the system level, we also care about throughput and latency.
+Before getting into the principles and models, we should understand how to evaluate an ASR model. Model evaluation includes accuracy and robustness, but also latency, real-time factor (RTF: processing time divided by audio duration), memory use, streamability, and long-audio capability. System evaluation additionally considers overall throughput and end-to-end latency.
 
 **Levenshtein distance**, or edit distance, asks: given two sequences a and b, usually a prediction and ground truth, what is the minimum number of edits needed to turn a into b? The allowed operations are substitution, insertion, and deletion, each with a cost of one. This is also a classic dynamic programming problem on LeetCode.
 
@@ -107,7 +109,9 @@ These choices already build in a lot of knowledge about speech. MFCCs try to ret
 
 As deep learning developed, we increasingly wanted models to learn hidden representations themselves, much as in computer vision, instead of relying entirely on expert-designed features.
 
-### CNNs: local acoustic structure
+### CNNs and RNNs: different inductive biases
+
+This is not a linear history of CNN → RNN/LSTM → Transformer. RNNs and LSTMs were widely used in ASR before pure convolutional models such as QuartzNet; for example, [Deep Speech](https://arxiv.org/abs/1412.5567) used RNNs in 2014. CNNs favor local acoustic structure, while RNNs and LSTMs accumulate temporal context. These complementary inductive biases are also often combined.
 
 CNNs were a natural choice because speech has clear local structure. NVIDIA's [QuartzNet](https://arxiv.org/abs/1910.10261) is a classic ASR architecture built around a convolutional encoder. Notice that it convolves along time and takes a Mel-scale spectrogram as input rather than MFCCs.
 
@@ -115,7 +119,7 @@ CNNs were a natural choice because speech has clear local structure. NVIDIA's [Q
 
 ### RNNs, LSTMs, and Transformers: temporal context
 
-RNNs and LSTMs bring in temporal context. CNNs are good at local structure, but speech is fundamentally a long sequence. Transformers then let each position directly attend to the sequence, providing a more expressive way to model relationships.
+Speech is fundamentally a long sequence, and RNNs and LSTMs model temporal context through recurrent states. Transformers later introduced self-attention to model relationships between positions. In a non-streaming setting with global attention, each position can directly attend to the entire sequence.
 
 A unidirectional RNN or LSTM only sees the current input and earlier information. Bidirectional architectures such as BiLSTMs also incorporate future context. However, recurrent models face two major difficulties:
 
@@ -124,19 +128,21 @@ A unidirectional RNN or LSTM only sees the current input and earlier information
 
 Although NLP quickly embraced Transformers, speech representation did not stop at the vanilla Transformer. Text is already highly compressed: a sentence might have only 20 tokens. Audio is dense: a minute can contain around 6,000 frames. That is expensive for vanilla self-attention, whose complexity is O(T²).
 
-### Conformer and FastConformer
+### Conformer: local structure and global context
 
 An important development was [Conformer](https://arxiv.org/abs/2005.08100), one of the major Transformer variants for ASR. It combines Transformers and CNNs because speech contains both local acoustic patterns and global context. Formants, phoneme transitions, and transients over tens of milliseconds are local patterns; words, sentences, and longer context also require broader modeling.
 
 ![Conformer architecture and the modules within a Conformer block](/img/2026/10/deep-learning-audio-note-2/conformer.png)
 
-Conformer is powerful, but full attention remains expensive. [FastConformer](https://arxiv.org/abs/2305.05084) reduces the number of time steps processed downstream. Its depthwise separable convolutional subsampling reduces the input sequence length by a factor of eight, greatly reducing the later attention workload. The work also explores Longformer-style attention with local windows and global tokens for efficient modeling of long recordings.
-
 ### Self-supervised representations and acoustic frontends
 
-Another shift followed. Previously, learning speech representations often required strong supervision, such as paired audio and text. Methods like [wav2vec 2.0](https://arxiv.org/abs/2006.11477) showed that large amounts of audio without transcripts could first be used to learn representations. A model learns through masked prediction and a contrastive objective, then is fine-tuned on labeled ASR data. Representation learning becomes less tightly coupled to specific ASR labels.
+Self-supervised learning developed alongside architecture design. Conformer and [wav2vec 2.0](https://arxiv.org/abs/2006.11477) both appeared in 2020, but address different questions: architecture and learning representations from unlabeled audio. Supervised ASR representation learning relies on paired audio and text; methods like wav2vec 2.0 showed that large amounts of audio without transcripts could first be used to learn representations. A model learns through masked prediction and a contrastive objective, then is fine-tuned on labeled ASR data. Representation learning becomes less tightly coupled to specific ASR labels.
 
 Modern models have not abandoned handcrafted representations entirely. Whisper still uses log-Mel spectrograms rather than raw waveforms. Models take on more of the representation learning, but a cheap, stable acoustic frontend with a useful inductive bias can still be valuable. Mel frontends remain common in ASR.
+
+### Efficiency and deployment-driven architecture: FastConformer
+
+Conformer is powerful, but full attention remains expensive. [FastConformer](https://arxiv.org/abs/2305.05084), published in 2023, addresses efficiency and deployment constraints by reducing the number of time steps processed downstream. Its depthwise separable convolutional subsampling reduces the input sequence length by a factor of eight, greatly reducing the later attention workload. The work also explores Longformer-style attention with local windows and global tokens for efficient modeling of long recordings.
 
 ## Connections across modalities and architecture choices
 
@@ -150,4 +156,4 @@ Transformers marked a major point of convergence. They first took off in NLP, th
 
 Speech's dependence on local structure is one reason vanilla Transformers were not the final answer. Conformer restores explicit local modeling through convolution, much like hybrid architectures in vision. It is an important specialization of Transformers for speech and audio.
 
-These approaches continue to coexist across offline and streaming deployments. Convolution's explicit modeling of local acoustics is useful in dedicated and streaming ASR. Pure Transformers are broadly reusable and can be convenient to scale, especially in speech encoder + LLM systems and multimodal foundation models. Edge devices, streaming, high throughput, and large multimodal systems have different goals, so they do not share a single optimal architecture.
+Transformer and Conformer architectures coexist, and either can be designed for streaming or non-streaming operation. Streaming is an operating constraint, not a separate architecture category. Convolution's explicit modeling of local acoustics is useful in dedicated and streaming ASR. Pure Transformers are broadly reusable and can be convenient to scale, especially in speech encoder + LLM systems and multimodal foundation models. Edge devices, streaming, high throughput, and large multimodal systems have different goals, so they do not share a single optimal architecture.
